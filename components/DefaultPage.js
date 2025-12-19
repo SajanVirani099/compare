@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Accordion from "./common/Accordion";
 import { getCategoriesAndSubCategories } from "@/app/redux/slice/categorySlice";
+import { Centerwarning } from "./utils/toast";
 
 const accordionItems = [
   {
@@ -40,7 +41,6 @@ const accordionItems = [
 
 const DefaultPage = () => {
   const { category } = useSelector((state) => state.category);
-  console.log("🚀 ~ DefaultPage ~ category:", category);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -51,22 +51,28 @@ const DefaultPage = () => {
     dispatch(getCategoriesAndSubCategories());
   }, []);
 
-  const handleToggleCategory = (name) => {
-    setSelectedCategories((prev) => {
-      const newSelection = prev.includes(name)
-        ? prev.filter((cat) => cat !== name)
-        : [...prev, name];
-
-      // Check if minimum 3 categories are selected
+const handleToggleCategory = (name) => {
+  setSelectedCategories((prev) => {
+    if (prev.includes(name)) {
+      const newSelection = prev.filter((cat) => cat !== name);
       setMinCategoriesSelected(newSelection.length >= 3);
-
       return newSelection;
-    });
-  };
+    }
+
+    if (prev.length > 3) {
+      Centerwarning("You can select a maximum of 3 categories only.");
+      return prev;
+    }
+
+    const newSelection = [...prev, name];
+    setMinCategoriesSelected(newSelection.length >= 3);
+    return newSelection;
+  });
+};
 
   const handleProceed = () => {
     if (selectedCategories.length < 3) {
-      alert("Please select at least 3 categories to proceed.");
+      Centerwarning("Please select at least 3 categories to proceed.");
       return;
     }
 
@@ -75,13 +81,13 @@ const DefaultPage = () => {
       JSON.stringify(selectedCategories)
     );
     localStorage.setItem("hasVisitedHomePage", "true");
-    router.refresh();
+    window.location.reload();
   };
 
   return (
     <div className="flex justify-center gap-4 px-4 mb-20 mt-10">
       <div>
-        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-5 pb-12">
+        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-5 pb-16">
           <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-5xl font-bold mb-4 text-center">
             Choose some favourite category <br /> you might compare
           </h1>
@@ -93,7 +99,7 @@ const DefaultPage = () => {
                 <button
                   key={index}
                   onClick={() => handleToggleCategory(item?.name)}
-                  className={`btn ${isSelected ? "btn-primary" : "focus"}`}
+                  className={`btn ${isSelected ? "btn-primary-focus" : "focus"}`}
                 >
                   {item?.name}
                 </button>
