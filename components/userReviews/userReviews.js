@@ -28,7 +28,7 @@ const UserReviews = ({
     <div className="bg-[#f6f7fb] mt-6 py-10">
       <div className="max-w-[1280px] w-[95%] md:w-[75%] lg:w-[55%] mx-auto">
         <h2 className="text-3xl font-bold mb-4 text-center">
-          <span className="border-b border-black">Use</span>r reviews
+          <span className="border-b border-black">User</span> reviews
         </h2>
 
         <div className="mt-10">
@@ -60,7 +60,7 @@ const UserReviews = ({
             })}
           </div>
 
-          <div className="bg-white rounded-lg flex flex-col items-center justify-center pt-12 pb-8 mt-6">
+          <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center pt-12 pb-8 mt-6">
             <p className="text-[20px] font-bold">No reviews yet</p>
             <p className="text-[#616161] text-base mb-8 mt-6 text-center px-4">
               Be the first. Use your experience to help others in the community make a decision.

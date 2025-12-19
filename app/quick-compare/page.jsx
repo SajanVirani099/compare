@@ -68,7 +68,7 @@ const CircularScore = React.memo(({ value = 58 }) => {
     <div
       className="relative h-14 w-14 rounded-full p-[6px]"
       style={{
-        background: `conic-gradient(#7e22ce 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
+        background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
         zIndex: 2,
       }}
     >
@@ -567,7 +567,7 @@ const QuickCompare = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="absolute top-8 right-8">
+                          <div className="absolute top-9 right-10">
                             <button
                               className="add-btn no-checkmark relative"
                               // style={{ zIndex: "101" }}
@@ -634,7 +634,7 @@ const QuickCompare = () => {
             <div className="bg-[#e6e7ee] rounded-xl shadow-lg border border-gray-200 w-full shadow-inset mt-4">
               {/* Header */}
               <div
-                className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-3 rounded-t-xl rounded-bl-xl cursor-pointer flex items-center justify-between shadow-soft"
+                className="bg-[#F98A1A] text-white px-4 py-3 rounded-t-xl rounded-bl-xl cursor-pointer flex items-center justify-between shadow-soft"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <div className="flex items-center gap-2">

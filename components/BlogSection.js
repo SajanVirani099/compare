@@ -70,7 +70,7 @@ const CircularScore = React.memo(({ value = 58 }) => {
     <div
       className="relative h-14 w-14 rounded-full p-[6px]"
       style={{
-        background: `conic-gradient(#7e22ce 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
+        background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
         zIndex: 2,
       }}
     >
@@ -324,7 +324,7 @@ const BlogSection = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 md:px-0">
+    <div className="max-w-7xl mx-auto px-6">
       <div className="mb-16">
         <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
           Ad Box
@@ -355,9 +355,9 @@ const BlogSection = () => {
                       alt={selectedProducts[0].title}
                       height={100}
                       width={150}
-                      className="object-contain w-full h-96 rounded-tl-[15px] rounded-tr-[15px]"
+                      className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
-                    <h2 className="text-lg font-semibold my-3">
+                    <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[0]?.uniqueTitle}`)}>
                       {selectedProducts[0].title || "Product Name"}
                     </h2>
 
@@ -502,9 +502,9 @@ const BlogSection = () => {
                       alt={selectedProducts[1].title}
                       height={100}
                       width={150}
-                      className="object-contain w-full h-96 rounded-tl-[15px] rounded-tr-[15px]"
+                      className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
-                    <h2 className="text-lg font-semibold my-3">
+                     <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[1]?.uniqueTitle}`)}>
                       {selectedProducts[1].title || "Product Name"}
                     </h2>
 
@@ -639,9 +639,9 @@ const BlogSection = () => {
                       alt={selectedProducts[2].title}
                       height={100}
                       width={150}
-                      className="object-contain w-full h-96 rounded-tl-[15px] rounded-tr-[15px]"
+                      className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
-                    <h2 className="text-lg font-semibold my-3">
+                     <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[2]?.uniqueTitle}`)}>
                       {selectedProducts[2].title || "Product Name"}
                     </h2>
 

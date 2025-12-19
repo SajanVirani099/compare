@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5'
 
 const FeatureCard = ({ key, title, param1, param2, value1, value2, text, unknown, na }) => {
     return (
-        <div key={key} className='relative border rounded-lg py-3 px-4 h-[190px] overflow-hidden bg-white cursor-pointer hover:shadow-lg'>
+        <div key={key} className='relative border py-3 px-4 h-[190px] overflow-hidden border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset cursor-pointer hover:shadow-lg'>
             <p className='uppercase font-bold text-sm tracking-wide'>{title}</p>
 
             {!unknown && !na &&

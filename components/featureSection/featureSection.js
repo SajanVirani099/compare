@@ -135,7 +135,7 @@ const FeatureSection = ({ icon, title, background = false }) => {
 
                 {!showAll && (
                     <p
-                        className="uppercase cursor-pointer font-bold text-sm tracking-wide mt-6 text-[#434343] text-center mt-8"
+                        className="uppercase cursor-pointer font-bold text-sm tracking-wide btn btn-primary w-max mx-auto text-[#434343] text-center mt-8"
                         onClick={() => setShowAll(true)}
                     >
                         + show more +
