@@ -82,7 +82,7 @@ const Glossary = () => {
         <div className="sticky-placeholder"></div>
         <div className="alpha-main !mt-10 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-5" style={{ marginTop: isSticky ? '50px' : '0' }}>
           {Object.keys(glosarry).map((letter) => (
-            <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset py-4 my-3 px-6" key={letter} id={letter}>
+            <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset py-4 my-5 px-6" key={letter} id={letter}>
               <p className="alphaTitle mt-2 mb-4">{letter}</p>
               {glosarry[letter].map((article) => (
                 <a
