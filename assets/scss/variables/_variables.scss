@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// font-family: 'Jost', sans-serif;
+// font-family: 'Plus Jakarta Sans', sans-serif;
+
+$font-prime : 'Public Sans',
+sans-serif;
+$font-second : 'Jost',
+sans-serif;
+
+$prime: #E6E6E6;
+$blue:#414A78;
+$second: #efefef;
+$third: #394149;
+$fourth: #F2F5FA;
+$dark: #000000;
+$darkGray: #6D7080;
+$light: #ffffff;
+$gray: #b1b1b1;
+$gray2: #d8d8d8;
+$lightGray: #f3f3f3;
+$lightBlue: #F3F6F9;
+$transparent: transparent;
+$white:#ffffff;
+
+//success
+$success: #198754;
+$success-light: #D1E7DD;
+
+//blue
+$blue: #0D6EFD;
+$blue-light: #CFE2FF;
+
+//red
+$danger: #DC3545;
+$danger-light: #F8D7DA;
+
+//yellow
+$warning: #FFC107;
+$warning-light: #FFF3CD;
+$themeAll : ("prime":$prime,
+  "second":$second,
+  "third":$third,
+  "fourth":$fourth,
+  "dark":$dark,
+  "darkGray":$darkGray,
+  "light":$light,
+  "gray":$gray,
+  "gray2":$gray2,
+  "lightGray":$lightGray,
+  "transparent":$transparent,
+  "success":$success,
+  "success-light":$success-light,
+  "blue":$blue,
+  "blue-light":$blue-light,
+  "danger":$danger,
+  "danger-light":$danger-light,
+  "warning":$warning,
+  "warning-light":$warning-light,
+);
+
+$angles : ("top",
+  "right",
+  "bottom",
+  "left",
+);
+
+$responsive : (
+  "xxsm":290,
+  "xsm":400,
+  "smm":450,
+  "sm":576,
+  "md":768,
+  "lg":992,
+  "xl":1200,
+  "xxl":1400,
+);
+
+$xxsm: 290px;
+$xsm: 400px;
+$smm: 450px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1400px;
+$suns-font: 'Source Sans 3', sans-serif;
+
+$transition-3 : .3s;
+$transition-2 : .2s;
+$transition-4 : .4s;
+$transition-5 : .5s;
+
+$prime-shadow : 0 0 12px rgba(15, 34, 58, 0.121);
+
+@mixin midels($display, $jContent, $align) {
+  display: $display;
+  justify-content: $jContent;
+  align-items: $align;
+}
+
+@mixin maxMediaQuery($breakpoint) {
+  @media screen and (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin minMediaQuery($breakpoint) {
+  @media screen and (min-width: $breakpoint) {
+    @content;
+  }
+}

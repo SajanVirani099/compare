@@ -1,0 +1,514 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for horizontal scrolling sections */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.home-page-search-btn {
+  padding: 10px 30px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  width: 200px;
+}
+
+.home-page-search-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+
+.home-page-search-btn:hover::after {
+  transform: scale(4);
+}
+
+.home-page-search-btn:hover {
+  border-color: #666666;
+  background: #292929;
+}
+
+.add-product-btn {
+  /* Config start */
+  --plus_sideLength: 2.9rem;
+  --plus_topRightTriangleSideLength: 0.9rem;
+  /* Config end */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  width: var(--plus_sideLength);
+  height: var(--plus_sideLength);
+  background-color: #434343;
+  overflow: hidden;
+  border-radius: 100%;
+}
+
+.add-product-btn::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-width: 0 var(--plus_topRightTriangleSideLength)
+    var(--plus_topRightTriangleSideLength) 0;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
+
+.add-product-btn:hover {
+  cursor: pointer;
+  border: 1px solid #434343;
+}
+
+.add-product-btn:hover::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
+
+.add-product-btn:focus-visible::before {
+  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+}
+
+.add-product-btn > .plusIcon {
+  fill: white;
+  width: calc(var(--plus_sideLength) * 0.7);
+  height: calc(var(--plus_sideLength) * 0.7);
+  z-index: 1;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+}
+
+.add-product-btn:hover > .plusIcon {
+  fill: #434343;
+  transform: rotate(180deg);
+}
+
+.add-product-btn:focus-visible > .plusIcon {
+  fill: #434343;
+  transform: rotate(180deg);
+}
+
+.hero-section-btn {
+  cursor: pointer;
+  position: relative;
+  /* padding: 8px 16px; */
+  font-size: 12px;
+  color: white;
+  border: 1px solid white;
+  border-radius: 34px;
+  background-color: transparent;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+
+.hero-section-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: white;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hero-section-btn:hover::before {
+  scale: 4;
+}
+
+.hero-section-btn:hover {
+  color: #212121;
+  scale: 1.1;
+  box-shadow: 0 0px 5px white;
+}
+
+.hero-section-btn:active {
+  scale: 1;
+}
+
+.entry-page-button {
+  --hover-shadows: 16px 16px 33px #121212, -16px -16px 33px #303030;
+  --accent: fuchsia;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 1.1em;
+  background-color: #212121;
+  cursor: pointer;
+  color: white;
+  padding: 1em 2em;
+  transition: box-shadow ease-in-out 0.3s, background-color ease-in-out 0.1s,
+    letter-spacing ease-in-out 0.1s, transform ease-in-out 0.1s;
+  /* box-shadow: 13px 13px 10px #1c1c1c, -13px -13px 10px #262626; */
+}
+
+.entry-page-button:hover {
+  background-color: var(--accent);
+}
+
+.entry-page-button:active {
+  box-shadow: var(--hover-shadows), var(--accent) 0px 0px 30px 5px;
+  background-color: var(--accent);
+  transform: scale(0.95);
+}
+
+.submit-button {
+  font-size: 16px;
+  padding: 1em 3.3em;
+  cursor: pointer;
+  transform: perspective(200px) rotateX(15deg);
+  color: white;
+  font-weight: 900;
+  border: none;
+  border-radius: 5px;
+  background-color: #f98a1a;
+  will-change: transform;
+  transition: all 0.3s;
+  border-bottom: 2px solid #f7820d;
+}
+
+.submit-button:hover {
+  transform: perspective(180px) rotateX(30deg) translateY(2px);
+}
+
+.submit-button:active {
+  transform: perspective(170px) rotateX(36deg) translateY(5px);
+}
+
+.shadow-soft {
+  box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff;
+}
+
+.btn {
+  position: relative;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
+  font-size: 1rem;
+  border-color: #d1d9e6;
+  box-shadow: 3px 3px 6px #b8b9be, -3px -3px 6px #fff;
+  padding: 10px 30px;
+  border-radius: 30px;
+}
+
+.btn-primary {
+  color: #31344b;
+  background-color: #e6e7ee;
+}
+
+.btn-primary:hover {
+  color: #31344b;
+  background-color: #e6e7ee;
+  border-color: #e6e7ee;
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff;
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+  color: #31344b;
+  background-color: #e6e7ee;
+  border-color: #e6e7ee;
+}
+
+.btn-primary.focus,
+.btn-primary:focus,
+.btn-primary-focus {
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+  color: #31344b;
+  background-color: #e6e7ee;
+  border-color: #e6e7ee;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff;
+}
+
+.Masonry__fadeToWhiteMask___rTGCf {
+  background-image: linear-gradient(180deg, transparent, #e6e7ee 95%);
+  border-radius: 0 0 7px 7px;
+  bottom: 17px;
+  height: 310px;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+
+.shadow-inset {
+  box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #fff !important;
+}
+
+.shadow-soft {
+  box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #fff !important;
+}
+
+.floating-button {
+  text-align: center;
+  line-height: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px 0;
+  /* -- */
+  width: 260px;
+  height: 46px;
+  animation: flyAnimation 2s infinite;
+  margin: 0px auto;
+  display: block;
+  perspective: 300px;
+  position: relative;
+}
+
+.floating-button > button {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px;
+  letter-spacing: 0.2px;
+  color: rgb(255, 255, 255);
+  border: none;
+  background: #f98a1a;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  text-align: center;
+  transform: rotateX(39deg);
+  transition: all 250ms ease-in;
+  display: block;
+  transform-style: preserve-3d;
+  padding: 14px 18px;
+}
+
+.floating-button > button:active {
+  margin-top: 5px;
+}
+
+.floating-button > button:active::after {
+  height: 5% !important;
+}
+
+.floating-button > button::after {
+  background: #c76504;
+  content: "";
+  height: 25%;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 99%;
+  transform-origin: 0% 0%;
+  transform: rotateX(264deg);
+  transition: all 250ms ease-in;
+  width: 100%;
+  z-index: -1;
+}
+
+.floating-button > button::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 30px;
+  background-color: rgba(255, 255, 255, 0.867);
+  transform: skewX(2deg);
+  opacity: 0;
+  left: -10%;
+  top: 1px;
+  animation: shine 3s ease infinite;
+  animation-delay: 3s;
+}
+
+@keyframes shine {
+  0% {
+    opacity: 0 !important;
+    left: -7%;
+  }
+
+  5% {
+    opacity: 0.2;
+    left: 0%;
+  }
+
+  10% {
+    opacity: 0.6;
+    left: 10%;
+  }
+
+  66% {
+    opacity: 1;
+    left: 78%;
+  }
+
+  100% {
+    opacity: 0;
+    left: 82%;
+  }
+}
+
+.floating {
+  animation: floatAnimation 3s infinite;
+}
+
+/* Search overlay and body scroll lock */
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
+.searchOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transition: height 9999s, transform 0.3s, background-color 0.3s;
+  background-color: hsla(0, 0%, 9%, 0.98);
+  overflow: auto;
+  z-index: 20000;
+  transform-origin: center;
+}
+
+.searchOverlay.isOpening {
+  display: block;
+  transform: scaleX(0.001);
+  background-color: #ffffff00;
+  transition: none;
+}
+
+.searchOverlay.isOpen {
+  display: block;
+}
+
+.searchOverlay.isClosing {
+  transform: scaleX(0.001);
+}
+
+.searchOverlay * {
+  box-sizing: border-box;
+}
+.searchOverlay button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+.searchOverlay .searchContentWrapper {
+  width: 100%;
+  max-width: 1170px;
+  margin: auto;
+}
+.searchOverlay .header {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+.searchOverlay .close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: white;
+}
+
+/* Hide the default checkbox */
+.add-btn input {
+  position: absolute;
+  opacity: 1;
+  -webkit-appearance: none;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  box-shadow: -10px -10px 15px rgba(255, 255, 255, 0.5),
+    10px 10px 15px rgba(0, 0, 70, 0.12);
+  border-radius: 50%;
+  border: 8px solid #ececec;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+  background: #e6e7ee;
+}
+
+.add-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-btn input::after {
+  transition: 0.5s;
+  font-family: monospace;
+  content: "";
+  color: #7a7a7a;
+  font-size: 25px;
+  left: 0.45em;
+  top: 0.25em;
+  width: 0.25em;
+  height: 0.5em;
+  border: solid #7a7a7a;
+  border-width: 0 0.15em 0.15em 0;
+  transform: rotate(45deg);
+}
+
+/* hide default pseudo check when using SVG icons */
+.add-btn.no-checkmark input::after {
+  content: none;
+}
+
+.add-btn input:checked {
+  box-shadow: -10px -10px 15px rgba(255, 255, 255, 0.5),
+    10px 10px 15px rgba(70, 70, 70, 0.12),
+    inset -10px -10px 15px rgba(255, 255, 255, 0.5),
+    inset 10px 10px 15px rgba(70, 70, 70, 0.12);
+  transition: 0.5s;
+}
+
+.add-btn input:checked::after {
+  transition: 0.5s;
+  border: solid #15e38a;
+  border-width: 0 0.15em 0.15em 0;
+  transform: rotate(45deg);
+}
+

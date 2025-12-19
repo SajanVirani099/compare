@@ -1,0 +1,30 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+  a {
+    text-decoration: none;
+  }
+  
+  li {
+    list-style: none;
+  }
+  
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  .rotate90 {
+    transform: rotate(90deg);
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  button {
+    border: none;
+  }

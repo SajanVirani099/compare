@@ -1,0 +1,73 @@
+.alphabetContainer {
+  background-color: #fff;
+  border: 1px solid grey;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  display: flex;
+  height: 50px;
+  justify-content: space-around;
+  margin: auto;
+  padding: 0 10px;
+  align-items: center;
+  max-width: 1170px;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Add these new classes */
+.alphabetContainer.sticky {
+  position: fixed;
+  top: 78px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-placeholder {
+  height: 50px; /* Same as alphabetContainer height */
+  display: none;
+}
+  
+.alphabetContainer.sticky + .sticky-placeholder {
+  display: block;
+}
+
+.alpha-main {
+  margin-top: 120px;
+}
+
+@media screen and (max-width: 641px) {
+  .alphabetContainer {
+    display: none;
+  }
+}
+
+.letter {
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 50px;
+  margin: 0 auto;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.letter:hover {
+  color: #0070f3;
+}
+
+.alphaTitle {
+  color: #000;
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 700;
+  width: 100%;
+}
+
+.alphaTitle > a {
+  margin-left: 0;
+}
+
+.alphaTitle a:hover {
+  text-decoration: underline !important;
+}
