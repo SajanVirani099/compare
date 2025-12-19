@@ -491,7 +491,7 @@ const BlogSection = () => {
             
             {/* Product Slot 2 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[1] && handlePlusClick(1)}
             >
               {selectedProducts[1] ? (
@@ -628,7 +628,7 @@ const BlogSection = () => {
             
             {/* Product Slot 3 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[2] && handlePlusClick(2)}
             >
               {selectedProducts[2] ? (
