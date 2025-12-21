@@ -122,7 +122,7 @@ const Footer = () => {
                             . All Rights Reserved.
                         </span>
                         <div className="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
-                            <Link href="#" className=" hover: hover:text-white">
+                            <Link href="#" className="btn btn-primary !px-3">
                                 <svg
                                     className="w-4 h-4"
                                     aria-hidden="true"
@@ -138,7 +138,7 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">Facebook page</span>
                             </Link>
-                            <Link href="#" className=" hover:text-white">
+                            <Link href="#" className="btn btn-primary !px-3">
                                 <svg
                                     className="w-4 h-4"
                                     aria-hidden="true"
@@ -152,7 +152,7 @@ const Footer = () => {
                                     Discord community
                                 </span>
                             </Link>
-                            <Link href="#" className="hover:text-white">
+                            <Link href="#" className="btn btn-primary !px-3">
                                 <svg
                                     className="w-4 h-4"
                                     aria-hidden="true"
@@ -168,7 +168,7 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">Twitter page</span>
                             </Link>
-                            <Link href="#" className="hover:text-white">
+                            <Link href="#" className="btn btn-primary !px-3">
                                 <svg
                                     className="w-4 h-4"
                                     aria-hidden="true"
@@ -184,7 +184,7 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">GitHub account</span>
                             </Link>
-                            <Link href="#" className="hover:text-white">
+                            <Link href="#" className="btn btn-primary !px-3">
                                 <svg
                                     className="w-4 h-4"
                                     aria-hidden="true"

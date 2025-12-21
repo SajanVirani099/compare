@@ -23,7 +23,7 @@ const MainSearching = () => {
 
     // Ensure there's always an empty field at the end, but limit total fields to 4
     if (
-      filteredInputs.length < 4 &&
+      filteredInputs.length < 3 &&
       filteredInputs[filteredInputs.length - 1] !== ""
     ) {
       filteredInputs.push("");
@@ -61,7 +61,7 @@ const MainSearching = () => {
 
       // Keep a trailing empty field if we still have room for more entries
       if (
-        updatedInputs.length < 4 &&
+        updatedInputs.length < 3 &&
         updatedInputs[updatedInputs.length - 1] !== ""
       ) {
         updatedInputs.push("");
@@ -112,7 +112,7 @@ const MainSearching = () => {
               <input
                 type="text"
                 autoComplete="off"
-                className="searchBox mr-2 cursor relative !rounded-xl !shadow-inset !bg-[#e6e7ee] text-black w-full py-1.5 pl-4"
+                className="searchBox mr-2 cursor relative !rounded-xl !shadow-inset !bg-[#e6e7ee] text-black w-full py-1.5 pl-4 focus:outline-[#F98A1A]"
                 placeholder="Type here to compare"
                 tabIndex="1"
                 name={`search${index}`}
