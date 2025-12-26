@@ -458,7 +458,7 @@ const QuickCompare = () => {
                               width={150}
                               className="object-cover w-full h-72 rounded-tl-[15px] rounded-tr-[15px]"
                             />
-                            <h2 className="text-lg font-semibold my-3 hover:text-[#7E22CE] transition-all duration-300 cursor-pointer" onClick={() => router.push(`/compare/${product?.uniqueTitle}`)}>
+                            <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer" onClick={() => router.push(`/compare/${product?.uniqueTitle}`)}>
                               {" "}
                               {product.title || "Product Name"}
                             </h2>
