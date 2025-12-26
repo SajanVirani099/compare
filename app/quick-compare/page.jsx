@@ -8,6 +8,7 @@ import { subcategoryProducts } from "../redux/slice/productSlice"; // Assuming t
 import { imageUrl } from "@/components/utils/config";
 import Navbar from "@/components/Navbar";
 import { Centerwarning } from "@/components/utils/toast";
+import ImageWithShimmer from "@/components/ImageWithShimmer";
 
 // Animated circular score badge used in product cards
 const CircularScore = React.memo(({ value = 58 }) => {
@@ -450,10 +451,10 @@ const QuickCompare = () => {
                       <React.Fragment key={product._id}>
                         <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full flex items-center justify-center relative">
                           <div className="p-4 mt-14">
-                            <img
+                            <ImageWithShimmer
                               src={`${imageUrl}${product.thumbnail}`}
                               alt={product.title}
-                              height={100}
+                              height={288}
                               width={150}
                               className="object-cover w-full h-72 rounded-tl-[15px] rounded-tr-[15px]"
                             />
@@ -742,9 +743,11 @@ const QuickCompare = () => {
                         >
                           <div className="flex items-center gap-3">
                             {product.thumbnail && (
-                              <img
+                              <ImageWithShimmer
                                 src={`${imageUrl}${product.thumbnail}`}
                                 alt={product.title}
+                                height={32}
+                                width={32}
                                 className="w-8 h-8 object-cover rounded"
                               />
                             )}

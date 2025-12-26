@@ -146,7 +146,7 @@ const CategoryDropdown = ({ categories }) => {
                                     {column.map((category, index) => (
                                         <div key={`${colIndex}-${index}`} className="mb-8 last:mb-0 border-[2px] border-[#d1d9e6] rounded-xl bg-[#e6e7ee] hover:shadow-soft transition-all duration-200">
                                             {/* Category Title */}
-                                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center bg-[#E6E7EE] p-6 shadow-inset overflow-hidden !rounded-s-xl !rounded-e-xl !rounded-ee-none !rounded-bl-none">
+                                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center bg-[#E6E7EE] pl-4 py-4 shadow-inset overflow-hidden !rounded-s-xl !rounded-e-xl !rounded-ee-none !rounded-bl-none">
                                                 {category.name || category.title}
                                             </h3>
                                             
@@ -181,7 +181,7 @@ const CategoryDropdown = ({ categories }) => {
                         <div className="flex justify-end pt-4 border-t border-gray-200">
                             <Link
                                 href="/categories"
-                                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F98A1A] hover:bg-[#F98A1A] text-white rounded-full font-medium text-sm transition-colors duration-200"
+                                className="inline-flex items-center gap-2 px-6 py-2.5 btn btn-primary !bg-[#F98A1A] !hover:bg-[#F98A1A] !text-white rounded-full font-medium text-sm transition-colors duration-200"
                                 onClick={() => setIsOpen(false)}
                             >
                                 See all categories

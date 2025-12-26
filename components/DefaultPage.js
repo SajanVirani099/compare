@@ -107,10 +107,10 @@ const handleToggleCategory = (name) => {
             })}
           </div>
           <div className="flex items-center justify-center mt-8">
-            <div className="floating-button">
+            <div className="">
               <button
                 className={
-                  !minCategoriesSelected ? "opacity-50 cursor-not-allowed" : ""
+                  !minCategoriesSelected ? "opacity-50 cursor-not-allowed compare-button !px-12" : "compare-button !px-12"
                 }
                 disabled={!minCategoriesSelected}
                 onClick={() => handleProceed()}

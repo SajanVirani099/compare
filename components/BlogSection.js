@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { subcategoryProducts } from "../app/redux/slice/productSlice";
+import ImageWithShimmer from "./ImageWithShimmer";
 
 // Animated circular score badge used in product cards
 const CircularScore = React.memo(({ value = 58 }) => {
@@ -332,7 +333,7 @@ const BlogSection = () => {
       </div>
       <div className="mt-5 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
         <div className="border-b-2 border-gray-300 rounded-t-xl flex items-center justify-between p-3">
-          <h3 className="text-lg font-bold">Quick Compare</h3>
+          <h3 className="text-[20px] font-bold">Quick Compare</h3>
           {/* <button
             className="btn btn-primary !text-lg px-4 py-2 me-3"
             onClick={() => router.push("/quick-compare")}
@@ -350,10 +351,10 @@ const BlogSection = () => {
               {selectedProducts[0] ? (
                 <div className="w-full flex items-center justify-center relative">
                   <div className="p-4 mt-14 w-full">
-                    <img
+                    <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[0].thumbnail}`}
                       alt={selectedProducts[0].title}
-                      height={100}
+                      height={240}
                       width={150}
                       className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
@@ -485,7 +486,12 @@ const BlogSection = () => {
               )}
             </div>
             
-            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 before:content-[''] before:absolute before:w-[2px] before:h-[150px] before:bg-gray-300 before:top-[-160px] before:left-1/2 before:-translate-x-1/2 after:content-[''] after:absolute after:w-[2px] after:h-[150px] after:bg-gray-300 after:bottom-[-160px] after:left-1/2 after:-translate-x-1/2">
+            {/* VS Badge 1 - Horizontal lines on mobile, vertical on desktop */}
+            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
+              before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
+              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[122%] after:-translate-y-1/2
+              sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
+              sm:after:h-[150px] sm:after:w-[2px] sm:after:left-1/2 sm:after:bottom-[-160px] sm:after:-translate-x-1/2 sm:after:translate-y-0">
               VS
             </div>
             
@@ -497,10 +503,10 @@ const BlogSection = () => {
               {selectedProducts[1] ? (
                 <div className="w-full flex items-center justify-center relative">
                   <div className="p-4 mt-14 w-full">
-                    <img
+                    <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[1].thumbnail}`}
                       alt={selectedProducts[1].title}
-                      height={100}
+                      height={240}
                       width={150}
                       className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
@@ -622,7 +628,12 @@ const BlogSection = () => {
               )}
             </div>
             
-            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 before:content-[''] before:absolute before:w-[2px] before:h-[150px] before:bg-gray-300 before:top-[-160px] before:left-1/2 before:-translate-x-1/2 after:content-[''] after:absolute after:w-[2px] after:h-[150px] after:bg-gray-300 after:bottom-[-160px] after:left-1/2 after:-translate-x-1/2">
+            {/* VS Badge 2 - Horizontal lines on mobile, vertical on desktop */}
+            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
+              before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
+              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[122%] after:-translate-y-1/2
+              sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
+              sm:after:h-[150px] sm:after:w-[2px] sm:after:left-1/2 sm:after:bottom-[-160px] sm:after:-translate-x-1/2 sm:after:translate-y-0">
               VS
             </div>
             
@@ -634,10 +645,10 @@ const BlogSection = () => {
               {selectedProducts[2] ? (
                 <div className="w-full flex items-center justify-center relative">
                   <div className="p-4 mt-14 w-full">
-                    <img
+                    <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[2].thumbnail}`}
                       alt={selectedProducts[2].title}
-                      height={100}
+                      height={240}
                       width={150}
                       className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
@@ -760,7 +771,7 @@ const BlogSection = () => {
             </div>
           </div>
           <div className="flex items-center justify-center my-6 sm:mt-10">
-            <button className="submit-button shadow-soft px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
+            <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
               More Compare
             </button>
           </div>
@@ -883,9 +894,11 @@ const BlogSection = () => {
                     {selectedProduct && (
                       <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                         <div className="flex items-center space-x-4">
-                          <img
+                          <ImageWithShimmer
                             src={imageUrl + selectedProduct.thumbnail}
                             alt={selectedProduct.title}
+                            height={64}
+                            width={64}
                             className="w-16 h-16 object-cover rounded-lg"
                           />
                           <div>
@@ -923,9 +936,9 @@ const BlogSection = () => {
 
       <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
         <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
-          <h3 className="text-lg font-bold">Categories</h3>
+          <h3 className="text-[20px] font-bold">Categories</h3>
           <button 
-            className="btn btn-primary !text-lg px-4 me-3"
+            className="btn btn-primary !text-sm px-2 !py-1 me-3"
             onClick={() => router.push("/categories")}
           >
             See all
@@ -994,7 +1007,7 @@ const BlogSection = () => {
                         key={i}
                         className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-6"
                       >
-                        <img
+                        <ImageWithShimmer
                           className="h-auto max-w-full rounded-xl"
                           alt={item.title}
                           src={imageUrl + item.thumbnail}
