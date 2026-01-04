@@ -110,7 +110,7 @@ const QuickCompare = () => {
       const existingRaw = localStorage.getItem("comparisonList");
       const existing = existingRaw ? JSON.parse(existingRaw) : [];
       setComparisonList(existing);
-      
+
       // Load product details if stored
       const productsRaw = localStorage.getItem("comparisonProducts");
       if (productsRaw) {
@@ -130,7 +130,7 @@ const QuickCompare = () => {
         const existingRaw = localStorage.getItem("comparisonList");
         const existing = existingRaw ? JSON.parse(existingRaw) : [];
         setComparisonList(existing);
-        
+
         const productsRaw = localStorage.getItem("comparisonProducts");
         if (productsRaw) {
           const products = JSON.parse(productsRaw);
@@ -143,7 +143,10 @@ const QuickCompare = () => {
 
     window.addEventListener("comparisonListUpdated", handleComparisonUpdate);
     return () => {
-      window.removeEventListener("comparisonListUpdated", handleComparisonUpdate);
+      window.removeEventListener(
+        "comparisonListUpdated",
+        handleComparisonUpdate
+      );
     };
   }, []);
 
@@ -223,14 +226,17 @@ const QuickCompare = () => {
       const updated = [randomProduct._id];
       setComparisonList(updated);
       setComparisonProducts([randomProduct]);
-      
+
       try {
         localStorage.setItem("comparisonList", JSON.stringify(updated));
-        localStorage.setItem("comparisonProducts", JSON.stringify([randomProduct]));
+        localStorage.setItem(
+          "comparisonProducts",
+          JSON.stringify([randomProduct])
+        );
       } catch (error) {
         console.error("Error saving to localStorage:", error);
       }
-      
+
       // notify floating bar if present
       window.dispatchEvent(new Event("comparisonListUpdated"));
     }
@@ -240,32 +246,40 @@ const QuickCompare = () => {
   useEffect(() => {
     if (!subCategoryProductss || subCategoryProductss.length === 0) return;
     if (comparisonList.length === 0) return;
-    
+
     // Update product details for products in comparison list
     setComparisonProducts((prevProducts) => {
-      const updatedProducts = comparisonList.map((id) => {
-        // First try to find in current products
-        const currentProduct = subCategoryProductss.find((p) => p._id === id);
-        if (currentProduct) return currentProduct;
-        
-        // Otherwise, try to find in previously stored products
-        const storedProduct = prevProducts.find((p) => p._id === id);
-        return storedProduct || null;
-      }).filter(Boolean);
-      
+      const updatedProducts = comparisonList
+        .map((id) => {
+          // First try to find in current products
+          const currentProduct = subCategoryProductss.find((p) => p._id === id);
+          if (currentProduct) return currentProduct;
+
+          // Otherwise, try to find in previously stored products
+          const storedProduct = prevProducts.find((p) => p._id === id);
+          return storedProduct || null;
+        })
+        .filter(Boolean);
+
       // Only update if we have changes
-      const hasChanges = updatedProducts.length !== prevProducts.length ||
-        updatedProducts.some((p, idx) => !prevProducts[idx] || prevProducts[idx]._id !== p._id);
-      
+      const hasChanges =
+        updatedProducts.length !== prevProducts.length ||
+        updatedProducts.some(
+          (p, idx) => !prevProducts[idx] || prevProducts[idx]._id !== p._id
+        );
+
       if (hasChanges && updatedProducts.length > 0) {
         try {
-          localStorage.setItem("comparisonProducts", JSON.stringify(updatedProducts));
+          localStorage.setItem(
+            "comparisonProducts",
+            JSON.stringify(updatedProducts)
+          );
         } catch (error) {
           console.error("Error saving to localStorage:", error);
         }
         return updatedProducts;
       }
-      
+
       return prevProducts;
     });
   }, [subCategoryProductss, comparisonList]);
@@ -277,26 +291,29 @@ const QuickCompare = () => {
       Centerwarning("You can select a maximum of 3 products.");
       return;
     }
-    
+
     // Find the product details
     const product = subCategoryProductss.find((p) => p._id === id);
-    
+
     const updated = [...comparisonList, id];
     setComparisonList(updated);
-    
+
     // Store product details along with IDs
-    const updatedProducts = product 
-      ? [...comparisonProducts.filter(p => p._id !== id), product]
+    const updatedProducts = product
+      ? [...comparisonProducts.filter((p) => p._id !== id), product]
       : comparisonProducts;
     setComparisonProducts(updatedProducts);
-    
+
     try {
       localStorage.setItem("comparisonList", JSON.stringify(updated));
-      localStorage.setItem("comparisonProducts", JSON.stringify(updatedProducts));
+      localStorage.setItem(
+        "comparisonProducts",
+        JSON.stringify(updatedProducts)
+      );
     } catch (error) {
       console.error("Error saving to localStorage:", error);
     }
-    
+
     window.dispatchEvent(new Event("comparisonListUpdated"));
   };
 
@@ -310,17 +327,20 @@ const QuickCompare = () => {
   const handleRemoveFromComparison = (id) => {
     const updated = comparisonList.filter((item) => item !== id);
     setComparisonList(updated);
-    
+
     const updatedProducts = comparisonProducts.filter((p) => p._id !== id);
     setComparisonProducts(updatedProducts);
-    
+
     try {
       localStorage.setItem("comparisonList", JSON.stringify(updated));
-      localStorage.setItem("comparisonProducts", JSON.stringify(updatedProducts));
+      localStorage.setItem(
+        "comparisonProducts",
+        JSON.stringify(updatedProducts)
+      );
     } catch (error) {
       console.error("Error saving to localStorage:", error);
     }
-    
+
     window.dispatchEvent(new Event("comparisonListUpdated"));
   };
 
@@ -332,8 +352,7 @@ const QuickCompare = () => {
     // Build compare URL using titles (prefer uniqueTitle if available)
     const compareValues = comparisonList.map((id, idx) => {
       const product = findProductById(id);
-      const label =
-        product?.uniqueTitle
+      const label = product?.uniqueTitle;
       return encodeURIComponent(label);
     });
 
@@ -413,7 +432,9 @@ const QuickCompare = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 p-5">No subcategories available.</p>
+                  <p className="text-gray-500 p-5">
+                    No subcategories available.
+                  </p>
                 )}
               </div>
             )}
@@ -424,7 +445,10 @@ const QuickCompare = () => {
                 <div className="px-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
                     {Array.from({ length: 8 }).map((_, idx) => (
-                      <div key={idx} className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full relative overflow-hidden">
+                      <div
+                        key={idx}
+                        className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full relative overflow-hidden"
+                      >
                         <div className="p-4 animate-pulse">
                           <div className="w-full h-72 bg-gray-300/60 rounded-md" />
                           <div className="h-5 bg-gray-300/60 rounded mt-4 w-3/4" />
@@ -458,33 +482,49 @@ const QuickCompare = () => {
                               width={150}
                               className="object-cover w-full h-72 rounded-tl-[15px] rounded-tr-[15px]"
                             />
-                            <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer" onClick={() => router.push(`/compare/${product?.uniqueTitle}`)}>
+                            <h2
+                              className="text-lg font-semibold my-3 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer"
+                              onClick={() =>
+                                router.push(`/compare/${product?.uniqueTitle}`)
+                              }
+                            >
                               {" "}
                               {product.title || "Product Name"}
                             </h2>
 
-                            {product?.featureData && product.featureData.length > 0 ? (
+                            {product?.featureData &&
+                            product.featureData.length > 0 ? (
                               <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                                {product.featureData.slice(0, 4).map((feature, index) => (
-                                  <div key={feature._id || index} className="flex items-center gap-2">
-                                    {/* Feature icon from API */}
-                                    {feature?.featureId?.icon ? (
-                                      <img
-                                        src={`${imageUrl}${feature.featureId.icon}`}
-                                        alt={feature.featureId.featureName || "Feature"}
-                                        className="w-5 h-5 object-contain flex-shrink-0"
-                                        onError={(e) => {
-                                          e.target.style.display = 'none';
-                                        }}
-                                      />
-                                    ) : (
-                                      <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
-                                    )}
-                                    <span className="text-sm truncate">
-                                      {feature?.featureId?.unit || feature?.featureId?.featureName || "N/A"}
-                                    </span>
-                                  </div>
-                                ))}
+                                {product.featureData
+                                  .slice(0, 4)
+                                  .map((feature, index) => (
+                                    <div
+                                      key={feature._id || index}
+                                      className="flex items-center gap-2"
+                                    >
+                                      {/* Feature icon from API */}
+                                      {feature?.featureId?.icon ? (
+                                        <img
+                                          src={`${imageUrl}${feature.featureId.icon}`}
+                                          alt={
+                                            feature.featureId.featureName ||
+                                            "Feature"
+                                          }
+                                          className="w-5 h-5 object-contain flex-shrink-0"
+                                          onError={(e) => {
+                                            e.target.style.display = "none";
+                                          }}
+                                        />
+                                      ) : (
+                                        <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                      )}
+                                      <span className="text-sm truncate">
+                                        {feature?.featureId?.unit ||
+                                          feature?.featureId?.featureName ||
+                                          "N/A"}
+                                      </span>
+                                    </div>
+                                  ))}
                               </div>
                             ) : null}
                           </div>
@@ -562,7 +602,9 @@ const QuickCompare = () => {
                   <div className="bg-white text-purple-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
                     vs
                   </div>
-                  <span className="font-medium">Comparison list ({comparisonList?.length || 0})</span>
+                  <span className="font-medium">
+                    Comparison list ({comparisonList?.length || 0})
+                  </span>
                 </div>
                 <div className="text-white">
                   {isDropdownOpen ? (
@@ -604,12 +646,12 @@ const QuickCompare = () => {
                   <div className="space-y-2 mb-4">
                     {comparisonList.map((productId, index) => {
                       // Find the product details from current products or stored products
-                      const product = subCategoryProductss.find(
-                        (p) => p._id === productId
-                      ) || comparisonProducts.find(
-                        (p) => p._id === productId
-                      );
-                      
+                      const product =
+                        subCategoryProductss.find((p) => p._id === productId) ||
+                        comparisonProducts.find((p) => p._id === productId);
+
+                      console.log("product", product);
+
                       if (!product) {
                         return (
                           <div
@@ -661,7 +703,7 @@ const QuickCompare = () => {
                           key={productId}
                           className="flex items-center justify-between p-2 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft"
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center w-full gap-3">
                             {product.thumbnail && (
                               <ImageWithShimmer
                                 src={`${imageUrl}${product.thumbnail}`}
@@ -682,11 +724,9 @@ const QuickCompare = () => {
                                 </svg>
                               </div>
                             )}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">
-                                {product.title || `Product ${index + 1}`}
-                              </p>
-                            </div>
+                            <p className="text-sm font-medium text-gray-900 mb-0">
+                              {product?.title || `Product ${index + 1}`}
+                            </p>
                           </div>
                           <button
                             onClick={() =>
@@ -720,13 +760,15 @@ const QuickCompare = () => {
                       disabled={comparisonList.length < 2}
                       className="flex-1 btn btn-primary !px-5 !rounded-md bg-gradient-to-r from-[#1c1c1c] via-[#2e2e2e] to-[#434343] !text-white disabled:cursor-not-allowed transition-colors disabled:bg-none disabled:bg-gray-300 disabled:!text-gray-600"
                     >
-                      Compare {comparisonList.length > 0 && `(${comparisonList.length})`}
+                      Compare{" "}
+                      {comparisonList.length > 0 &&
+                        `(${comparisonList.length})`}
                     </button>
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false);
                         // Scroll to top of products section
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
                       className="btn btn-primary !text-2xl !px-5 !rounded-md"
                       title="Close and scroll to top"
