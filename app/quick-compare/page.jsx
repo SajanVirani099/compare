@@ -463,110 +463,30 @@ const QuickCompare = () => {
                               {product.title || "Product Name"}
                             </h2>
 
-                            <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                              <div className="flex items-center gap-2">
-                                {/* Screen size icon */}
-                                <svg  
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <rect
-                                    x="3"
-                                    y="5"
-                                    width="18"
-                                    height="14"
-                                    rx="2"
-                                    ry="2"
-                                    strokeWidth="1.5"
-                                  ></rect>
-                                  <path d="M8 21h8" strokeWidth="1.5"></path>
-                                </svg>
-                                <span>
-                                  {product?.displaySize ||
-                                    product?.screenSize ||
-                                    '6.3"'}
-                                </span>
+                            {product?.featureData && product.featureData.length > 0 ? (
+                              <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+                                {product.featureData.slice(0, 4).map((feature, index) => (
+                                  <div key={feature._id || index} className="flex items-center gap-2">
+                                    {/* Feature icon from API */}
+                                    {feature?.featureId?.icon ? (
+                                      <img
+                                        src={`${imageUrl}${feature.featureId.icon}`}
+                                        alt={feature.featureId.featureName || "Feature"}
+                                        className="w-5 h-5 object-contain flex-shrink-0"
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                        }}
+                                      />
+                                    ) : (
+                                      <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                    )}
+                                    <span className="text-sm truncate">
+                                      {feature?.featureId?.unit || feature?.featureId?.featureName || "N/A"}
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
-                              <div className="flex items-center gap-2">
-                                {/* RAM icon */}
-                                <svg
-                                  className="w-5 h-5"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                >
-                                  <rect
-                                    x="3"
-                                    y="7"
-                                    width="18"
-                                    height="10"
-                                    rx="2"
-                                    strokeWidth="1.5"
-                                  />
-                                  <path
-                                    d="M7 7v-2M10 7v-2M14 7v-2M17 7v-2"
-                                    strokeWidth="1.5"
-                                  />
-                                </svg>
-                                <span>
-                                  {product?.ram || product?.memory || "16GB"}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {/* PPI icon */}
-                                <svg
-                                  className="w-5 h-5"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                >
-                                  <circle cx="6" cy="8" r="1" />
-                                  <circle cx="10" cy="8" r="1" />
-                                  <circle cx="14" cy="8" r="1" />
-                                  <circle cx="18" cy="8" r="1" />
-                                  <circle cx="6" cy="12" r="1" />
-                                  <circle cx="10" cy="12" r="1" />
-                                  <circle cx="14" cy="12" r="1" />
-                                  <circle cx="18" cy="12" r="1" />
-                                </svg>
-                                <span>
-                                  {product?.ppi ||
-                                    product?.pixelDensity ||
-                                    "464 ppi"}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {/* Battery icon */}
-                                <svg
-                                  className="w-5 h-5"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                >
-                                  <rect
-                                    x="2"
-                                    y="7"
-                                    width="18"
-                                    height="10"
-                                    rx="2"
-                                    strokeWidth="1.5"
-                                  />
-                                  <rect
-                                    x="20"
-                                    y="10"
-                                    width="2"
-                                    height="4"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                                <span>
-                                  {product?.battery ||
-                                    product?.batteryCapacity ||
-                                    "7000 mAh"}
-                                </span>
-                              </div>
-                            </div>
+                            ) : null}
                           </div>
                           <div className="absolute top-9 right-10">
                             <button

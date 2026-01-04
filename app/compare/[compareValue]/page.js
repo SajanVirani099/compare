@@ -2,7 +2,7 @@
 import ComparisonSummary from "@/components/comparisonSummary/comparisonSummary";
 import RadarChart from "@/components/radarChart/radarChart";
 import Link from "next/link";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { CiMobile1 } from "react-icons/ci";
@@ -38,56 +38,24 @@ const getProductName = (item, idx = 1) =>
   item?.uniqueTitle ||
   `Product ${idx}`;
 
-const icons = [
-  {
-    icon: <AiOutlineMobile />,
-    tooltip: "Design",
-    item1points: "80",
-    item2points: "33",
-  },
-  {
-    icon: <AiOutlinePicture />,
-    tooltip: "Display",
-    item1points: "90",
-    item2points: "48",
-  },
-  {
-    icon: <GiProcessor />,
-    tooltip: "Performance",
-    item1points: "60",
-    item2points: "97",
-  },
-  {
-    icon: <AiOutlineCamera />,
-    tooltip: "Cameras",
-    item1points: "75",
-    item2points: "88",
-  },
-  {
-    icon: <PiDevices />,
-    tooltip: "Operating System",
-    item1points: "87",
-    item2points: "73",
-  },
-  {
-    icon: <IoBatteryFullOutline />,
-    tooltip: "Battery",
-    item1points: "25",
-    item2points: "67",
-  },
-  {
-    icon: <SlMusicToneAlt />,
-    tooltip: "Audio",
-    item1points: "55",
-    item2points: "52",
-  },
-  {
-    icon: <CiCirclePlus />,
-    tooltip: "Features",
-    item1points: "85",
-    item2points: "25",
-  },
-];
+// Helper function to map feature name to icon component
+const getFeatureIcon = (featureName, size = 28) => {
+  const normalizedName = featureName?.toLowerCase() || "";
+  
+  if (normalizedName.includes("design")) return <AiOutlineMobile size={size} />;
+  if (normalizedName.includes("display")) return <AiOutlinePicture size={size} />;
+  if (normalizedName.includes("performance")) return <GiProcessor size={size} />;
+  if (normalizedName.includes("camera")) return <AiOutlineCamera size={size} />;
+  if (normalizedName.includes("operating") || normalizedName.includes("os")) return <PiDevices size={size} />;
+  if (normalizedName.includes("battery") || normalizedName.includes("bettery")) return <IoBatteryFullOutline size={size} />;
+  if (normalizedName.includes("audio") || normalizedName.includes("sound")) return <SlMusicToneAlt size={size} />;
+  if (normalizedName.includes("storage") || normalizedName.includes("memory")) return <CiCirclePlus size={size} />;
+  if (normalizedName.includes("feature")) return <CiCirclePlus size={size} />;
+  if (normalizedName.includes("miscellaneous")) return <TbVs size={size} />;
+  
+  // Default icon
+  return <CiCirclePlus size={size} />;
+};
 
 const ComparePage = ({ params }) => {
     const dispatch = useDispatch();
@@ -100,7 +68,13 @@ const ComparePage = ({ params }) => {
   const [showStickyIcons, setShowStickyIcons] = useState(false);
   const [numOfComparisons, setNumOfComparisons] = useState(0);
   const radarSectionRef = useRef(null);
-  const productNames = (resultProduct || []).map((item, idx) =>
+  
+  // Limit products to max 3
+  const limitedProducts = useMemo(() => {
+    return (resultProduct || []).slice(0, 3);
+  }, [resultProduct]);
+  
+  const productNames = limitedProducts.map((item, idx) =>
     getProductName(item, idx + 1)
   );
   const activeCompareIndex = Math.max(0, productNames.findIndex((n) => n === comparisonItem));
@@ -108,31 +82,79 @@ const ComparePage = ({ params }) => {
   // Refs for each FeatureSection
   const sectionRefs = useRef({});
   
-  // Map section titles to icon tooltips (handle case differences)
-  const titleToTooltip = {
-    "Design": "Design",
-    "Display": "Display",
-    "Performance": "Performance",
-    "Cameras": "Cameras",
-    "Operating system": "Operating System",
-    "Battery": "Battery",
-    "Audio": "Audio",
-    "Features": "Features",
-    "Miscellaneous": "Miscellaneous"
-  };
+  // Generate icons, featureSections, and titleToTooltip from API data
+  const { icons, featureSections, titleToTooltip } = useMemo(() => {
+    if (!limitedProducts || limitedProducts.length === 0) {
+      // Fallback to default values
+      return {
+        icons: [],
+        featureSections: [],
+        titleToTooltip: {}
+      };
+    }
 
-  // Feature sections configuration
-  const featureSections = [
-    { title: "Design", icon: <AiOutlineMobile size={28} />, background: false },
-    { title: "Display", icon: <AiOutlinePicture size={28} />, background: true },
-    { title: "Performance", icon: <GiProcessor size={28} />, background: false },
-    { title: "Cameras", icon: <AiOutlineCamera size={28} />, background: true },
-    { title: "Operating system", icon: <PiDevices size={28} />, background: false },
-    { title: "Battery", icon: <IoBatteryFullOutline size={28} />, background: true },
-    { title: "Audio", icon: <SlMusicToneAlt size={28} />, background: false },
-    { title: "Features", icon: <CiCirclePlus size={28} />, background: true },
-    { title: "Miscellaneous", icon: <TbVs size={28} />, background: false },
-  ];
+    // Get featureData from first product (or combine unique features from all products)
+    const firstProduct = limitedProducts[0];
+    const featureData = firstProduct?.featureData || [];
+    
+    if (featureData.length === 0) {
+      return {
+        icons: [],
+        featureSections: [],
+        titleToTooltip: {}
+      };
+    }
+
+    // Create featureSections and icons arrays
+    const sections = [];
+    const iconArray = [];
+    const tooltipMap = {};
+
+    featureData.forEach((feature, index) => {
+      const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+      if (!featureName) return;
+
+      // Create icon component
+      const iconComponent = getFeatureIcon(featureName, 28);
+      const iconSmallComponent = getFeatureIcon(featureName);
+
+      // Build points object for icons (scoreValue for each product)
+      const pointsObj = {};
+      limitedProducts.forEach((product, prodIdx) => {
+        const productFeature = product?.featureData?.find(
+          f => {
+            const fName = f?.featureName || f?.featureId?.featureName;
+            return fName === featureName;
+          }
+        );
+        const scoreValue = productFeature?.scoreValue || productFeature?.featureId?.scoreValue || 0;
+        pointsObj[`item${prodIdx + 1}points`] = String(scoreValue);
+      });
+
+      // Add to icon array
+      iconArray.push({
+        icon: iconSmallComponent,
+        tooltip: featureName,
+        ...pointsObj
+      });
+
+      // Add to feature sections
+      sections.push({
+        title: featureName,
+        icon: iconComponent,
+        background: index % 2 === 1 // Alternate backgrounds
+      });
+
+      // Add to tooltip map
+      tooltipMap[featureName] = featureName;
+    });
+
+    return {
+      icons: iconArray,
+      featureSections: sections,
+      titleToTooltip: tooltipMap
+    };
+  }, [limitedProducts]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -157,11 +179,11 @@ const ComparePage = ({ params }) => {
 
   // Set initial comparisonItem when resultProduct loads
   useEffect(() => {
-    if (resultProduct && resultProduct.length > 0) {
-      const firstName = getProductName(resultProduct[0], 1);
+    if (limitedProducts && limitedProducts.length > 0) {
+      const firstName = getProductName(limitedProducts[0], 1);
       setComparisonItem(firstName);
     }
-  }, [resultProduct]);
+  }, [limitedProducts]);
 
   const handleSelectFeature = (feature) => {
     if (selectedFeature === feature) {
@@ -236,7 +258,7 @@ const ComparePage = ({ params }) => {
     return () => {
       observer.disconnect();
     };
-  }, [resultProduct]); // Re-run when data loads
+  }, [limitedProducts, titleToTooltip]); // Re-run when data loads
 
   return (
     <div className="min-h-screen bg-[#E6E7EE]">
@@ -278,12 +300,12 @@ const ComparePage = ({ params }) => {
         </div>
 
         {/* API data preview */}
-        {resultProduct?.length > 0 && (
+        {limitedProducts?.length > 0 && (
           <div className="max-w-[1280px] mx-auto mt-4 sm:mt-6 px-4 sm:px-6 md:px-4">
             <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-3 sm:p-4">
               <h3 className="font-semibold text-base sm:text-lg mb-3">Comparison data</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {resultProduct.map((item, idx) => (
+                {limitedProducts.map((item, idx) => (
                   <div
                     key={item?._id || item?.id || idx}
                     className="p-2.5 sm:p-3 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset"
@@ -325,15 +347,15 @@ const ComparePage = ({ params }) => {
         <div className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
           {/* Dynamic Product Grid */}
           <div className={`relative w-full md:w-[90%] mx-auto grid ${
-            resultProduct?.length === 1 
+            limitedProducts?.length === 1 
               ? "grid-cols-1 max-w-[400px]" 
-              : resultProduct?.length === 2 
+              : limitedProducts?.length === 2 
                 ? "grid-cols-1 sm:grid-cols-2" 
                 : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           } ${
-            resultProduct?.length > 1 ? "md:divide-x md:divide-gray-400" : ""
+            limitedProducts?.length > 1 ? "md:divide-x md:divide-gray-400" : ""
           } gap-4 sm:gap-6 md:gap-0`}>
-            {resultProduct?.map((product, index) => {
+            {limitedProducts?.map((product, index) => {
               const color = productColors[index] || productColors[0];
               const productName = getProductName(product, index + 1);
               const productImage = product?.thumbnail 
@@ -402,7 +424,7 @@ const ComparePage = ({ params }) => {
                   </div>
 
                   {/* VS Badge - show between products on mobile */}
-                  {index < (resultProduct?.length || 0) - 1 && (
+                  {index < (limitedProducts?.length || 0) - 1 && (
                     <>
                       {/* Mobile VS Badge */}
                       <div className="sm:hidden flex justify-center items-center py-2">
@@ -414,7 +436,7 @@ const ComparePage = ({ params }) => {
                       <div 
                         className="hidden sm:block absolute bg-white border-2 border-gray-400 rounded-full px-2.5 py-1 font-bold text-gray-600 z-10"
                         style={{
-                          left: `${((index + 1) / (resultProduct?.length || 1)) * 100}%`,
+                          left: `${((index + 1) / (limitedProducts?.length || 1)) * 100}%`,
                           top: '55%',
                           transform: 'translate(-50%, -50%)'
                         }}
@@ -431,7 +453,7 @@ const ComparePage = ({ params }) => {
           {/* Title Section */}
           <div className="mt-6 sm:mt-8 md:mt-10 text-center mx-auto px-4 sm:px-6 md:px-0">
             <p className="text-[#616161] text-[10px] sm:text-xs font-bold tracking-[0.5px] sm:tracking-[1px] mb-2 uppercase">
-              {resultProduct?.length > 0 ? `${resultProduct.length * 100} FACTS IN COMPARISON` : "250 FACTS IN COMPARISON"}
+              {limitedProducts?.length > 0 ? `${limitedProducts.length * 100} FACTS IN COMPARISON` : "250 FACTS IN COMPARISON"}
             </p>
             <h1 className="text-black text-lg sm:text-xl md:text-2xl lg:text-[40px] leading-[1.2] sm:leading-[1.1] m-0 font-bold break-words px-2">
               {productNames.length > 0 ? (
@@ -595,7 +617,7 @@ const ComparePage = ({ params }) => {
                           className="text-xl sm:text-2xl font-bold"
                           style={{ color: productColors[index] }}
                         >
-                          {resultProduct?.[index]?.scoreValue || icons?.find((icon) => icon.tooltip === selectedFeature)?.[`item${index + 1}points`] || (75 + index * 10)}
+                          {limitedProducts?.[index]?.scoreValue || icons?.find((icon) => icon.tooltip === selectedFeature)?.[`item${index + 1}points`] || (75 + index * 10)}
                         </span>
                         <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
                       </div>
@@ -656,7 +678,7 @@ const ComparePage = ({ params }) => {
         <PriceComparison />
 
         <UserReviews
-          products={resultProduct || []}
+          products={limitedProducts || []}
           colors={productColors}
           activeIndex={activeCompareIndex}
           onChangeActiveIndex={(idx) => {
