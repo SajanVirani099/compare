@@ -9,6 +9,7 @@ import { imageUrl } from "@/components/utils/config";
 import Navbar from "@/components/Navbar";
 import { Centerwarning } from "@/components/utils/toast";
 import ImageWithShimmer from "@/components/ImageWithShimmer";
+import Image from "next/image";
 
 // Animated circular score badge used in product cards
 const CircularScore = React.memo(({ value = 58 }) => {
@@ -650,8 +651,6 @@ const QuickCompare = () => {
                         subCategoryProductss.find((p) => p._id === productId) ||
                         comparisonProducts.find((p) => p._id === productId);
 
-                      console.log("product", product);
-
                       if (!product) {
                         return (
                           <div
@@ -705,7 +704,7 @@ const QuickCompare = () => {
                         >
                           <div className="flex items-center w-full gap-3">
                             {product.thumbnail && (
-                              <ImageWithShimmer
+                              <Image
                                 src={`${imageUrl}${product.thumbnail}`}
                                 alt={product.title}
                                 height={32}
