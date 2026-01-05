@@ -362,110 +362,36 @@ const BlogSection = () => {
                       {selectedProducts[0].title || "Product Name"}
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                      <div className="flex items-center gap-2">
-                        {/* Screen size icon */}
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect
-                            x="3"
-                            y="5"
-                            width="18"
-                            height="14"
-                            rx="2"
-                            ry="2"
-                            strokeWidth="1.5"
-                          ></rect>
-                          <path d="M8 21h8" strokeWidth="1.5"></path>
-                        </svg>
-                        <span>
-                          {selectedProducts[0]?.displaySize ||
-                            selectedProducts[0]?.screenSize ||
-                            '6.3"'}
-                        </span>
+                    {selectedProducts[0]?.featureData && selectedProducts[0].featureData.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+                        {selectedProducts[0].featureData.slice(0, 4).map((feature, index) => {
+                          const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+                          const featureIcon = feature?.icon || feature?.featureId?.icon;
+                          const featureUnit = feature?.unit || feature?.featureId?.unit;
+                          
+                          return (
+                            <div key={feature._id || feature.featureId?._id || index} className="flex items-center gap-2">
+                              {/* Feature icon from API */}
+                              {featureIcon ? (
+                                <img
+                                  src={`${imageUrl}${featureIcon}`}
+                                  alt={featureName || "Feature"}
+                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                              )}
+                              <span className="text-sm truncate">
+                                {featureUnit || featureName || "N/A"}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {/* RAM icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="3"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <path
-                            d="M7 7v-2M10 7v-2M14 7v-2M17 7v-2"
-                            strokeWidth="1.5"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[0]?.ram || selectedProducts[0]?.memory || "16GB"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* PPI icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <circle cx="6" cy="8" r="1" />
-                          <circle cx="10" cy="8" r="1" />
-                          <circle cx="14" cy="8" r="1" />
-                          <circle cx="18" cy="8" r="1" />
-                          <circle cx="6" cy="12" r="1" />
-                          <circle cx="10" cy="12" r="1" />
-                          <circle cx="14" cy="12" r="1" />
-                          <circle cx="18" cy="12" r="1" />
-                        </svg>
-                        <span>
-                          {selectedProducts[0]?.ppi ||
-                            selectedProducts[0]?.pixelDensity ||
-                            "464 ppi"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Battery icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="2"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <rect
-                            x="20"
-                            y="10"
-                            width="2"
-                            height="4"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[0]?.battery ||
-                            selectedProducts[0]?.batteryCapacity ||
-                            "7000 mAh"}
-                        </span>
-                      </div>
-                    </div>
+                    ) : null}
                   </div>
                 
                   <div className="absolute top-3 left-3">
@@ -514,110 +440,36 @@ const BlogSection = () => {
                       {selectedProducts[1].title || "Product Name"}
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                      <div className="flex items-center gap-2">
-                        {/* Screen size icon */}
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect
-                            x="3"
-                            y="5"
-                            width="18"
-                            height="14"
-                            rx="2"
-                            ry="2"
-                            strokeWidth="1.5"
-                          ></rect>
-                          <path d="M8 21h8" strokeWidth="1.5"></path>
-                        </svg>
-                        <span>
-                          {selectedProducts[1]?.displaySize ||
-                            selectedProducts[1]?.screenSize ||
-                            '6.3"'}
-                        </span>
+                    {selectedProducts[1]?.featureData && selectedProducts[1].featureData.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+                        {selectedProducts[1].featureData.slice(0, 4).map((feature, index) => {
+                          const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+                          const featureIcon = feature?.icon || feature?.featureId?.icon;
+                          const featureUnit = feature?.unit || feature?.featureId?.unit;
+                          
+                          return (
+                            <div key={feature._id || feature.featureId?._id || index} className="flex items-center gap-2">
+                              {/* Feature icon from API */}
+                              {featureIcon ? (
+                                <img
+                                  src={`${imageUrl}${featureIcon}`}
+                                  alt={featureName || "Feature"}
+                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                              )}
+                              <span className="text-sm truncate">
+                                {featureUnit || featureName || "N/A"}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {/* RAM icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="3"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <path
-                            d="M7 7v-2M10 7v-2M14 7v-2M17 7v-2"
-                            strokeWidth="1.5"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[1]?.ram || selectedProducts[1]?.memory || "16GB"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* PPI icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <circle cx="6" cy="8" r="1" />
-                          <circle cx="10" cy="8" r="1" />
-                          <circle cx="14" cy="8" r="1" />
-                          <circle cx="18" cy="8" r="1" />
-                          <circle cx="6" cy="12" r="1" />
-                          <circle cx="10" cy="12" r="1" />
-                          <circle cx="14" cy="12" r="1" />
-                          <circle cx="18" cy="12" r="1" />
-                        </svg>
-                        <span>
-                          {selectedProducts[1]?.ppi ||
-                            selectedProducts[1]?.pixelDensity ||
-                            "464 ppi"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Battery icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="2"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <rect
-                            x="20"
-                            y="10"
-                            width="2"
-                            height="4"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[1]?.battery ||
-                            selectedProducts[1]?.batteryCapacity ||
-                            "7000 mAh"}
-                        </span>
-                      </div>
-                    </div>
+                    ) : null}
                   </div>
                   <div className="absolute top-3 left-3">
                     <CircularScore value={58} />
@@ -656,110 +508,36 @@ const BlogSection = () => {
                       {selectedProducts[2].title || "Product Name"}
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                      <div className="flex items-center gap-2">
-                        {/* Screen size icon */}
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect
-                            x="3"
-                            y="5"
-                            width="18"
-                            height="14"
-                            rx="2"
-                            ry="2"
-                            strokeWidth="1.5"
-                          ></rect>
-                          <path d="M8 21h8" strokeWidth="1.5"></path>
-                        </svg>
-                        <span>
-                          {selectedProducts[2]?.displaySize ||
-                            selectedProducts[2]?.screenSize ||
-                            '6.3"'}
-                        </span>
+                    {selectedProducts[2]?.featureData && selectedProducts[2].featureData.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+                        {selectedProducts[2].featureData.slice(0, 4).map((feature, index) => {
+                          const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+                          const featureIcon = feature?.icon || feature?.featureId?.icon;
+                          const featureUnit = feature?.unit || feature?.featureId?.unit;
+                          
+                          return (
+                            <div key={feature._id || feature.featureId?._id || index} className="flex items-center gap-2">
+                              {/* Feature icon from API */}
+                              {featureIcon ? (
+                                <img
+                                  src={`${imageUrl}${featureIcon}`}
+                                  alt={featureName || "Feature"}
+                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                              )}
+                              <span className="text-sm truncate">
+                                {featureUnit || featureName || "N/A"}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {/* RAM icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="3"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <path
-                            d="M7 7v-2M10 7v-2M14 7v-2M17 7v-2"
-                            strokeWidth="1.5"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[2]?.ram || selectedProducts[2]?.memory || "16GB"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* PPI icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <circle cx="6" cy="8" r="1" />
-                          <circle cx="10" cy="8" r="1" />
-                          <circle cx="14" cy="8" r="1" />
-                          <circle cx="18" cy="8" r="1" />
-                          <circle cx="6" cy="12" r="1" />
-                          <circle cx="10" cy="12" r="1" />
-                          <circle cx="14" cy="12" r="1" />
-                          <circle cx="18" cy="12" r="1" />
-                        </svg>
-                        <span>
-                          {selectedProducts[2]?.ppi ||
-                            selectedProducts[2]?.pixelDensity ||
-                            "464 ppi"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Battery icon */}
-                        <svg
-                          className="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <rect
-                            x="2"
-                            y="7"
-                            width="18"
-                            height="10"
-                            rx="2"
-                            strokeWidth="1.5"
-                          />
-                          <rect
-                            x="20"
-                            y="10"
-                            width="2"
-                            height="4"
-                            fill="currentColor"
-                          />
-                        </svg>
-                        <span>
-                          {selectedProducts[2]?.battery ||
-                            selectedProducts[2]?.batteryCapacity ||
-                            "7000 mAh"}
-                        </span>
-                      </div>
-                    </div>
+                    ) : null}
                   </div>
                   <div className="absolute top-3 left-3">
                     <CircularScore value={58} />
