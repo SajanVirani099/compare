@@ -3,7 +3,7 @@ import Range from '../range/range'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { IoClose } from 'react-icons/io5'
 
-const FeatureCard = ({ key, title, param1, param2, value1, value2, text, unknown, na }) => {
+const FeatureCard = ({ key, title, param1, param2, value1, value2, text, unknown, na, product1Name, product2Name }) => {
     return (
         <div key={key} className='relative border py-3 px-4 h-[190px] overflow-hidden border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset cursor-pointer hover:shadow-lg'>
             <p className='uppercase font-bold text-sm tracking-wide'>{title}</p>
@@ -39,14 +39,30 @@ const FeatureCard = ({ key, title, param1, param2, value1, value2, text, unknown
             {
                 na &&
                 <div className='mt-8 flex flex-col'>
-                    <div className='text-[#616161] inline-flex gap-2 items-center text-sm'>
-                        <IoClose size={22} color='#3F51B5' />
-                        <p className='text-[#616161]'>Vivo Y29s</p>
-                    </div>
-                    <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm'>
-                        <IoClose size={22} color='#3F51B5' />
-                        <p className='text-[#616161]'>Vivo Y39 5G</p>
-                    </div>
+                    {product1Name && (
+                        <div className='text-[#616161] inline-flex gap-2 items-center text-sm'>
+                            <IoClose size={22} color='#3F51B5' />
+                            <p className='text-[#616161]'>{product1Name}</p>
+                        </div>
+                    )}
+                    {product2Name && (
+                        <div className={`text-[#616161] inline-flex gap-2 items-center text-sm ${product1Name ? 'mt-2' : ''}`}>
+                            <IoClose size={22} color='#3F51B5' />
+                            <p className='text-[#616161]'>{product2Name}</p>
+                        </div>
+                    )}
+                    {!product1Name && !product2Name && (
+                        <>
+                            <div className='text-[#616161] inline-flex gap-2 items-center text-sm'>
+                                <IoClose size={22} color='#3F51B5' />
+                                <p className='text-[#616161]'>Product 1</p>
+                            </div>
+                            <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm'>
+                                <IoClose size={22} color='#3F51B5' />
+                                <p className='text-[#616161]'>Product 2</p>
+                            </div>
+                        </>
+                    )}
                 </div>
             }
 

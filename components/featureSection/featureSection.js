@@ -85,8 +85,11 @@ const data = [
     },
 ];
 
-const FeatureSection = ({ icon, title, background = false }) => {
+const FeatureSection = ({ icon, title, background = false, subfeatures = [], productNames = [] }) => {
     const [showAll, setShowAll] = React.useState(false);
+    
+    // Use subfeatures from API if available, otherwise use default data
+    const displayData = subfeatures && subfeatures.length > 0 ? subfeatures : data;
 
     return (
         <div
@@ -113,7 +116,7 @@ const FeatureSection = ({ icon, title, background = false }) => {
                     } mt-6 overflow-hidden`}
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 h-full">
-                        {data?.map((item, index) => (
+                        {displayData?.map((item, index) => (
                             <FeatureCard
                                 key={index}
                                 title={item.title}
@@ -124,16 +127,18 @@ const FeatureSection = ({ icon, title, background = false }) => {
                                 text={item.text}
                                 unknown={item?.unknown}
                                 na={item?.na}
+                                product1Name={productNames[0]}
+                                product2Name={productNames[1]}
                             />
                         ))}
                     </div>
 
-                    {!showAll && (
+                    {!showAll && displayData && displayData.length > 0 && (
                         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
                     )}
                 </div>
 
-                {!showAll && (
+                {!showAll && displayData && displayData.length > 0 && (
                     <p
                         className="uppercase cursor-pointer font-bold text-sm tracking-wide btn btn-primary w-max mx-auto text-[#434343] text-center mt-8"
                         onClick={() => setShowAll(true)}

@@ -114,9 +114,16 @@ const ComparePage = ({ params }) => {
       const featureName = feature?.featureName || feature?.featureId?.featureName || "";
       if (!featureName) return;
 
-      // Create icon component
-      const iconComponent = getFeatureIcon(featureName, 28);
-      const iconSmallComponent = getFeatureIcon(featureName);
+      // Get icon from API if available, otherwise use fallback icon component
+      const apiIcon = feature?.icon || feature?.featureId?.icon;
+      
+      // Create icon component - use API icon if available, otherwise use fallback
+      const iconComponent = apiIcon 
+        ? <img src={`${imageUrl}${apiIcon}`} alt={featureName} style={{fill: '#fff'}} className="w-7 h-7 object-contain" />
+        : getFeatureIcon(featureName, 28);
+      const iconSmallComponent = apiIcon
+        ? <img src={`${imageUrl}${apiIcon}`} alt={featureName} style={{fill: '#fff'}} className="w-5 h-5 object-contain" />
+        : getFeatureIcon(featureName);
 
       // Build points object for icons (scoreValue for each product)
       const pointsObj = {};
@@ -131,18 +138,142 @@ const ComparePage = ({ params }) => {
         pointsObj[`item${prodIdx + 1}points`] = String(scoreValue);
       });
 
+      // Process subfeatures for this feature
+      const subfeaturesData = [];
+      
+      // Get all unique subfeature names from all products for this feature
+      const allSubfeatureNames = new Set();
+      limitedProducts.forEach((product) => {
+        const productFeature = product?.featureData?.find(
+          f => {
+            const fName = f?.featureName || f?.featureId?.featureName;
+            return fName === featureName;
+          }
+        );
+        const subfeatures = productFeature?.subfeatures || [];
+        subfeatures.forEach((subfeature) => {
+          const subfeatureName = subfeature?.name || "";
+          if (subfeatureName) {
+            allSubfeatureNames.add(subfeatureName);
+          }
+        });
+      });
+
+      // For each unique subfeature, collect data from all products
+      allSubfeatureNames.forEach((subfeatureName) => {
+        const subfeatureValues = [];
+        
+        limitedProducts.forEach((product, prodIdx) => {
+          const productFeature = product?.featureData?.find(
+            f => {
+              const fName = f?.featureName || f?.featureId?.featureName;
+              return fName === featureName;
+            }
+          );
+          const subfeature = productFeature?.subfeatures?.find(
+            sf => sf?.name === subfeatureName
+          );
+          
+          if (subfeature) {
+            const unit = subfeature?.unit || "";
+            const unitSymbol = subfeature?.unitsymbol || "";
+            const details = subfeature?.details || "";
+            const description = subfeature?.description || "";
+            const scorevalue = subfeature?.scorevalue || 0;
+            const isTrueFalse = subfeature?.isTrueFalse || "";
+            const type = subfeature?.type;
+            
+            // Format the value display
+            let displayValue = "";
+            if (isTrueFalse === "true" || isTrueFalse === true) {
+              displayValue = "Yes";
+            } else if (isTrueFalse === "false" || isTrueFalse === false) {
+              displayValue = "No";
+            } else if (details) {
+              displayValue = details;
+            } else if (unit) {
+              displayValue = `${unit}${unitSymbol ? ` ${unitSymbol}` : ""}`;
+            } else {
+              displayValue = "N/A";
+            }
+            
+            subfeatureValues.push({
+              productIndex: prodIdx,
+              displayValue: displayValue,
+              scorevalue: scorevalue,
+              description: description || details || "",
+              unit: unit,
+              unitSymbol: unitSymbol,
+              details: details,
+              isTrueFalse: isTrueFalse,
+              type: type
+            });
+          } else {
+            // Subfeature not found for this product
+            subfeatureValues.push({
+              productIndex: prodIdx,
+              displayValue: "N/A",
+              scorevalue: 0,
+              description: "",
+              unknown: false,
+              na: true
+            });
+          }
+        });
+
+        // Create FeatureCard data structure
+        if (subfeatureValues.length >= 2) {
+          const value1 = subfeatureValues[0]?.scorevalue || 0;
+          const value2 = subfeatureValues[1]?.scorevalue || 0;
+          const param1 = subfeatureValues[0]?.displayValue || "Unknown";
+          const param2 = subfeatureValues[1]?.displayValue || "Unknown";
+          const description = subfeatureValues[0]?.description || subfeatureValues[1]?.description || "";
+          
+          // Check if both are unknown
+          const bothUnknown = subfeatureValues[0]?.unknown && subfeatureValues[1]?.unknown;
+          // Check if both are N/A (not applicable)
+          const bothNA = subfeatureValues[0]?.na && subfeatureValues[1]?.na;
+          
+          subfeaturesData.push({
+            title: subfeatureName,
+            param1: param1,
+            param2: param2,
+            value1: value1,
+            value2: value2,
+            text: description,
+            unknown: bothUnknown,
+            na: bothNA
+          });
+        } else if (subfeatureValues.length === 1) {
+          // Only one product has this subfeature
+          subfeaturesData.push({
+            title: subfeatureName,
+            param1: subfeatureValues[0]?.displayValue || "Unknown",
+            param2: "N/A",
+            value1: subfeatureValues[0]?.scorevalue || 0,
+            value2: 0,
+            text: subfeatureValues[0]?.description || "",
+            unknown: subfeatureValues[0]?.unknown || false,
+            na: subfeatureValues[0]?.na || false
+          });
+        }
+      });
+
       // Add to icon array
       iconArray.push({
         icon: iconSmallComponent,
         tooltip: featureName,
+        isApiIcon: !!apiIcon, // Store flag to know if it's an API icon
         ...pointsObj
       });
 
-      // Add to feature sections
+      // Add to feature sections with subfeatures
       sections.push({
         title: featureName,
         icon: iconComponent,
-        background: index % 2 === 1 // Alternate backgrounds
+        isApiIcon: !!apiIcon, // Store flag to know if it's an API icon
+        background: index % 2 === 1, // Alternate backgrounds
+        subfeatures: subfeaturesData // Add subfeatures data
       });
 
       // Add to tooltip map
@@ -566,7 +697,13 @@ const ComparePage = ({ params }) => {
                               : "bg-white border-gray-200 text-gray-600 group-hover:border-[#434343] group-hover:text-[#434343]"
                           }`}
                         >
-                          {icon.icon}
+                          {icon.isApiIcon && isActive ? (
+                            <div style={{ filter: 'invert(1)' }}>
+                              {icon.icon}
+                            </div>
+                          ) : (
+                            icon.icon
+                          )}
                         </div>
                         
                         {/* Expandable label - shows on hover or when active */}
@@ -594,19 +731,28 @@ const ComparePage = ({ params }) => {
 
                 {/* Original horizontal icons for mobile/tablet */}
                 <div className="flex justify-center flex-wrap sm:flex-nowrap flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 lg:mt-0 lg:static lg:hidden px-2 sm:px-0">
-                  {icons.map((icon, index) => (
-                    <div
-                      key={index}
-                      className={`border p-1.5 sm:p-2 rounded-md shadow-xl text-base sm:text-lg lg:text-xl cursor-pointer transition-all duration-200 ${
-                        selectedFeature === icon.tooltip || activeScrollFeature === icon.tooltip
-                          ? "bg-[#434343] text-white border-[#434343]"
-                          : "bg-white border-gray-200 text-gray-600"
-                      }`}
-                      onClick={() => handleSelectFeature(icon.tooltip)}
-                    >
-                      {icon.icon}
-                    </div>
-                  ))}
+                  {icons.map((icon, index) => {
+                    const isActive = selectedFeature === icon.tooltip || activeScrollFeature === icon.tooltip;
+                    return (
+                      <div
+                        key={index}
+                        className={`border p-1.5 sm:p-2 rounded-md shadow-xl text-base sm:text-lg lg:text-xl cursor-pointer transition-all duration-200 ${
+                          isActive
+                            ? "bg-[#434343] text-white border-[#434343]"
+                            : "bg-white border-gray-200 text-gray-600"
+                        }`}
+                        onClick={() => handleSelectFeature(icon.tooltip)}
+                      >
+                        {icon.isApiIcon && isActive ? (
+                          <div style={{ filter: 'invert(1)' }}>
+                            {icon.icon}
+                          </div>
+                        ) : (
+                          icon.icon
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex justify-center divide-x mt-4 sm:mt-6">
@@ -699,6 +845,8 @@ const ComparePage = ({ params }) => {
               icon={section.icon}
               title={section.title}
               background={section.background}
+              subfeatures={section.subfeatures}
+              productNames={productNames}
             />
           </div>
         ))}
