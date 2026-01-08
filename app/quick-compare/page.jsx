@@ -68,15 +68,15 @@ const CircularScore = React.memo(({ value = 58 }) => {
 
   return (
     <div
-      className="relative h-14 w-14 rounded-full p-[6px]"
+      className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full p-[4px] sm:p-[5px] md:p-[6px]"
       style={{
         background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
         zIndex: 2,
       }}
     >
       <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
-        <span className="text-lg font-extrabold">{displayCount}</span>
-        <span className="text-[10px] font-semibold">Points</span>
+        <span className="text-sm sm:text-base md:text-lg font-extrabold">{displayCount}</span>
+        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold">Points</span>
       </div>
     </div>
   );
@@ -474,7 +474,7 @@ const QuickCompare = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
                     {subCategoryProductss.map((product) => (
                       <React.Fragment key={product._id}>
-                        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full flex items-center justify-center relative">
+                        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full flex items-center justify-center !relative">
                           <div className="p-4 mt-14">
                             <ImageWithShimmer
                               src={`${imageUrl}${product.thumbnail}`}
@@ -529,7 +529,7 @@ const QuickCompare = () => {
                               </div>
                             ) : null}
                           </div>
-                          <div className="absolute top-9 right-10">
+                          <div className="absolute top-8 right-8 lg:top-9 lg:right-10 z-10">
                             <button
                               className="add-btn no-checkmark relative"
                               // style={{ zIndex: "101" }}
@@ -545,7 +545,7 @@ const QuickCompare = () => {
                                 readOnly
                               />
                               {/* <div className="checkmark"></div> */}
-                              <span className="!absolute !-top-[15px] !-left-4 pointer-events-none">
+                              <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-4 pointer-events-none">
                                 {comparisonList.includes(product._id) ? (
                                   <svg
                                     className="plusIcon"
@@ -575,7 +575,7 @@ const QuickCompare = () => {
                               </span>
                             </button>
                           </div>
-                          <div className="absolute top-3 left-3">
+                          <div className="absolute top-3 left-3 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
                             <CircularScore value={58} />
                           </div>
                         </div>
@@ -600,8 +600,8 @@ const QuickCompare = () => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <div className="flex items-center gap-2">
-                  <div className="bg-white text-purple-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                    vs
+                  <div className="bg-white text-[#F98A1A] rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold text-center">
+                    <span className="m-0 -mt-1">vs</span>
                   </div>
                   <span className="font-medium">
                     Comparison list ({comparisonList?.length || 0})

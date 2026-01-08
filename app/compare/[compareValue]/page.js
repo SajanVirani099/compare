@@ -803,7 +803,7 @@ const ComparePage = ({ params }) => {
                   })}
                 </div>
 
-                <div className="flex justify-center divide-x mt-4 sm:mt-6">
+                <div className="flex justify-center divide-x absolute bottom-0 left-[25%]">
                   {productNames.length > 0 ? (
                     productNames.map((name, index) => (
                       <div key={index} className="flex flex-col items-center px-2 sm:px-3 md:px-4">

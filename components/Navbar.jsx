@@ -18,6 +18,7 @@ import PhoneIcon from "@/assets/icons/PhoneIcon";
 import GraphicsChipIcon from "@/assets/icons/GraphicsChipIcon";
 import HeadPhoneIcon from "@/assets/icons/HeadPhoneIcon";
 import MainSearching from "./MainSearching";
+import { BASE_URL } from "@/components/utils/config";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -90,7 +91,7 @@ const Navbar = () => {
           {/* Center: Links */}
           <div className="hidden lg:flex items-center gap-8">
             <CategoryDropdown categories={category} />
-            <Link
+            {/* <Link
               href="/"
               className="navMenuTitle text-white hover:text-gray-300"
             >
@@ -107,14 +108,14 @@ const Navbar = () => {
               className="navMenuTitle text-white hover:text-gray-300"
             >
               CPUs
-            </Link>
+            </Link> */}
           </div>
 
           {/* Right: Search + Google Login */}
           <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 hover:bg-white/20 text-white transition"
+              className="flex items-center gap-2 px-8 py-2 rounded-md bg-white/10 hover:bg-white/20 text-white transition"
               aria-label="Open Search"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +123,7 @@ const Navbar = () => {
               </svg>
               <span className="text-sm">Search</span>
             </button>
-            <button
+            {/* <button
               onClick={handleGoogleLogin}
               className="flex items-center gap-3 py-2 px-6 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-100 transition"
             >
@@ -134,7 +135,7 @@ const Navbar = () => {
               <span className="text-gray-700 font-semibold text-sm">
                 Sign in with Google
               </span>
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -172,67 +173,34 @@ const Navbar = () => {
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                     <div className="flex h-full flex-col overflow-y-scroll bg-[#161616] shadow-xl">
-                      <div className="flex-1 px-4 py-6 sm:px-6">
+                      <div className="flex-1 px-4 py-6 sm:px-6 pt-20">
+                        {/* Search Button */}
+                        <div className="mb-6">
+                          <button
+                            onClick={() => {
+                              setIsDrawerOpen(false);
+                              setIsSearchOpen(true);
+                            }}
+                            className="w-full flex items-center gap-2 px-4 py-3 rounded-md bg-white/10 hover:bg-white/20 text-white transition"
+                            aria-label="Open Search"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" />
+                            </svg>
+                            <span className="text-sm font-medium">Search</span>
+                          </button>
+                        </div>
+
                         <ul className="space-y-6">
                           <li>
                             <Link
-                              href="/en/categories"
-                              className="flex items-center text-white"
+                              href="/categories"
+                              onClick={() => setIsDrawerOpen(false)}
+                              className="flex items-center text-white hover:text-gray-300 transition"
                             >
-                              <CategoryIcon2 className="mr-3" />
-                              Categories
+                              <CategoryIcon2 />
+                              <span className="ml-3">Categories</span>
                             </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/en/phone"
-                              className="flex items-center text-white"
-                            >
-                              <PhoneIcon className="mr-3" />
-                              Smartphones
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/en/graphics_card"
-                              className="flex items-center text-white"
-                            >
-                              <GraphicsChipIcon className="mr-3" />
-                              Graphic Cards
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/en/wireless_earbud"
-                              className="flex items-center text-white"
-                            >
-                              <HeadPhoneIcon className="mr-3" />
-                              Wireless Earbuds
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/en/cpu"
-                              className="flex items-center text-white"
-                            >
-                              <GraphicsChipIcon className="mr-3" />
-                              CPUs
-                            </Link>
-                          </li>
-                          <li>
-                            <button
-                              onClick={handleGoogleLogin}
-                              className="mx-auto flex items-center gap-3 py-2 px-6 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-100 transition mt-4 "
-                            >
-                              <img
-                                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                                alt="Google Logo"
-                                className="w-6 h-6"
-                              />
-                              <span className="text-gray-700 font-semibold text-sm">
-                                Sign in with Google
-                              </span>
-                            </button>
                           </li>
                         </ul>
                       </div>

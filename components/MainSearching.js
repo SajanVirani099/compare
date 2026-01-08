@@ -7,9 +7,9 @@ const MainSearching = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [searchInputs, setSearchInputs] = useState([""]);
-  console.log("🚀 ~ MainSearching ~ searchInputs:", searchInputs);
   const [showDropdown, setShowDropdown] = useState({});
   const [resultsByIndex, setResultsByIndex] = useState({});
+  const [selectedProducts, setSelectedProducts] = useState({}); // Store selected product objects by index
   const debounceTimersRef = useRef({});
 
   const handleInputChange = (index, value) => {
@@ -54,7 +54,7 @@ const MainSearching = () => {
     }, 250);
   };
 
-  const handleDropdownClick = (index, selectedValue) => {
+  const handleDropdownClick = (index, selectedValue, productData) => {
     setSearchInputs((prev) => {
       const updatedInputs = [...prev];
       updatedInputs[index] = selectedValue || "";
@@ -70,6 +70,21 @@ const MainSearching = () => {
       return updatedInputs;
     });
 
+    // Store the selected product data
+    if (productData) {
+      setSelectedProducts((prev) => ({
+        ...prev,
+        [index]: productData,
+      }));
+    } else {
+      // Clear product data if value is cleared
+      setSelectedProducts((prev) => {
+        const updated = { ...prev };
+        delete updated[index];
+        return updated;
+      });
+    }
+
     // Hide dropdown for this field and clear its suggestions
     setShowDropdown((prev) => ({ ...prev, [index]: false }));
     setResultsByIndex((prev) => ({ ...prev, [index]: [] }));
@@ -81,12 +96,48 @@ const MainSearching = () => {
     const updatedDropdown = { ...showDropdown };
     delete updatedDropdown[index];
     setShowDropdown(updatedDropdown);
+    
+    // Remove product data for this index and reindex remaining products
+    setSelectedProducts((prev) => {
+      const updated = {};
+      Object.keys(prev).forEach((key) => {
+        const keyNum = parseInt(key);
+        if (keyNum < index) {
+          updated[key] = prev[key];
+        } else if (keyNum > index) {
+          updated[keyNum - 1] = prev[key];
+        }
+      });
+      return updated;
+    });
   };
 
 
+  // Check if button should be disabled (no products selected)
+  const hasSelectedProducts = Object.values(selectedProducts).some(
+    (product) => product && product.uniqueTitle
+  );
+
   const handleOpenSearch = () => {
-    if (searchInputs.some((input) => input !== "")) {
-      router.push(`/compare/smartphone`);
+    // Get all selected products (non-empty inputs)
+    const selectedProductList = Object.values(selectedProducts).filter(
+      (product) => product && product.uniqueTitle
+    );
+
+    // Check if at least 1 product is selected
+    if (selectedProductList.length === 0) {
+      return; // Button should be disabled, but just in case
+    }
+
+    // Build compare URL using uniqueTitle (like handleCompare in quick-compare)
+    const compareValues = selectedProductList.map((product) => {
+      const label = product?.uniqueTitle || product?.title || "";
+      return encodeURIComponent(label);
+    });
+
+    if (compareValues.length > 0) {
+      const compareUrl = `/compare/${compareValues.join(",")}`;
+      router.push(compareUrl);
     }
   };
 
@@ -96,10 +147,12 @@ const MainSearching = () => {
         {searchInputs.map((_, index) => (
           <>
             {searchInputs.length > 1 && (
-              <div className="border h-6 w-[0.5px]"></div>
+              <div className="border h-6 w-[0.5px] border-[#F98A1A]"></div>
             )}
             {searchInputs.length > 1 && index !== searchInputs.length - 1 && (
-              <p className="text-xs leading-none text-white">vs</p>
+              <div className="bg-white text-[#F98A1A] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold text-center">
+              <span className="m-0 -mt-1">vs</span>
+            </div>
             )}
           </>
         ))}
@@ -118,7 +171,17 @@ const MainSearching = () => {
                 name={`search${index}`}
                 value={searchInput}
                 aria-label={`Search Input ${index + 1}`}
-                onChange={(e) => handleInputChange(index, e.target.value)}
+                onChange={(e) => {
+                  handleInputChange(index, e.target.value);
+                  // Clear product data when input is manually changed
+                  if (!e.target.value) {
+                    setSelectedProducts((prev) => {
+                      const updated = { ...prev };
+                      delete updated[index];
+                      return updated;
+                    });
+                  }
+                }}
                 onFocus={() =>
                   setShowDropdown({
                     ...showDropdown,
@@ -155,7 +218,7 @@ const MainSearching = () => {
                     onMouseDown={(e) => {
                       // Use onMouseDown so selection happens before the input blurs
                       e.preventDefault();
-                      handleDropdownClick(index, item?.title);
+                      handleDropdownClick(index, item?.title, item);
                     }}
                   >
                     {item?.title}
@@ -167,10 +230,26 @@ const MainSearching = () => {
             {index === searchInputs.length - 1 && (
               <button
                 type="submit"
-                className="btn btn-primary !text-lg px-4 py-2 me-3 ml-2"
+                disabled={!hasSelectedProducts}
+                className="group btn btn-primary !shadow-none !bg-[#F98A1A] text-white !text-base sm:!text-lg px-3 sm:px-4 py-1.5 sm:py-2 me-3 ml-2 rounded-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:shadow-[#F98A1A]/50 active:scale-95 hover:bg-[#e67a0f] focus:outline-none focus:ring-2 focus:ring-[#F98A1A] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none disabled:hover:bg-[#F98A1A]"
                 onClick={handleOpenSearch}
               >
-                Compare
+                <span className="inline-flex items-center gap-2">
+                  <span>Compare</span>
+                  <svg 
+                    className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M13 7l5 5m0 0l-5 5m5-5H6" 
+                    />
+                  </svg>
+                </span>
               </button>
             )}
           </div>

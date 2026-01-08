@@ -69,15 +69,15 @@ const CircularScore = React.memo(({ value = 58 }) => {
 
   return (
     <div
-      className="relative h-14 w-14 rounded-full p-[6px]"
+      className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full p-[4px] sm:p-[5px] md:p-[6px]"
       style={{
         background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
         zIndex: 2,
       }}
     >
       <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
-        <span className="text-lg font-extrabold">{displayCount}</span>
-        <span className="text-[10px] font-semibold">Points</span>
+        <span className="text-sm sm:text-base md:text-lg font-extrabold">{displayCount}</span>
+        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold">Points</span>
       </div>
     </div>
   );
@@ -350,7 +350,7 @@ const BlogSection = () => {
             >
               {selectedProducts[0] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-14 w-full">
+                  <div className="p-4 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[0].thumbnail}`}
                       alt={selectedProducts[0].title}
@@ -394,7 +394,7 @@ const BlogSection = () => {
                     ) : null}
                   </div>
                 
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
                     <CircularScore value={58} />
                   </div>
                   {isFirstProductLoaded && (
@@ -415,7 +415,7 @@ const BlogSection = () => {
             {/* VS Badge 1 - Horizontal lines on mobile, vertical on desktop */}
             <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
               before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
-              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[122%] after:-translate-y-1/2
+              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[50%] md:after:top-[122%] after:-translate-y-1/2
               sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
               sm:after:h-[150px] sm:after:w-[2px] sm:after:left-1/2 sm:after:bottom-[-160px] sm:after:-translate-x-1/2 sm:after:translate-y-0">
               VS
@@ -428,7 +428,7 @@ const BlogSection = () => {
             >
               {selectedProducts[1] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-14 w-full">
+                  <div className="p-4 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[1].thumbnail}`}
                       alt={selectedProducts[1].title}
@@ -471,7 +471,7 @@ const BlogSection = () => {
                       </div>
                     ) : null}
                   </div>
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
                     <CircularScore value={58} />
                   </div>
                 </div>
@@ -483,7 +483,7 @@ const BlogSection = () => {
             {/* VS Badge 2 - Horizontal lines on mobile, vertical on desktop */}
             <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
               before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
-              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[122%] after:-translate-y-1/2
+              after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[50%] md:after:top-[122%] after:-translate-y-1/2
               sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
               sm:after:h-[150px] sm:after:w-[2px] sm:after:left-1/2 sm:after:bottom-[-160px] sm:after:-translate-x-1/2 sm:after:translate-y-0">
               VS
@@ -496,7 +496,7 @@ const BlogSection = () => {
             >
               {selectedProducts[2] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-14 w-full">
+                  <div className="p-4 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[2].thumbnail}`}
                       alt={selectedProducts[2].title}
@@ -539,7 +539,7 @@ const BlogSection = () => {
                       </div>
                     ) : null}
                   </div>
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
                     <CircularScore value={58} />
                   </div>
                 </div>

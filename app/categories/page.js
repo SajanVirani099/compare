@@ -204,18 +204,19 @@ const Categories = () => {
                     {columns.map((category, index) => (
                       <div
                         key={index}
-                        className="border-[2px] border-[#d1d9e6] rounded-xl bg-[#e6e7ee] hover:shadow-soft transition-all duration-200 mb-14 cursor-pointer  relative"
+                        className="border-[2px] border-[#d1d9e6] rounded-xl bg-[#e6e7ee] hover:shadow-soft transition-all duration-200 mb-14 cursor-pointer !relative"
                         onClick={() => handleCategoryClick(category.name)}
                       >
                         {/* Category Header */}
                         <div className="flex items-center bg-[#E6E7EE] p-6 shadow-inset overflow-hidden !rounded-s-xl !rounded-e-xl !rounded-ee-none !rounded-bl-none justify-end">
                           <div
                             className={`!w-24 !h-24 flex items-center justify-center mr-4 shadow-inset rounded-full p-3 absolute -top-10 left-6 bg-[#E6E7EE]`}
+                            style={{zIndex: 0}}
                           >
                             <img 
                               src={getCategoryIcon(category.name)} 
                               alt={category.name}
-                              className="w-16 h-1w-16 object-contain"
+                              className="w-16 h-16 object-contain"
                             />
                           </div>
                           <h3 className="text-lg font-semibold text-gray-900 mt-10">
