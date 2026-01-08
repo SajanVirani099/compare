@@ -185,28 +185,44 @@ const ComparePage = ({ params }) => {
             
             // Format the value display
             let displayValue = "";
+            let numericValue = 0;
+            
             if (isTrueFalse === "true" || isTrueFalse === true) {
               displayValue = "Yes";
+              numericValue = 100; // Show full bar for "Yes"
             } else if (isTrueFalse === "false" || isTrueFalse === false) {
               displayValue = "No";
+              numericValue = 0;
             } else if (details) {
               displayValue = details;
+              // Try to extract numeric value from details if it's a number
+              const numMatch = details.match(/[\d.]+/);
+              numericValue = numMatch ? parseFloat(numMatch[0]) : (scorevalue || 0);
             } else if (unit) {
               displayValue = `${unit}${unitSymbol ? ` ${unitSymbol}` : ""}`;
+              // Use unit as numeric value, or scorevalue if available
+              numericValue = parseFloat(unit) || scorevalue || 0;
             } else {
               displayValue = "N/A";
+              numericValue = 0;
+            }
+            
+            // If scorevalue is available and numericValue is 0, use scorevalue
+            if (numericValue === 0 && scorevalue > 0) {
+              numericValue = scorevalue;
             }
             
             subfeatureValues.push({
               productIndex: prodIdx,
               displayValue: displayValue,
-              scorevalue: scorevalue,
+              scorevalue: numericValue, // Use numericValue instead of scorevalue
               description: description || details || "",
               unit: unit,
               unitSymbol: unitSymbol,
               details: details,
               isTrueFalse: isTrueFalse,
-              type: type
+              type: type,
+              isNumeric: !!(unit && !isNaN(parseFloat(unit))) || !!(details && details.match(/[\d.]+/))
             });
           } else {
             // Subfeature not found for this product
@@ -221,40 +237,68 @@ const ComparePage = ({ params }) => {
           }
         });
 
-        // Create FeatureCard data structure
-        if (subfeatureValues.length >= 2) {
+        // Create FeatureCard data structure - support up to 3 products
+        if (subfeatureValues.length >= 1) {
           const value1 = subfeatureValues[0]?.scorevalue || 0;
           const value2 = subfeatureValues[1]?.scorevalue || 0;
+          const value3 = subfeatureValues[2]?.scorevalue || 0;
           const param1 = subfeatureValues[0]?.displayValue || "Unknown";
-          const param2 = subfeatureValues[1]?.displayValue || "Unknown";
-          const description = subfeatureValues[0]?.description || subfeatureValues[1]?.description || "";
+          const param2 = subfeatureValues[1]?.displayValue || "N/A";
+          const param3 = subfeatureValues[2]?.displayValue || "N/A";
           
-          // Check if both are unknown
-          const bothUnknown = subfeatureValues[0]?.unknown && subfeatureValues[1]?.unknown;
-          // Check if both are N/A (not applicable)
-          const bothNA = subfeatureValues[0]?.na && subfeatureValues[1]?.na;
+          // Get description from any available product
+          const description = subfeatureValues.find(sv => sv?.description)?.description || 
+                             subfeatureValues[0]?.description || "";
+          
+          // Check if all are unknown
+          const allUnknown = subfeatureValues.every(sv => sv?.unknown);
+          // Check if all are N/A (not applicable)
+          const allNA = subfeatureValues.every(sv => sv?.na);
+          
+          // Check if this is a numeric comparison (has numeric values)
+          const hasNumericValues = subfeatureValues.some(sv => sv?.isNumeric && sv?.scorevalue > 0);
+          
+          // Check if this is an IP rating or similar text-only value (starts with IP, or is pure text without numbers)
+          const isIPRating = param1 && param1.toString().toUpperCase().startsWith('IP');
+          const isTextOnly = param1 && !param1.toString().match(/[\d.]+/) && !isIPRating;
+          
+          // Calculate percentage for range bars
+          let percent1 = 0, percent2 = 0, percent3 = 0;
+          
+          if (hasNumericValues) {
+            // For numeric values (weight, thickness, etc.), calculate percentage based on max value
+            const maxValue = Math.max(value1, value2, value3, 1); // Avoid division by zero
+            percent1 = maxValue > 0 ? Math.round((value1 / maxValue) * 100) : 0;
+            percent2 = maxValue > 0 ? Math.round((value2 / maxValue) * 100) : 0;
+            percent3 = maxValue > 0 ? Math.round((value3 / maxValue) * 100) : 0;
+          } else if (isTextOnly && param1 !== "N/A" && param1 !== "Unknown") {
+            // For text values like "Waterproof", "Yes", show full bars
+            percent1 = param1 !== "N/A" && param1 !== "Unknown" ? 100 : 0;
+            percent2 = param2 !== "N/A" && param2 !== "Unknown" ? 100 : 0;
+            percent3 = param3 !== "N/A" && param3 !== "Unknown" ? 100 : 0;
+          } else if (isIPRating) {
+            // For IP ratings, show no bars (0%) - just display the text
+            percent1 = 0;
+            percent2 = 0;
+            percent3 = 0;
+          } else {
+            // Default: use scorevalue if available
+            percent1 = value1 > 0 ? 100 : 0;
+            percent2 = value2 > 0 ? 100 : 0;
+            percent3 = value3 > 0 ? 100 : 0;
+          }
           
           subfeaturesData.push({
             title: subfeatureName,
             param1: param1,
             param2: param2,
-            value1: value1,
-            value2: value2,
+            param3: param3,
+            value1: percent1,
+            value2: percent2,
+            value3: percent3,
             text: description,
-            unknown: bothUnknown,
-            na: bothNA
-          });
-        } else if (subfeatureValues.length === 1) {
-          // Only one product has this subfeature
-          subfeaturesData.push({
-            title: subfeatureName,
-            param1: subfeatureValues[0]?.displayValue || "Unknown",
-            param2: "N/A",
-            value1: subfeatureValues[0]?.scorevalue || 0,
-            value2: 0,
-            text: subfeatureValues[0]?.description || "",
-            unknown: subfeatureValues[0]?.unknown || false,
-            na: subfeatureValues[0]?.na || false
+            unknown: allUnknown,
+            na: allNA
           });
         }
       });
@@ -663,7 +707,11 @@ const ComparePage = ({ params }) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
               <div className="relative pl-0 lg:pl-0" ref={radarSectionRef}>
-                <RadarChart />
+                <RadarChart 
+                  products={limitedProducts}
+                  productNames={productNames}
+                  productColors={productColors}
+                />
 
                 {/* Sticky Icons Sidebar - Only visible when scrolling past radar chart */}
                 <div className={`hidden lg:flex flex-col gap-2 fixed left-2 xl:left-4 2xl:left-8 -bottom-20 -translate-y-1/2 z-[100] transition-all duration-300 ${

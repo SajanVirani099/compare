@@ -122,23 +122,27 @@ const FeatureSection = ({ icon, title, background = false, subfeatures = [], pro
                                 title={item.title}
                                 param1={item.param1}
                                 param2={item.param2}
+                                param3={item.param3}
                                 value1={item.value1}
                                 value2={item.value2}
+                                value3={item.value3}
                                 text={item.text}
                                 unknown={item?.unknown}
                                 na={item?.na}
                                 product1Name={productNames[0]}
                                 product2Name={productNames[1]}
+                                product3Name={productNames[2]}
+                                colors={["#434343", "#3F51B5", "#10B981"]}
                             />
                         ))}
                     </div>
 
-                    {!showAll && displayData && displayData.length > 0 && (
+                    {!showAll && displayData && displayData.length > 9 && (
                         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
                     )}
                 </div>
 
-                {!showAll && displayData && displayData.length > 0 && (
+                {!showAll && displayData && displayData.length > 9 && (
                     <p
                         className="uppercase cursor-pointer font-bold text-sm tracking-wide btn btn-primary w-max mx-auto text-[#434343] text-center mt-8"
                         onClick={() => setShowAll(true)}
