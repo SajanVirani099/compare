@@ -11,6 +11,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { subcategoryProducts } from "../app/redux/slice/productSlice";
 import ImageWithShimmer from "./ImageWithShimmer";
+import Image from "next/image";
 
 // Animated circular score badge used in product cards
 const CircularScore = React.memo(({ value = 58 }) => {
@@ -785,8 +786,8 @@ const BlogSection = () => {
                         key={i}
                         className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-6"
                       >
-                        <ImageWithShimmer
-                          className="h-auto max-w-full rounded-xl"
+                        <img
+                          className="!h-auto max-w-full rounded-xl"
                           alt={item.title}
                           src={imageUrl + item.thumbnail}
                           onClick={() => handleBlogClick(item)}

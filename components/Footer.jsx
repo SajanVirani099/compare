@@ -3,7 +3,7 @@ import Link from "next/link";
 const Footer = () => {
     return (
         <>
-            <footer className="bg-gray-900">
+            <footer className="bg-gradient-to-r from-[#1c1c1c] via-[#2e2e2e] to-[#434343]">
                 <div className="mx-auto w-full max-w-screen-xl">
                     <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
                         <div>
@@ -26,7 +26,7 @@ const Footer = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div>
+                        <div className="md:border-l md:border-gray-700 pl-12">
                             <h2 className="mb-6 text-sm font-semibold  uppercase text-white">
                                 Get In Touch
                             </h2>
@@ -65,7 +65,7 @@ const Footer = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div>
+                        <div className="md:border-l md:border-gray-700 pl-12">
                             <h2 className="mb-6 text-sm font-semibold  uppercase text-white">
                                 Legal
                             </h2>
@@ -87,7 +87,7 @@ const Footer = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div>
+                        <div className="md:border-l md:border-gray-700 pl-12">
                             <h2 className="mb-6 text-sm font-semibold  uppercase text-white">
                                 Download
                             </h2>
@@ -115,16 +115,16 @@ const Footer = () => {
                             </ul>
                         </div>
                     </div>
-                    <div className="px-4 py-6 bg-gray-700 md:flex md:items-center md:justify-between">
+                    <div className="px-4 py-6 bg-[#535353] md:flex md:items-center md:justify-between">
                         <span className="text-sm text-gray-300 sm:text-center">
                             © 2023{" "}
                             <Link href="https://flowbite.com/">Flowbite™ </Link>
                             . All Rights Reserved.
                         </span>
                         <div className="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
-                            <Link href="#" className="btn btn-primary !px-3">
+                            <Link href="#" className="">
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 fill-white"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
@@ -138,9 +138,9 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">Facebook page</span>
                             </Link>
-                            <Link href="#" className="btn btn-primary !px-3">
+                            <Link href="#" className="">
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 fill-white"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
@@ -152,9 +152,9 @@ const Footer = () => {
                                     Discord community
                                 </span>
                             </Link>
-                            <Link href="#" className="btn btn-primary !px-3">
+                            <Link href="#" className="">
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 fill-white"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
@@ -168,9 +168,9 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">Twitter page</span>
                             </Link>
-                            <Link href="#" className="btn btn-primary !px-3">
+                            <Link href="#" className="">
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 fill-white"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
@@ -184,9 +184,9 @@ const Footer = () => {
                                 </svg>
                                 <span className="sr-only">GitHub account</span>
                             </Link>
-                            <Link href="#" className="btn btn-primary !px-3">
+                            <Link href="#" className="">
                                 <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 fill-white"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
