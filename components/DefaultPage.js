@@ -71,8 +71,8 @@ const handleToggleCategory = (name) => {
 };
 
   const handleProceed = () => {
-    if (selectedCategories.length < 3) {
-      Centerwarning("Please select at least 3 categories to proceed.");
+    if (selectedCategories.length < 1) {
+      Centerwarning("Select any one category then you will be processed.");
       return;
     }
 
@@ -110,9 +110,8 @@ const handleToggleCategory = (name) => {
             <div className="">
               <button
                 className={
-                  !minCategoriesSelected ? "opacity-50 cursor-not-allowed compare-button !px-12" : "compare-button !px-12"
+                  !minCategoriesSelected ? "opacity-50 compare-button !px-12" : "compare-button !px-12"
                 }
-                disabled={!minCategoriesSelected}
                 onClick={() => handleProceed()}
               >
                 Proceed

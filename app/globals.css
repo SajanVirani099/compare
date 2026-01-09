@@ -516,7 +516,7 @@ body {
 
 /* From Uiverse.io by satyamchaudharydev */ 
 .compare-button {
-  --bg: #e74c3c;
+  --bg: #F98A1A;
   --text-color: #fff;
   position: relative;
   width: max-content;
@@ -539,5 +539,5 @@ body {
 
 .compare-button:active {
   top: 4px;
-  box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+  box-shadow: #F98A1A 0px 3px 2px,#000 0px 3px 5px;
 }
