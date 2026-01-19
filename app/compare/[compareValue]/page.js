@@ -21,6 +21,7 @@ import MostPopularComparison from "@/components/mostPopularComparison/mostPopula
 import PriceComparison from "@/components/priceComparison/priceComparison";
 import UserReviews from "@/components/userReviews/userReviews";
 import FeatureSection from "@/components/featureSection/featureSection";
+import KeySpecs from "@/components/keySpecs/keySpecs";
 import { TbVs } from "react-icons/tb";
 import BestComparison from "@/components/bestComparison/bestComparison";
 import { getResultProduct } from "@/app/redux/slice/blogSlice";
@@ -73,6 +74,7 @@ const ComparePage = ({ params }) => {
   const limitedProducts = useMemo(() => {
     return (resultProduct || []).slice(0, 3);
   }, [resultProduct]);
+  console.log("🚀 ~ ComparePage ~ limitedProducts:", limitedProducts)
   
   const productNames = limitedProducts.map((item, idx) =>
     getProductName(item, idx + 1)
@@ -438,7 +440,7 @@ const ComparePage = ({ params }) => {
   return (
     <div className="min-h-screen bg-[#E6E7EE]">
       <Navbar />
-      <div className="mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px">
+      <div className="mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px]">
         {/* TABS */}
         <div className="w-full">
           <div className="shadow-lg w-full fixed top-[60px] z-[9999] bg-[#E6E7EE]">
@@ -868,6 +870,11 @@ const ComparePage = ({ params }) => {
         </div>
 
         <MostPopularComparison />
+
+        {/* Key Specs - Only show when there's one product */}
+        {limitedProducts?.length === 1 && (
+          <KeySpecs product={limitedProducts[0]} />
+        )}
 
         <PriceComparison />
 

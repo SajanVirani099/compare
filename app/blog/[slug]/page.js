@@ -21,54 +21,45 @@ const Page = async ({ params }) => {
 
 
   return (
-    <div className="max-w-[1200px] w-[90%] mx-auto pb-[100px] pt-[74px]">
-      <p className="text-black text-sm">
-        <Link href="/">Home</Link> &gt; {decodeURIComponent(slug)}
-      </p>
+    <div className="min-h-screen bg-[#e6e7ee] pb-[100px] pt-[74px]">
+      <div className="max-w-[1400px] w-[90%] mx-auto">
+        {/* Breadcrumb */}
+        <nav className="mb-6">
+          <p className="text-gray-600 text-sm">
+            <Link href="/" className="hover:text-[#F98A1A] transition-colors">Home</Link> 
+            <span className="mx-2">/</span>
+            <span className="text-gray-800">{decodeURIComponent(slug)}</span>
+          </p>
+        </nav>
 
-      <div>
-        <h1 className="text-5xl font-extrabold mt-[30px]">
-          {blogData?.title}
-        </h1>
-        {/* <p className="text-3xl text-gray-400 italic font-extrabold mt-5">
-          {blogData?.subtitle ||
-            "Still relying on your password from a decade ago? Here's why you need FIDO, passkeys, and hyper skepticism to stay safe online."}
-        </p> */}
+        {/* Main Content Card */}
+        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-6 md:p-8 lg:p-10">
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 text-gray-900">
+            {blogData?.title}
+          </h1>
 
-        <div className="mt-10">
-          <Image
-            src={imageUrl + blogData?.thumbnail}
-            width={400}
-            height={200}
-            className="w-full h-auto"
-          />
+          {/* Featured Image */}
+          {blogData?.thumbnail && (
+            <div className="mt-6 mb-8 rounded-xl overflow-hidden shadow-soft">
+              <Image
+                src={imageUrl + blogData?.thumbnail}
+                width={1200}
+                height={400}
+                className="w-full max-h-[600px] object-cover"
+                alt={blogData?.title || 'Blog image'}
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          {blogData?.content && (
+            <div 
+              className="mt-6 leading-7 text-base md:text-lg text-gray-700 bg-[#e6e7ee] shadow-inset p-6 md:p-8" 
+              dangerouslySetInnerHTML={{ __html: blogData?.content }} 
+            />
+          )}
         </div>
-
-        {
-          blogData?.content && (
-            <div className="mt-4 leading-7 text-lg text-[#333333]" dangerouslySetInnerHTML={{ __html: blogData?.content }} />
-          )
-        }
-
-
-        {/* <p className="mt-4 leading-7 text-lg text-[#333333]">
-          Got a rock-solid password? Think that's enough to outwit the bad guys? [...]
-        </p> */}
-
-        {/* Your other content goes here — unchanged */}
-
-        {/* <button
-          className="my-10 flex mx-auto flex-row items-center justify-center gap-1 bg-[#3c59fc] rounded-lg text-white px-4 py-2"
-          onClick={() => {
-            navigator.share({
-              title: blogData?.title || 'Check this out',
-              url: window.location.href,
-            });
-          }}
-        >
-          <CornerUpRight />
-          Share
-        </button> */}
       </div>
     </div>
   );

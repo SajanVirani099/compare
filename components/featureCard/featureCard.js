@@ -17,15 +17,15 @@ const FeatureCard = ({ key, title, param1, param2, param3, value1, value2, value
             {!unknown && !na &&
                 <>
                     {hasParam1 && (
-                        <div className='mt-4'>
-                            <p className='text-[14px] text-[#616161]'>{param1}</p>
+                    <div className='mt-4'>
+                        <p className='text-[14px] text-[#616161]'>{param1}</p>
                             <Range percent={value1 || 0} color={colors[0]} />
-                        </div>
+                    </div>
                     )}
 
                     {hasParam2 && (
                         <div className={hasParam1 ? 'mt-2' : 'mt-4'}>
-                            <p className='text-[14px] text-[#616161]'>{param2}</p>
+                        <p className='text-[14px] text-[#616161]'>{param2}</p>
                             <Range percent={value2 || 0} color={colors[1]} />
                         </div>
                     )}
@@ -34,7 +34,7 @@ const FeatureCard = ({ key, title, param1, param2, param3, value1, value2, value
                         <div className={(hasParam1 || hasParam2) ? 'mt-2' : 'mt-4'}>
                             <p className='text-[14px] text-[#616161]'>{param3}</p>
                             <Range percent={value3 || 0} color={colors[2]} />
-                        </div>
+                    </div>
                     )}
                 </>
             }
@@ -62,14 +62,14 @@ const FeatureCard = ({ key, title, param1, param2, param3, value1, value2, value
                     )}
                     {!product1Name && !product2Name && !product3Name && (
                         <>
-                            <div className='text-[#616161] inline-flex gap-2 items-center text-sm border-b border-dotted border-black'>
-                                <AiFillQuestionCircle size={16} />
-                                <p>Unknown. Help us by suggesting a value.</p>
-                            </div>
-                            <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm border-b border-dotted border-black'>
-                                <AiFillQuestionCircle size={16} />
-                                <p>Unknown. Help us by suggesting a value.</p>
-                            </div>
+                    <div className='text-[#616161] inline-flex gap-2 items-center text-sm border-b border-dotted border-black'>
+                        <AiFillQuestionCircle size={16} />
+                        <p>Unknown. Help us by suggesting a value.</p>
+                    </div>
+                    <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm border-b border-dotted border-black'>
+                        <AiFillQuestionCircle size={16} />
+                        <p>Unknown. Help us by suggesting a value.</p>
+                    </div>
                         </>
                     )}
                 </div>
@@ -98,14 +98,14 @@ const FeatureCard = ({ key, title, param1, param2, param3, value1, value2, value
                     )}
                     {!product1Name && !product2Name && !product3Name && (
                         <>
-                            <div className='text-[#616161] inline-flex gap-2 items-center text-sm'>
+                    <div className='text-[#616161] inline-flex gap-2 items-center text-sm'>
                                 <IoClose size={22} color={colors[0]} />
                                 <p className='text-[#616161]'>Product 1: Not applicable</p>
-                            </div>
-                            <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm'>
+                    </div>
+                    <div className='mt-2 text-[#616161] inline-flex gap-2 items-center text-sm'>
                                 <IoClose size={22} color={colors[1]} />
                                 <p className='text-[#616161]'>Product 2: Not applicable</p>
-                            </div>
+                    </div>
                         </>
                     )}
                 </div>

@@ -14,7 +14,7 @@ import ImageWithShimmer from "./ImageWithShimmer";
 import Image from "next/image";
 
 // Animated circular score badge used in product cards
-const CircularScore = React.memo(({ value = 58 }) => {
+const CircularScore = React.memo(({ value }) => {
   const [progressPercent, setProgressPercent] = useState(0); // 0-100 for border fill
   const [displayCount, setDisplayCount] = useState(0); // counter for points text
 
@@ -326,7 +326,7 @@ const BlogSection = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6">
+    <div className="max-w-[1400px] mx-auto px-6">
       <div className="mb-16">
         <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
           Ad Box
@@ -396,7 +396,7 @@ const BlogSection = () => {
                   </div>
                 
                   <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
-                    <CircularScore value={58} />
+                    <CircularScore value={selectedProducts[0]?.scoreValue} />
                   </div>
                   {isFirstProductLoaded && (
                     <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded z-10">
@@ -473,7 +473,7 @@ const BlogSection = () => {
                     ) : null}
                   </div>
                   <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
-                    <CircularScore value={58} />
+                    <CircularScore value={selectedProducts[1]?.scoreValue} />
                   </div>
                 </div>
               ) : (
@@ -541,7 +541,7 @@ const BlogSection = () => {
                     ) : null}
                   </div>
                   <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
-                    <CircularScore value={58} />
+                    <CircularScore value={selectedProducts[2]?.scoreValue} />
                   </div>
                 </div>
               ) : (
@@ -744,9 +744,9 @@ const BlogSection = () => {
       </div>
       <div className="flex justify-center gap-4 mb-20 mt-10">
         {/* Left Ad Box */}
-        {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center">
+        <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
           Ad Box
-        </div> */}
+        </div>
 
         {/* Main Blog Section */}
         <div className="flex-1 relative">
@@ -806,9 +806,9 @@ const BlogSection = () => {
         </div>
 
         {/* Right Ad Box */}
-        {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center">
+        <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
           Ad Box
-        </div> */}
+        </div>
       </div>
     </div>
   );

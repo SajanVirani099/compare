@@ -1,16 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
-import { FaMemory, FaBatteryFull } from "react-icons/fa";
-import { MdGridOn } from "react-icons/md";
-import { LuMoveHorizontal } from "react-icons/lu";
-import { useRouter } from "next/navigation";
-import {
-    sortByOptions,
-    mobileBrands,
-    designSpecs,
-    filters,
-    phones,
-} from "@/components/utils/mockData";
+import { filters } from "@/components/utils/mockData";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PhoneFilters from "@/components/filterSections/phoneFilters";
 import CategoryPageHeader from "@/components/categoryPageHeader/categoryPageHeader";
@@ -29,17 +20,18 @@ const SmartphoneComparison = ({ params }) => {
     }, [dispatch, category]);
 
     return (
-        <div>
+        <div className="bg-[#e6e7ee] min-h-screen">
+            <Navbar />
             <CategoryPageHeader
                 filters={filters}
                 title={`${category} comparison`}
                 breadcrumb={`${category} comparison`}
             />
 
-            <div className="flex pt-3">
+            <div className="flex pt-6 pb-10 max-w-[1280px] mx-auto px-4">
                 <PhoneFilters />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 ml-6 w-[80%] mb-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 ml-6 w-[80%] mb-10 h-fit">
                     {subCategoryProducts && subCategoryProducts.map((phone, index) => (
                         <ProductCard
                             key={index}
@@ -50,6 +42,7 @@ const SmartphoneComparison = ({ params }) => {
                 </div>
             </div>
             <FloatingComparison category="Smartphone" />
+            <Footer />
         </div>
     );
 };

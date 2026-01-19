@@ -32,90 +32,99 @@ const PhoneFilters = () => {
     );
 
     return (
-        <div className="w-[20%] h-screen bg-white p-4 rounded-lg shadow-md sticky top-16 overflow-y-auto md:block hidden">
+        <div className="w-[30%] h-screen bg-[#e6e7ee] border border-[#d1d9e6] p-4 rounded-xl shadow-inset sticky top-16 overflow-y-auto md:block hidden">
             {/* Sort By */}
             <h2 className="text-lg font-semibold mb-3 text-gray-800">
-                Sort By
+                SORT BY:
             </h2>
-            <select className="w-full p-2 rounded-md bg-gray-200 text-gray-800">
+            <select className="w-full p-2.5 rounded-lg bg-[#e6e7ee] border border-[#d1d9e6] text-gray-800 shadow-soft focus:outline-none">
                 {sortByOptions.map((item) => (
                     <option key={item.id}>{item.name}</option>
                 ))}
             </select>
 
             {/* Price Range */}
-            {/* <h2 className="text-lg font-semibold mt-6 mb-1 text-gray-800">
-                Price
-            </h2> */}
-            {/* <div className="bg-white px-6 py-3 rounded-xl shadow-sm">
-                <div className="flex items-end h-28 mb-6 gap-[2px]">
-                    {[35, 45, 65, 50, 40, 30, 25, 20, 15, 10, 5].map(
-                        (height, index) => (
-                            <div
-                                key={index}
-                                className="flex-1 bg-gray-100 rounded-t"
-                                style={{ height: `${height}%` }}
-                            />
-                        )
-                    )}
+            <div className="mt-6">
+                <div className="flex items-center gap-2 mb-2">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                        Price
+                    </h2>
+                    <span className="text-gray-500 cursor-help">?</span>
                 </div>
-
-                <div className="relative -mt-4 mb-8">
-                    <Range
-                        step={1}
-                        min={9030}
-                        max={180617}
-                        values={values}
-                        onChange={(values) => setValues(values)}
-                        renderTrack={({ props, children }) => (
-                            <div
-                                {...props}
-                                className="h-[2px] w-full bg-gray-200"
-                                style={{
-                                    ...props.style,
-                                }}
-                            >
+                <div className="bg-[#e6e7ee] border border-[#d1d9e6] px-4 py-4 rounded-xl shadow-soft">
+                    <div className="flex items-end h-28 mb-6 gap-[2px]">
+                        {[35, 45, 65, 50, 40, 30, 25, 20, 15, 10, 5].map(
+                            (height, index) => (
                                 <div
-                                    className="h-[2px] bg-[#434343] absolute"
+                                    key={index}
+                                    className="flex-1 bg-[#b8b9be] rounded-t"
+                                    style={{ height: `${height}%` }}
+                                />
+                            )
+                        )}
+                    </div>
+
+                    <div className="relative -mt-4 mb-6">
+                        <Range
+                            step={1}
+                            min={9030}
+                            max={180617}
+                            values={values}
+                            onChange={(values) => setValues(values)}
+                            renderTrack={({ props, children }) => (
+                                <div
+                                    {...props}
+                                    className="h-[2px] w-full bg-gray-300"
                                     style={{
-                                        left: `${
-                                            ((values[0] - 9030) /
-                                                (180617 - 9030)) *
-                                            100
-                                        }%`,
-                                        width: `${
-                                            ((values[1] - values[0]) /
-                                                (180617 - 9030)) *
-                                            100
-                                        }%`,
+                                        ...props.style,
+                                    }}
+                                >
+                                    <div
+                                        className="h-[2px] bg-[#434343] absolute"
+                                        style={{
+                                            left: `${
+                                                ((values[0] - 9030) /
+                                                    (180617 - 9030)) *
+                                                100
+                                            }%`,
+                                            width: `${
+                                                ((values[1] - values[0]) /
+                                                    (180617 - 9030)) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                    {children}
+                                </div>
+                            )}
+                            renderThumb={({ props }) => (
+                                <div
+                                    {...props}
+                                    className="h-5 w-5 rounded-full bg-white border-2 border-[#434343] shadow-md focus:outline-none"
+                                    style={{
+                                        ...props.style,
+                                        transform: "translate(-50%, -50%)",
                                     }}
                                 />
-                                {children}
-                            </div>
-                        )}
-                        renderThumb={({ props }) => (
-                            <div
-                                {...props}
-                                className="h-6 w-6 rounded-full bg-white border-2 border-[#434343] shadow-md focus:outline-none"
-                                style={{
-                                    ...props.style,
-                                    transform: "translate(-50%, -50%)",
-                                }}
-                            />
-                        )}
-                    />
-                </div>
+                            )}
+                        />
+                    </div>
 
-                <div className="flex justify-between text-sm text-gray-600 px-1">
-                    <span>{values[0].toLocaleString("en-IN")} ₹</span>
-                    <span>{values[1].toLocaleString("en-IN")}+ ₹</span>
+                    <div className="flex justify-between text-sm text-gray-700 px-1 mb-3">
+                        <span>{values[0].toLocaleString("en-IN")} ₹</span>
+                        <span>{values[1].toLocaleString("en-IN")}+ ₹</span>
+                    </div>
+                    
+                    <select className="w-full p-2 rounded-lg bg-[#e6e7ee] border border-[#d1d9e6] text-gray-800 text-sm shadow-soft focus:outline-none">
+                        <option>INR • ₹</option>
+                    </select>
                 </div>
-            </div> */}
+            </div>
 
             {/* Brand Filter Section */}
             <div className="mt-6">
                 <h2 className="text-lg font-semibold mb-3 text-gray-800">
-                    Brands
+                    Brand
                 </h2>
                 {/* Search Input */}
                 <div className="relative mb-3">
@@ -125,16 +134,16 @@ const PhoneFilters = () => {
                         placeholder="Search brand..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 outline-none placeholder-gray-500"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#e6e7ee] border border-[#d1d9e6] text-gray-800 outline-none placeholder-gray-500 shadow-soft"
                     />
                 </div>
 
                 {/* Brands List */}
-                <div className="bg-white rounded-lg max-h-[300px] overflow-y-auto">
+                <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg max-h-[300px] overflow-y-auto shadow-soft">
                     {filteredBrands.map((brand) => (
                         <label
                             key={brand}
-                            className="flex items-center px-4 py-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                            className="flex items-center px-4 py-2.5 cursor-pointer hover:bg-[#d1d9e6]/30 border-b border-[#d1d9e6] last:border-b-0"
                         >
                             <input
                                 type="checkbox"
@@ -166,14 +175,14 @@ const PhoneFilters = () => {
                 <h2 className="text-lg font-semibold mb-3 text-gray-800">
                     DESIGN
                 </h2>
-                <div className="bg-white rounded-lg overflow-hidden">
+                    <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg overflow-hidden shadow-soft">
                     {designSpecs.map((spec) => (
                         <div
                             key={spec.id}
-                            className="border-b border-gray-100 last:border-b-0"
+                            className="border-b border-[#d1d9e6] last:border-b-0"
                         >
                             <button
-                                className="w-full px-4 py-3 flex justify-between items-center hover:bg-gray-50"
+                                className="w-full px-4 py-3 flex justify-between items-center hover:bg-[#d1d9e6]/30 transition-colors"
                                 onClick={() =>
                                     setExpandedSection(
                                         expandedSection === spec.label
