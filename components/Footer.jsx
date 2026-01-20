@@ -57,6 +57,14 @@ const Footer = () => {
                                 </li>
                                 <li className="mb-4">
                                     <Link
+                                        href="/contact"
+                                        className="hover:underline"
+                                    >
+                                        Contact Us
+                                    </Link>
+                                </li>
+                                <li className="mb-4">
+                                    <Link
                                         href="/editorial-guidelines"
                                         className="hover:underline"
                                     >

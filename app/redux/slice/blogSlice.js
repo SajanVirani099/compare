@@ -29,6 +29,15 @@ export const getResultProduct = createAsyncThunk(
     }
 );
 
+export const getPopularComparison = createAsyncThunk(
+    "client/subCategory/getPopularComparison",
+    async (payload) => {
+        return apiInstance.get(
+            `client/subCategory/getPopularComparison?uniqueName=${payload}`
+        );
+    }
+);
+
 const blogSlice = createSlice({
     name: "blogSlice",
     initialState,
@@ -66,6 +75,19 @@ const blogSlice = createSlice({
             state.resultProduct = action.payload.data;
         });
         builder.addCase(getResultProduct.rejected, (state, action) => {
+            state.isSkeleton = false;
+        });
+
+        builder.addCase(getPopularComparison.pending, (state, action) => {
+            state.isSkeleton = true;
+        });
+
+        builder.addCase(getPopularComparison.fulfilled, (state, action) => {
+            state.isSkeleton = false;
+            state.popularComparison = action.payload.data;
+        });
+
+        builder.addCase(getPopularComparison.rejected, (state, action) => {
             state.isSkeleton = false;
         });
     },

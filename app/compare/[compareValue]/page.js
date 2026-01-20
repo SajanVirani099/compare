@@ -24,7 +24,8 @@ import FeatureSection from "@/components/featureSection/featureSection";
 import KeySpecs from "@/components/keySpecs/keySpecs";
 import { TbVs } from "react-icons/tb";
 import BestComparison from "@/components/bestComparison/bestComparison";
-import { getResultProduct } from "@/app/redux/slice/blogSlice";
+import BestSmartphones from "@/components/bestSmartphones/bestSmartphones";
+import { getResultProduct, getPopularComparison } from "@/app/redux/slice/blogSlice";
 import Navbar from "@/components/Navbar";
 import { BASE_URL, imageUrl } from "@/components/utils/config";
 
@@ -60,7 +61,7 @@ const getFeatureIcon = (featureName, size = 28) => {
 
 const ComparePage = ({ params }) => {
     const dispatch = useDispatch();
-  const { resultProduct } = useSelector((state) => state.blog || {});
+  const { resultProduct, popularComparison } = useSelector((state) => state.blog || {});
   const [selectedTab, setSelectedTab] = useState(0);
   const [comparisonCategory, setComparisonCategory] = useState("");
   const [comparisonItem, setComparisonItem] = useState("");
@@ -353,6 +354,26 @@ const ComparePage = ({ params }) => {
     if (!params?.compareValue) return;
     dispatch(getResultProduct(params?.compareValue));
   }, [dispatch, params?.compareValue]);
+
+  // Fetch popular comparison when products are loaded
+  useEffect(() => {
+    if (limitedProducts && limitedProducts.length > 0) {
+      // Get subCategory name from first product's API response
+      const firstProduct = limitedProducts[0];
+      const subCategoryName = firstProduct?.subCategory?.uniqueName || 
+                            firstProduct?.subCategory?.name ||
+                            firstProduct?.subcategory?.uniqueName ||
+                            firstProduct?.subcategory?.name ||
+                            firstProduct?.subCategoryUniqueName ||
+                            firstProduct?.subCategoryName ||
+                            firstProduct?.subcategoryUniqueName ||
+                            firstProduct?.subcategoryName;
+      
+      if (subCategoryName) {
+        dispatch(getPopularComparison(subCategoryName));
+      }
+    }
+  }, [dispatch, limitedProducts]);
 
   // Set initial comparisonItem when resultProduct loads
   useEffect(() => {
@@ -912,7 +933,10 @@ const ComparePage = ({ params }) => {
           Ad
         </div>
 
-        <BestComparison />
+        {/* Best Smartphones Carousel */}
+        {popularComparison && popularComparison.length > 0 && (
+          <BestSmartphones products={popularComparison} />
+        )}
       </div>
     </div>
   );
