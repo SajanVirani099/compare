@@ -134,7 +134,7 @@ const AboutPage = () => {
                 Themesberg is an experienced and passionate group of designers, developers, project managers, writers and artists. Every client we work with becomes a part of the team. Together we face the challenges and celebrate the victories.
               </p>
               <p>
-                Our small team is active in the creative community, endlessly interested in what's next, and generally pleasant to be around.
+                Our small team is active in the creative community, endlessly interested in what next, and generally pleasant to be around.
               </p>
             </div>
             <div className="mt-8">
