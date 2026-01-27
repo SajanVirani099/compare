@@ -60,8 +60,10 @@ const getFeatureIcon = (featureName, size = 28) => {
 };
 
 const ComparePage = ({ params }) => {
-    const dispatch = useDispatch();
-  const { resultProduct, popularComparison } = useSelector((state) => state.blog || {});
+  const dispatch = useDispatch();
+  const { resultProduct, popularComparison } = useSelector(
+    (state) => state.blog || {}
+  );
   const [selectedTab, setSelectedTab] = useState(0);
   const [comparisonCategory, setComparisonCategory] = useState("");
   const [comparisonItem, setComparisonItem] = useState("");
@@ -70,12 +72,44 @@ const ComparePage = ({ params }) => {
   const [showStickyIcons, setShowStickyIcons] = useState(false);
   const [numOfComparisons, setNumOfComparisons] = useState(0);
   const radarSectionRef = useRef(null);
-  
+
+  // Normalize API response structure
+  const comparisonResponse = resultProduct?.data || resultProduct || {};
+  const comparedProducts =
+    comparisonResponse?.comparedProducts || comparisonResponse?.data?.comparedProducts || [];
+  console.log("🚀 ~ ComparePage ~ comparedProducts:", comparedProducts)
+
+  // Normalize popular comparison data: array of { left, right }
+  const popularComparisonList =
+    comparisonResponse?.popularComparison ||
+    popularComparison?.data ||
+    popularComparison ||
+    [];
+
+  // Flatten unique products from popularComparisonList for BestSmartphones
+  const bestSmartphoneProducts = useMemo(() => {
+    if (!Array.isArray(popularComparisonList)) return [];
+
+    const map = new Map();
+    popularComparisonList.forEach((pair) => {
+      const left = pair?.left;
+      const right = pair?.right;
+
+      if (left && left._id && !map.has(left._id)) {
+        map.set(left._id, left);
+      }
+      if (right && right._id && !map.has(right._id)) {
+        map.set(right._id, right);
+      }
+    });
+
+    return Array.from(map.values());
+  }, [popularComparisonList]);
+
   // Limit products to max 3
   const limitedProducts = useMemo(() => {
-    return (resultProduct || []).slice(0, 3);
-  }, [resultProduct]);
-  console.log("🚀 ~ ComparePage ~ limitedProducts:", limitedProducts)
+    return (Array.isArray(comparedProducts) ? comparedProducts : []).slice(0, 3);
+  }, [comparedProducts]);
   
   const productNames = limitedProducts.map((item, idx) =>
     getProductName(item, idx + 1)
@@ -360,15 +394,16 @@ const ComparePage = ({ params }) => {
     if (limitedProducts && limitedProducts.length > 0) {
       // Get subCategory name from first product's API response
       const firstProduct = limitedProducts[0];
-      const subCategoryName = firstProduct?.subCategory?.uniqueName || 
-                            firstProduct?.subCategory?.name ||
-                            firstProduct?.subcategory?.uniqueName ||
-                            firstProduct?.subcategory?.name ||
-                            firstProduct?.subCategoryUniqueName ||
-                            firstProduct?.subCategoryName ||
-                            firstProduct?.subcategoryUniqueName ||
-                            firstProduct?.subcategoryName;
-      
+      const subCategoryName =
+        firstProduct?.subCategory?.uniqueName ||
+        firstProduct?.subCategory?.name ||
+        firstProduct?.subcategory?.uniqueName ||
+        firstProduct?.subcategory?.name ||
+        firstProduct?.subCategoryUniqueName ||
+        firstProduct?.subCategoryName ||
+        firstProduct?.subcategoryUniqueName ||
+        firstProduct?.subcategoryName;
+
       if (subCategoryName) {
         dispatch(getPopularComparison(subCategoryName));
       }
@@ -465,7 +500,7 @@ const ComparePage = ({ params }) => {
         {/* TABS */}
         <div className="w-full">
           <div className="shadow-lg w-full fixed top-[60px] z-[9999] bg-[#E6E7EE]">
-            <div className="flex gap-4 sm:gap-6 md:gap-8 max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-4 sm:gap-6 md:gap-8 max-w-[1240px] mx-auto px-4 sm:px-10 md:px-0 overflow-x-auto scrollbar-hide">
               {tabs.map((tab, index) => (
                 <div
                   key={index}
@@ -770,7 +805,7 @@ const ComparePage = ({ params }) => {
                         >
                           {icon.isApiIcon && isActive ? (
                             <div style={{ filter: 'invert(1)' }}>
-                              {icon.icon}
+                          {icon.icon}
                             </div>
                           ) : (
                             icon.icon
@@ -805,19 +840,19 @@ const ComparePage = ({ params }) => {
                   {icons.map((icon, index) => {
                     const isActive = selectedFeature === icon.tooltip || activeScrollFeature === icon.tooltip;
                     return (
-                      <div
-                        key={index}
-                        className={`border p-1.5 sm:p-2 rounded-md shadow-xl text-base sm:text-lg lg:text-xl cursor-pointer transition-all duration-200 ${
+                    <div
+                      key={index}
+                      className={`border p-1.5 sm:p-2 rounded-md shadow-xl text-base sm:text-lg lg:text-xl cursor-pointer transition-all duration-200 ${
                           isActive
-                            ? "bg-[#434343] text-white border-[#434343]"
-                            : "bg-white border-gray-200 text-gray-600"
-                        }`}
-                        onClick={() => handleSelectFeature(icon.tooltip)}
-                      >
+                          ? "bg-[#434343] text-white border-[#434343]"
+                          : "bg-white border-gray-200 text-gray-600"
+                      }`}
+                      onClick={() => handleSelectFeature(icon.tooltip)}
+                    >
                         {icon.isApiIcon && isActive ? (
                           <div style={{ filter: 'invert(1)' }}>
-                            {icon.icon}
-                          </div>
+                      {icon.icon}
+                    </div>
                         ) : (
                           icon.icon
                         )}
@@ -890,7 +925,7 @@ const ComparePage = ({ params }) => {
           </div>
         </div>
 
-        <MostPopularComparison />
+        <MostPopularComparison popularComparison={popularComparisonList} />
 
         {/* Key Specs - Only show when there's one product */}
         {limitedProducts?.length === 1 && (
@@ -934,8 +969,8 @@ const ComparePage = ({ params }) => {
         </div>
 
         {/* Best Smartphones Carousel */}
-        {popularComparison && popularComparison.length > 0 && (
-          <BestSmartphones products={popularComparison} />
+        {bestSmartphoneProducts && bestSmartphoneProducts.length > 0 && (
+          <BestSmartphones products={bestSmartphoneProducts} />
         )}
       </div>
     </div>

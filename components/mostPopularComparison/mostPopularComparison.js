@@ -1,63 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { imageUrl } from "../utils/config";
 
-const comparisons = [
-    {
-        img1: "/iphone-16-pro-max.jpg",
-        img2: "/s25-ultra.jpg",
-        item1: "Apple iPhone 16 Pro Max",
-        item2: "Samsung Galaxy S25 Ultra",
-    },
-    {
-        img1: "/galaxy-a16.jpg",
-        img2: "/galaxy-a25.jpg",
-        item1: "Samsung Galaxy A16 5G",
-        item2: "Samsung Galaxy A25 5G",
-    },
-    {
-        img1: "/galaxy-a16.jpg",
-        img2: "/galaxy-a35.jpg",
-        item1: "Samsung Galaxy A16 5G",
-        item2: "Samsung Galaxy A35 5G",
-    },
-    {
-        img1: "/galaxy-a35.jpg",
-        img2: "/galaxy-a55.jpg",
-        item1: "Samsung Galaxy A35 5G",
-        item2: "Samsung Galaxy A55 5G",
-    },
-    {
-        img1: "/redmi-note-13.jpg",
-        img2: "/redmi-note-14.jpg",
-        item1: "Xiaomi Redmi Note 13",
-        item2: "Xiaomi Redmi Note 14",
-    },
-    {
-        img1: "/redmi-note-13.jpg",
-        img2: "/redmi-note-14.jpg",
-        item1: "Xiaomi Redmi Note 13",
-        item2: "Xiaomi Redmi Note 14",
-    },
-    {
-        img1: "/redmi-note-13.jpg",
-        img2: "/redmi-note-14.jpg",
-        item1: "Xiaomi Redmi Note 13",
-        item2: "Xiaomi Redmi Note 14",
-    },
-    {
-        img1: "/redmi-note-13.jpg",
-        img2: "/redmi-note-14.jpg",
-        item1: "Xiaomi Redmi Note 13",
-        item2: "Xiaomi Redmi Note 14",
-    },
-];
-
-const MostPopularComparison = () => {
+// Popular comparisons carousel driven by API data
+// Expects an array like: [{ left: {...}, right: {...} }, ...]
+const MostPopularComparison = ({ popularComparison = [] }) => {
     const scrollRef = useRef(null);
     const [scrollPos, setScrollPos] = useState(0);
     const visibleItems = 5; // Number of visible items at a time
     const itemWidth = 160; // Approx width of each item including margin
-    const maxScroll = (comparisons.length - visibleItems) * itemWidth;
+
+    // Ensure we have an array of { left, right } pairs
+    const pairs = Array.isArray(popularComparison) ? popularComparison : [];
+
+    const maxScroll = Math.max(0, (pairs.length - visibleItems) * itemWidth);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -73,6 +29,10 @@ const MostPopularComparison = () => {
         newScrollPos = Math.max(0, Math.min(newScrollPos, maxScroll));
         setScrollPos(newScrollPos);
     };
+
+    if (!pairs || pairs.length === 0) {
+        return null;
+    }
 
     return (
         <div className="max-w-[1280px] w-[95%] md:w-[55%] mx-auto mt-6">
@@ -100,36 +60,69 @@ const MostPopularComparison = () => {
                     <div
                         className="flex space-x-4"
                         style={{
-                            minWidth: `${comparisons.length * itemWidth}px`,
+                            minWidth: `${pairs.length * itemWidth}px`,
                         }}
                     >
-                        {comparisons.map((item, index) => (
-                            <div
-                                key={index}
-                                className="rounded-lg py-4 text-center min-w-[170px]"
-                            >
-                                <div className="relative flex items-center justify-center space-x-1">
-                                    <img
-                                        src={"/popular-comparison.jpg"}
-                                        alt="Phone 1"
-                                        className="w-20 h-20 rounded-lg object-top"
-                                    />
-                                    <span className="absolute text-base font-bold bg-white px-2 py-[2px] rounded-full">
-                                        vs
-                                    </span>
-                                    <img
-                                        src={"/popular-comparison.jpg"}
-                                        alt="Phone 2"
-                                        className="w-20 h-20 rounded-lg object-top"
-                                    />
+                        {pairs.map((pair, index) => {
+                            const left = pair.left;
+                            const right = pair.right;
+
+                            const leftName =
+                                left?.title ||
+                                left?.name ||
+                                left?.uniqueTitle ||
+                                `Product ${index * 2 + 1}`;
+                            const rightName =
+                                right?.title ||
+                                right?.name ||
+                                right?.uniqueTitle ||
+                                `Product ${index * 2 + 2}`;
+
+                            const leftImg = left?.thumbnail
+                                ? `${imageUrl}${left.thumbnail}`
+                                : "/popular-comparison.jpg";
+                            const rightImg = right?.thumbnail
+                                ? `${imageUrl}${right.thumbnail}`
+                                : "/popular-comparison.jpg";
+
+                            return (
+                                <div
+                                    key={index}
+                                    className="rounded-lg py-4 text-center min-w-[170px]"
+                                >
+                                    <div className="relative flex items-center justify-center space-x-1">
+                                        {left && (
+                                            <img
+                                                src={leftImg}
+                                                alt={leftName}
+                                                className="w-20 h-20 rounded-lg object-top"
+                                            />
+                                        )}
+                                        {left && right && (
+                                            <span className="absolute text-base font-bold bg-white px-2 py-[2px] rounded-full">
+                                                vs
+                                            </span>
+                                        )}
+                                        {right && (
+                                            <img
+                                                src={rightImg}
+                                                alt={rightName}
+                                                className="w-20 h-20 rounded-lg object-top"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="mt-4 text-[#616161]">
+                                        <p className="text-sm">{leftName}</p>
+                                        {right && (
+                                            <>
+                                                <p className="text-xs">vs</p>
+                                                <p className="text-sm">{rightName}</p>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="mt-4 text-[#616161]">
-                                    <p className="text-sm">{item.item1}</p>
-                                    <p className="text-xs">vs</p>
-                                    <p className="text-sm">{item.item2}</p>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 

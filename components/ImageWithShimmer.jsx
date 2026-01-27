@@ -37,7 +37,7 @@ const ImageWithShimmer = ({
   const skeletonHeight = getHeightValue();
 
   return (
-    <div className={`relative w-full`} style={{ minHeight: skeletonHeight }}>
+    <div className={`relative w-full`}>
       {isLoading && (
         <div className="absolute inset-0 z-10">
           <Skeleton

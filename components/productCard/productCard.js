@@ -196,7 +196,7 @@ const ProductCard = ({ index, phone, category }) => {
   return (
     <div
       key={index}
-      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-4 md:p-5 w-full h-fit flex gap-4 md:gap-6"
+      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-4 md:p-5 md:pt-16 w-full h-fit flex gap-4 md:gap-6"
     >
       {/* Add/Remove Button - Top Right Corner of Card */}
       <div className="absolute !top-8 !right-top-8 md:!top-8 md:!right-8 z-10">
@@ -257,10 +257,10 @@ const ProductCard = ({ index, phone, category }) => {
         )}
         
         {/* Points Badge - Overlay on Image */}
+      </div>
         <div className="absolute top-2 left-2 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
           <CircularScore value={productSpecs.scoreValue || 0} />
         </div>
-      </div>
 
       {/* Phone Details - Right Side */}
       <div className="flex flex-col flex-1 min-w-0">
