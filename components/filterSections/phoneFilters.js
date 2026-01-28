@@ -12,8 +12,11 @@ import {
     IoChevronDownOutline,
     IoChevronUpOutline,
 } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { getFilterWiseProducts } from "@/app/redux/slice/productSlice";
 
 const PhoneFilters = () => {
+    const dispatch = useDispatch();
     const [values, setValues] = React.useState([9030, 180617]);
     const [selectedBrands, setSelectedBrands] = React.useState([]);
     const [searchQuery, setSearchQuery] = React.useState("");
@@ -25,6 +28,15 @@ const PhoneFilters = () => {
         height: [109.7, 183.5],
         waterResistance: [], // For checkboxes
     });
+
+    // Call filter-wise products API whenever price range changes
+    React.useEffect(() => {
+        const payload = {
+            priceMin: values[0],
+            priceMax: values[1],
+        };
+        dispatch(getFilterWiseProducts(payload));
+    }, [values, dispatch]);
 
     // Filter brands based on search query
     const filteredBrands = mobileBrands.filter((brand) =>

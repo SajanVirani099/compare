@@ -94,7 +94,7 @@ const splitIntoColumns = (array, columns) => {
   return cols;
 };
 
-const BlogSection = () => {
+const BlogSection = ({ onlyBlogGrid = false }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -327,23 +327,25 @@ const BlogSection = () => {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6">
-      <div className="mb-16">
-        <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
-          Ad Box
-        </div>
-      </div>
-      <div className="mt-5 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
-        <div className="border-b-2 border-gray-300 rounded-t-xl flex items-center justify-between p-3">
-          <h3 className="text-[20px] font-bold">Quick Compare</h3>
-          {/* <button
-            className="btn btn-primary !text-lg px-4 py-2 me-3"
-            onClick={() => router.push("/quick-compare")}
-          >
-            See all
-          </button> */}
-        </div>
-        <div className="p-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
+      {!onlyBlogGrid && (
+        <>
+          <div className="mb-16">
+            <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
+              Ad Box
+            </div>
+          </div>
+          <div className="mt-5 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
+            <div className="border-b-2 border-gray-300 rounded-t-xl flex items-center justify-between p-3">
+              <h3 className="text-[20px] font-bold">Quick Compare</h3>
+              {/* <button
+              className="btn btn-primary !text-lg px-4 py-2 me-3"
+              onClick={() => router.push("/quick-compare")}
+            >
+              See all
+            </button> */}
+            </div>
+            <div className="p-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
             {/* Product Slot 1 */}
             <div 
               className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
@@ -351,7 +353,7 @@ const BlogSection = () => {
             >
               {selectedProducts[0] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-20 w-full">
+                  <div className="p-4 px-6 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[0].thumbnail}`}
                       alt={selectedProducts[0].title}
@@ -359,13 +361,13 @@ const BlogSection = () => {
                       width={150}
                       className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
-                    <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[0]?.uniqueTitle}`)}>
+                    <h2 className="text-xl font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[0]?.uniqueTitle}`)}>
                       {selectedProducts[0].title || "Product Name"}
                     </h2>
 
-                    {selectedProducts[0]?.featureData && selectedProducts[0].featureData.length > 0 ? (
+                    {selectedProducts[0]?.subfeatureData && selectedProducts[0].subfeatureData.length > 0 ? (
                       <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                        {selectedProducts[0].featureData.slice(0, 4).map((feature, index) => {
+                        {selectedProducts[0].subfeatureData.slice(0, 4).map((feature, index) => {
                           const featureName = feature?.featureName || feature?.featureId?.featureName || "";
                           const featureIcon = feature?.icon || feature?.featureId?.icon;
                           const featureUnit = feature?.unit || feature?.featureId?.unit;
@@ -377,15 +379,15 @@ const BlogSection = () => {
                                 <img
                                   src={`${imageUrl}${featureIcon}`}
                                   alt={featureName || "Feature"}
-                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  className="w-6 h-6 object-contain flex-shrink-0"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}
                                 />
                               ) : (
-                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                <div className="w-6 h-6 bg-gray-300 rounded flex-shrink-0"></div>
                               )}
-                              <span className="text-sm truncate">
+                              <span className="text-lg truncate">
                                 {featureUnit || featureName || "N/A"}
                               </span>
                             </div>
@@ -395,7 +397,7 @@ const BlogSection = () => {
                     ) : null}
                   </div>
                 
-                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
+                  <div className="absolute top-3 left-3 sm:top-3 sm:left-3 md:top-3 md:left-3 z-10">
                     <CircularScore value={selectedProducts[0]?.scoreValue} />
                   </div>
                   {isFirstProductLoaded && (
@@ -429,7 +431,7 @@ const BlogSection = () => {
             >
               {selectedProducts[1] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-20 w-full">
+                  <div className="p-4 px-6 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[1].thumbnail}`}
                       alt={selectedProducts[1].title}
@@ -437,13 +439,13 @@ const BlogSection = () => {
                       width={150}
                       className="object-contain w-full min-h-60 max-h-60 rounded-tl-[15px] rounded-tr-[15px]"
                     />
-                     <h2 className="text-lg font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[1]?.uniqueTitle}`)}>
+                     <h2 className="text-xl font-semibold my-3 hover:text-[#F98A1A] cursor-pointer transition-all" onClick={() => router.push(`/compare/${selectedProducts[1]?.uniqueTitle}`)}>
                       {selectedProducts[1].title || "Product Name"}
                     </h2>
 
-                    {selectedProducts[1]?.featureData && selectedProducts[1].featureData.length > 0 ? (
+                    {selectedProducts[1]?.subfeatureData && selectedProducts[1].subfeatureData.length > 0 ? (
                       <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                        {selectedProducts[1].featureData.slice(0, 4).map((feature, index) => {
+                        {selectedProducts[1].subfeatureData.slice(0, 4).map((feature, index) => {
                           const featureName = feature?.featureName || feature?.featureId?.featureName || "";
                           const featureIcon = feature?.icon || feature?.featureId?.icon;
                           const featureUnit = feature?.unit || feature?.featureId?.unit;
@@ -455,15 +457,15 @@ const BlogSection = () => {
                                 <img
                                   src={`${imageUrl}${featureIcon}`}
                                   alt={featureName || "Feature"}
-                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  className="w-6 h-6 object-contain flex-shrink-0"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}
                                 />
                               ) : (
-                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                <div className="w-6 h-6 bg-gray-300 rounded flex-shrink-0"></div>
                               )}
-                              <span className="text-sm truncate">
+                              <span className="text-lg truncate">
                                 {featureUnit || featureName || "N/A"}
                               </span>
                             </div>
@@ -472,7 +474,7 @@ const BlogSection = () => {
                       </div>
                     ) : null}
                   </div>
-                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
+                  <div className="absolute top-3 left-3 sm:top-3 sm:left-3 md:top-3 md:left-3 z-10">
                     <CircularScore value={selectedProducts[1]?.scoreValue} />
                   </div>
                 </div>
@@ -497,7 +499,7 @@ const BlogSection = () => {
             >
               {selectedProducts[2] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 mt-20 w-full">
+                  <div className="p-4 px-6 mt-20 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[2].thumbnail}`}
                       alt={selectedProducts[2].title}
@@ -509,9 +511,9 @@ const BlogSection = () => {
                       {selectedProducts[2].title || "Product Name"}
                     </h2>
 
-                    {selectedProducts[2]?.featureData && selectedProducts[2].featureData.length > 0 ? (
+                    {selectedProducts[2]?.subfeatureData && selectedProducts[2].subfeatureData.length > 0 ? (
                       <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-                        {selectedProducts[2].featureData.slice(0, 4).map((feature, index) => {
+                        {selectedProducts[2].subfeatureData.slice(0, 4).map((feature, index) => {
                           const featureName = feature?.featureName || feature?.featureId?.featureName || "";
                           const featureIcon = feature?.icon || feature?.featureId?.icon;
                           const featureUnit = feature?.unit || feature?.featureId?.unit;
@@ -523,15 +525,15 @@ const BlogSection = () => {
                                 <img
                                   src={`${imageUrl}${featureIcon}`}
                                   alt={featureName || "Feature"}
-                                  className="w-5 h-5 object-contain flex-shrink-0"
+                                  className="w-6 h-6 object-contain flex-shrink-0"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}
                                 />
                               ) : (
-                                <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                <div className="w-6 h-6 bg-gray-300 rounded flex-shrink-0"></div>
                               )}
-                              <span className="text-sm truncate">
+                              <span className="text-lg truncate">
                                 {featureUnit || featureName || "N/A"}
                               </span>
                             </div>
@@ -540,7 +542,7 @@ const BlogSection = () => {
                       </div>
                     ) : null}
                   </div>
-                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 md:top-3 md:left-3 z-10">
+                  <div className="absolute top-3 left-3 sm:top-3 sm:left-3 md:top-3 md:left-3 z-10">
                     <CircularScore value={selectedProducts[2]?.scoreValue} />
                   </div>
                 </div>
@@ -549,15 +551,15 @@ const BlogSection = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center my-6 sm:mt-10">
-            <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
-              More Compare
-            </button>
+              <div className="flex items-center justify-center my-6 sm:mt-10">
+                <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
+                  More Compare
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Product Selection Dialog */}
+          {/* Product Selection Dialog */}
       <Transition appear show={isDialogOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setIsDialogOpen(false)}>
           <Transition.Child
@@ -713,35 +715,39 @@ const BlogSection = () => {
         </Dialog>
       </Transition>
 
-      <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
-        <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
-          <h3 className="text-[20px] font-bold">Categories</h3>
-          <button 
-            className="btn btn-primary !text-sm px-2 !py-1 me-3"
-            onClick={() => router.push("/categories")}
-          >
-            See all
-          </button>
-        </div>
-        <div className="p-4">
-          <div className="flex flex-wrap items-center gap-4">
-            {category.map((item, index) => {
-              return (
-                <button
-                  key={index}
-                  className="btn focus shadow-soft"
-                  onClick={() => router.push("/categories")}
-                >
-                  {item?.name}
-                </button>
-              );
-            })}
+      {!onlyBlogGrid && (
+        <>
+          <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
+            <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
+              <h3 className="text-[20px] font-bold">Categories</h3>
+              <button 
+              className="btn btn-primary !text-sm px-2 !py-1 me-3"
+              onClick={() => router.push("/categories")}
+            >
+              See all
+            </button>
+            </div>
+            <div className="p-4">
+              <div className="flex flex-wrap items-center gap-4">
+                {category.map((item, index) => {
+                  return (
+                    <button
+                      key={index}
+                      className="btn focus shadow-soft"
+                      onClick={() => router.push("/categories")}
+                    >
+                      {item?.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="hidden md:flex h-[150px] mt-4 border-2 border-dashed border-gray-700 items-center justify-center">
-        Ad Box
-      </div>
+          <div className="hidden md:flex h-[150px] mt-4 border-2 border-dashed border-gray-700 items-center justify-center">
+            Ad Box
+          </div>
+        </>
+      )}
       <div className="flex justify-center gap-4 mb-20 mt-10">
         {/* Left Ad Box */}
         <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
@@ -810,6 +816,8 @@ const BlogSection = () => {
           Ad Box
         </div>
       </div>
+    </>
+      )}
     </div>
   );
 };

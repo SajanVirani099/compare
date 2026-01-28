@@ -68,7 +68,7 @@ const CircularScore = React.memo(({ value = 58 }) => {
 
   return (
     <div
-      className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full p-[4px] sm:p-[5px] md:p-[6px]"
+      className="relative h-12 w-10 s2:h-14 sm:w-14 md:h-16 md:w-16 rounded-full p-[4px] sm:p-[5px] md:p-[6px]"
       style={{
         background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
         zIndex: 2,
@@ -76,7 +76,7 @@ const CircularScore = React.memo(({ value = 58 }) => {
     >
       <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
         <span className="text-sm sm:text-base md:text-lg font-extrabold">{displayCount}</span>
-        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-semibold">Points</span>
+        <span className="text-[10px] sm:text-[10px] md:text-[12px] font-semibold">Points</span>
       </div>
     </div>
   );
@@ -475,7 +475,7 @@ const QuickCompare = () => {
                     {subCategoryProductss.map((product) => (
                       <React.Fragment key={product._id}>
                         <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full flex items-center justify-center !relative">
-                          <div className="p-4 mt-14">
+                          <div className="p-4 px-6 mt-14">
                             <ImageWithShimmer
                               src={`${imageUrl}${product.thumbnail}`}
                               alt={product.title}
@@ -484,7 +484,7 @@ const QuickCompare = () => {
                               className="object-cover w-full h-72 rounded-tl-[15px] rounded-tr-[15px]"
                             />
                             <h2
-                              className="text-lg font-semibold my-3 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer"
+                              className="text-xl font-semibold my-3 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer"
                               onClick={() =>
                                 router.push(`/compare/${product?.uniqueTitle}`)
                               }
@@ -511,13 +511,13 @@ const QuickCompare = () => {
                                             feature.featureId.featureName ||
                                             "Feature"
                                           }
-                                          className="w-5 h-5 object-contain flex-shrink-0"
+                                          className="w-6 h-6 object-contain flex-shrink-0"
                                           onError={(e) => {
                                             e.target.style.display = "none";
                                           }}
                                         />
                                       ) : (
-                                        <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                                        <div className="w-6 h-6 bg-gray-300 rounded flex-shrink-0"></div>
                                       )}
                                       <span className="text-sm truncate">
                                         {feature?.featureId?.unit ||
@@ -545,10 +545,10 @@ const QuickCompare = () => {
                                 readOnly
                               />
                               {/* <div className="checkmark"></div> */}
-                              <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-4 pointer-events-none">
+                              <span className="!absolute !-top-[13px] !-left-3 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-4 pointer-events-none">
                                 {comparisonList.includes(product._id) ? (
                                   <svg
-                                    className="plusIcon"
+                                    className="plusIcon w-6 h-6 md:h-[30px] md:w-[30px]"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     height={30}
@@ -561,7 +561,7 @@ const QuickCompare = () => {
                                   </svg>
                                 ) : (
                                   <svg
-                                    className="plusIcon"
+                                    className="plusIcon w-6 h-6 md:h-[30px] md:w-[30px]"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 30 30"
                                     height={30}
@@ -757,7 +757,7 @@ const QuickCompare = () => {
                     <button
                       onClick={handleCompare}
                       disabled={comparisonList.length < 2}
-                      className="flex-1 btn btn-primary !px-5 !rounded-md bg-gradient-to-r from-[#1c1c1c] via-[#2e2e2e] to-[#434343] !text-white disabled:cursor-not-allowed transition-colors disabled:bg-none disabled:bg-gray-300 disabled:!text-gray-600"
+                      className="flex-1 !px-5 !rounded-md bg-gradient-to-r from-[#1c1c1c] via-[#2e2e2e] to-[#434343] !text-white disabled:cursor-not-allowed transition-colors disabled:bg-none disabled:bg-gray-300 disabled:!text-gray-600"
                     >
                       Compare{" "}
                       {comparisonList.length > 0 &&

@@ -85,14 +85,14 @@ const handleToggleCategory = (name) => {
   };
 
   return (
-    <div className="flex justify-center gap-4 px-4 mb-20 mt-10">
+    <div className="flex justify-center gap-4 px-4 mb-20 mt-10 max-w-[1280px] mx-auto">
       <div>
-        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-5 pb-16">
-          <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-5xl font-bold mb-4 text-center">
+        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-5 pb-12 md:pb-16">
+          <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 text-center border-b border-gray-400 pb-3">
             Choose some favourite category <br /> you might compare
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 mt-16">
+          <div className="flex flex-wrap items-center gap-4 mt-16 ">
             {category.map((item, index) => {
               const isSelected = selectedCategories.includes(item?.name);
               return (
@@ -121,7 +121,7 @@ const handleToggleCategory = (name) => {
         </div>
 
         {/* Accordion Section */}
-        <div className="mt-20">
+        <div className="mt-12">
           <Accordion items={accordionItems} />
         </div>
       </div>

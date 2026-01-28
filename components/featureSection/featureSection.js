@@ -85,11 +85,85 @@ const data = [
     },
 ];
 
-const FeatureSection = ({ icon, title, background = false, subfeatures = [], productNames = [] }) => {
+const FeatureSection = ({
+    icon,
+    title,
+    background = false,
+    subfeatures = [],
+    productNames = [],
+    isSingleProduct = false,
+    score = 0,
+}) => {
     const [showAll, setShowAll] = React.useState(false);
-    
+
     // Use subfeatures from API if available, otherwise use default data
     const displayData = subfeatures && subfeatures.length > 0 ? subfeatures : data;
+
+    // Normalized score 0–10 for single-product spec view
+    const numericScore = Number(score) || 0;
+    const sectionScore = Math.max(0, Math.min(10, numericScore));
+    const percent = (sectionScore / 10) * 100;
+    const circleColor = sectionScore >= 8 ? "#24B200" : "#F29A1F";
+
+    // Single-product table-style layout
+    if (isSingleProduct) {
+        return (
+            <div
+                className={`${background ? "pt-5 pb-20" : "py-20"} ${
+                    background ? "bg-[#f6f7fb]" : ""
+                }`}
+            >
+                <div className="max-w-[1280px] w-[95%] md:w-[75%] lg:w-[55%] mx-auto">
+                    <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-end mb-3">
+                        <p className="flex gap-2 items-center text-center">
+                            {icon}
+                            <span className="font-bold text-3xl">{title}</span>
+                        </p>
+                    </div>
+
+                    <div className="rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] overflow-hidden">
+                        <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 sm:py-3 border-b border-[#d1d9e6]">
+                            <span className="text-xs sm:text-sm font-semibold text-[#434343]">
+                                Full specifications
+                            </span>
+                            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center">
+                                <div
+                                    className="absolute inset-0 rounded-full"
+                                    style={{
+                                        background: `conic-gradient(${circleColor} ${percent}%, #e5e7eb ${percent}%)`,
+                                    }}
+                                />
+                                <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex items-center justify-center shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]">
+                                    <span className="text-xs sm:text-sm font-bold text-[#434343]">
+                                        {sectionScore}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-3 sm:px-4 py-2 sm:py-3">
+                            {displayData?.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between py-1.5 sm:py-2 px-2 sm:px-3 rounded-xl mb-1.5 sm:mb-2 bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
+                                >
+                                    <span className="text-[11px] sm:text-xs text-[#555555] mr-4 truncate">
+                                        {item.title}
+                                    </span>
+                                    <span className="text-[11px] sm:text-xs font-medium text-[#222222] text-right ml-4">
+                                        {item.param1 || "N/A"}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Multi-product comparison table layout (2–3 products)
+    const productCount = Math.min(3, productNames?.length || 0);
 
     return (
         <div
@@ -98,7 +172,7 @@ const FeatureSection = ({ icon, title, background = false, subfeatures = [], pro
             }`}
         >
             <div className="max-w-[1280px] w-[95%] md:w-[75%] lg:w-[55%] mx-auto">
-                <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-end">
+                <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-end mb-3">
                     <p className="flex gap-2 items-center text-center">
                         {icon}
                         <span className="font-bold text-3xl">{title}</span>
@@ -110,46 +184,63 @@ const FeatureSection = ({ icon, title, background = false, subfeatures = [], pro
                     )}
                 </div>
 
-                <div
-                    className={`relative ${
-                        showAll ? "h-auto" : "h-[530px]"
-                    } mt-6 overflow-hidden`}
-                >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 h-full">
-                        {displayData?.map((item, index) => (
-                            <FeatureCard
-                                key={index}
-                                title={item.title}
-                                param1={item.param1}
-                                param2={item.param2}
-                                param3={item.param3}
-                                value1={item.value1}
-                                value2={item.value2}
-                                value3={item.value3}
-                                text={item.text}
-                                unknown={item?.unknown}
-                                na={item?.na}
-                                product1Name={productNames[0]}
-                                product2Name={productNames[1]}
-                                product3Name={productNames[2]}
-                                colors={["#434343", "#3F51B5", "#10B981"]}
-                            />
-                        ))}
+                <div className="rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] overflow-hidden">
+                    {/* Header row with product names */}
+                    <div
+                        className="grid text-xs sm:text-sm font-semibold text-[#434343] border-b border-[#d1d9e6] bg-[#E6E7EE]"
+                        style={{
+                            gridTemplateColumns: `2fr repeat(${Math.max(
+                                productCount,
+                                2
+                            )}, minmax(0, 1.5fr))`,
+                        }}
+                    >
+                        <div className="px-3 sm:px-4 py-2 sm:py-2.5 border-r border-[#d1d9e6]">
+                            Specification
+                        </div>
+                        {Array.from({ length: Math.max(productCount, 2) }).map(
+                            (_, idx) => (
+                                <div
+                                    key={idx}
+                                    className="px-3 sm:px-4 py-2 sm:py-2.5 text-center border-r last:border-r-0 border-[#d1d9e6] truncate"
+                                >
+                                    {productNames[idx] || `Product ${idx + 1}`}
+                                </div>
+                            )
+                        )}
                     </div>
 
-                    {!showAll && displayData && displayData.length > 9 && (
-                        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
-                    )}
+                    {/* Spec rows */}
+                    <div className="divide-y divide-[#d1d9e6]">
+                        {displayData?.map((item, index) => (
+                            <div
+                                key={index}
+                                className="grid text-[11px] sm:text-xs text-[#222222] bg-[#E6E7EE]"
+                                style={{
+                                    gridTemplateColumns: `2fr repeat(${Math.max(
+                                        productCount,
+                                        2
+                                    )}, minmax(0, 1.5fr))`,
+                                }}
+                            >
+                                <div className="px-3 sm:px-4 py-2 sm:py-2.5 border-r border-[#d1d9e6] text-[#d02626] font-medium truncate">
+                                    {item.title}
+                                </div>
+                                <div className="px-3 sm:px-4 py-2 sm:py-2.5 border-r border-[#d1d9e6] text-[#333333] truncate">
+                                    {item.param1 || "-"}
+                                </div>
+                                <div className="px-3 sm:px-4 py-2 sm:py-2.5 border-r border-[#d1d9e6] text-[#333333] truncate">
+                                    {item.param2 || "-"}
+                                </div>
+                                {Math.max(productCount, 2) > 2 && (
+                                    <div className="px-3 sm:px-4 py-2 sm:py-2.5 text-[#333333] truncate">
+                                        {item.param3 || "-"}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
-
-                {!showAll && displayData && displayData.length > 9 && (
-                    <p
-                        className="uppercase cursor-pointer font-bold text-sm tracking-wide btn btn-primary w-max mx-auto text-[#434343] text-center mt-8"
-                        onClick={() => setShowAll(true)}
-                    >
-                        + show more +
-                    </p>
-                )}
             </div>
         </div>
     );

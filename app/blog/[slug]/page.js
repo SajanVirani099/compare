@@ -6,8 +6,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BlogImageCarousel from '@/components/BlogImageCarousel/BlogImageCarousel';
 import RelatedArticles from '@/components/RelatedArticles/RelatedArticles';
-import { HiUser } from 'react-icons/hi';
 import { FaWhatsapp, FaTelegram, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 
 const Page = async ({ params }) => {
   const { slug } = params;
@@ -59,21 +59,34 @@ const Page = async ({ params }) => {
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
   const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(shareText)}`;
 
+  // Channel / follow URLs
+  const whatsappChannelUrl =
+    process.env.NEXT_PUBLIC_WHATSAPP_CHANNEL_URL || whatsappUrl;
+  const telegramChannelUrl =
+    process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL || telegramUrl;
+
+  // Deterministic random male avatar based on slug
+  const avatarId =
+    (slug || '1')
+      .split('')
+      .reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 90;
+  const authorAvatar = `https://randomuser.me/api/portraits/men/${avatarId}.jpg`;
+
   return (
     <div className="min-h-screen bg-[#e6e7ee]">
       <Navbar />
       
-      <div className="max-w-[1400px] w-[90%] mx-auto pt-8 sm:pt-12 pb-[100px]">
+      <div className="max-w-[1280px] w-[90%] mx-auto pt-8 sm:pt-12 pb-[100px]">
         {/* Breadcrumb */}
         <nav className="my-4 sm:my-6">
           <p className="text-gray-600 text-sm sm:text-base">
             <Link href="/" className="hover:text-[#F98A1A] transition-colors">HOME</Link>
             <span className="mx-2">/</span>
-            <Link href="/blog" className="hover:text-[#F98A1A] transition-colors">NEWS</Link>
-            {blogData?.category && (
+            <Link href="/news" className="hover:text-[#F98A1A] transition-colors">NEWS</Link>
+            {slug && (
               <>
                 <span className="mx-2">/</span>
-                <span className="text-gray-800 capitalize">{blogData.category}</span>
+                <span className="text-gray-800 capitalize">{slug}</span>
               </>
             )}
           </p>
@@ -95,15 +108,20 @@ const Page = async ({ params }) => {
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 flex-1">
               {blogData?.title}
             </h1>
-            <span className="text-gray-600 text-xl sm:text-2xl mt-2">→</span>
           </div>
 
           {/* Author and Social Sharing */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8 pb-4 border-b border-[#d1d9e6]">
             {/* Author Info */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft flex items-center justify-center">
-                <HiUser className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft overflow-hidden">
+                <Image
+                  src={authorAvatar}
+                  alt="Author avatar"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <p className="text-sm sm:text-base text-gray-700">
@@ -117,8 +135,57 @@ const Page = async ({ params }) => {
               </div>
             </div>
 
-            {/* Social Sharing Buttons */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Google Preferred + Channel Join Buttons */}
+            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#434343]">
+                <FcGoogle className="w-4 h-4" />
+                <span>Google preferred</span>
+              </div>
+
+              <a
+                href={whatsappChannelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#128C7E] hover:shadow-lg transition-all"
+              >
+                <FaWhatsapp className="w-4 h-4" />
+                <span>Join WhatsApp channel</span>
+              </a>
+
+              <a
+                href={telegramChannelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#0088cc] hover:shadow-lg transition-all"
+              >
+                <FaTelegram className="w-4 h-4" />
+                <span>Join Telegram channel</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Image Carousel */}
+          {carouselImages.length > 0 && (
+            <BlogImageCarousel images={carouselImages} title={blogData?.title} />
+          )}
+
+          {/* Content */}
+          {blogData?.content && (
+            <div 
+              className="mt-6 sm:mt-8 leading-7 text-base sm:text-lg text-gray-700 blog-content" 
+              dangerouslySetInnerHTML={{ __html: blogData.content }} 
+            />
+          )}
+
+          {/* Additional Images from Content */}
+          {/* Images embedded in content will be styled by blog-content CSS */}
+        </div>
+
+        {/* Related Articles Section */}
+        {relatedArticles.length > 0 && (
+          <RelatedArticles articles={relatedArticles} />
+        )}
+          <div className="flex items-center gap-2 sm:gap-3 mt-10 justify-center">
               <span className="text-xs sm:text-sm text-gray-600 mr-2">Share:</span>
               <a
                 href={whatsappUrl}
@@ -157,29 +224,6 @@ const Page = async ({ params }) => {
                 <FaTwitter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
               </a>
             </div>
-          </div>
-
-          {/* Image Carousel */}
-          {carouselImages.length > 0 && (
-            <BlogImageCarousel images={carouselImages} title={blogData?.title} />
-          )}
-
-          {/* Content */}
-          {blogData?.content && (
-            <div 
-              className="mt-6 sm:mt-8 leading-7 text-base sm:text-lg text-gray-700 blog-content" 
-              dangerouslySetInnerHTML={{ __html: blogData.content }} 
-            />
-          )}
-
-          {/* Additional Images from Content */}
-          {/* Images embedded in content will be styled by blog-content CSS */}
-        </div>
-
-        {/* Related Articles Section */}
-        {relatedArticles.length > 0 && (
-          <RelatedArticles articles={relatedArticles} />
-        )}
       </div>
 
       <Footer />

@@ -158,7 +158,7 @@ const MainSearching = () => {
         ))}
       </div>
 
-      <div className="searchingSec !m-0 flex flex-col gap-1">
+      <div className="searchingSec !m-0 flex flex-col gap-4">
         {searchInputs.map((searchInput, index) => (
           <div key={index} className="relative w-full flex items-center gap-2">
             <div className="w-full relative">

@@ -53,8 +53,8 @@ const BestSmartphones = ({ products = [] }) => {
     }
 
     return (
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 mt-8 mb-12">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 text-center">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 mt-10 mb-14">
+            <h2 className="text-xl md:text-2xl font-bold text-[#434343] mb-6 text-center tracking-wide">
                 WHICH ARE THE BEST SMARTPHONES?
             </h2>
 
@@ -63,19 +63,19 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("left")}
                     disabled={!canScrollLeft}
-                    className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md border border-gray-200 transition-all ${
+                    className={`absolute left-2 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] border border-transparent transition-all ${
                         !canScrollLeft
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-gray-50 hover:shadow-lg"
+                            ? "opacity-40 cursor-not-allowed"
+                            : "hover:shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]"
                     }`}
                 >
-                    <FaChevronLeft className="w-5 h-5 text-gray-600" />
+                    <FaChevronLeft className="w-5 h-5 text-[#616161]" />
                 </button>
 
                 {/* Scrollable Content */}
                 <div
                     ref={scrollRef}
-                    className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-10 md:px-12"
+                    className="flex gap-5 md:gap-7 overflow-x-auto scrollbar-hide scroll-smooth px-10 md:px-12 py-6 rounded-3xl bg-[#E6E7EE] shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]"
                 >
                     {products.map((product, index) => {
                         const productName =
@@ -95,7 +95,7 @@ const BestSmartphones = ({ products = [] }) => {
                                 className="flex-shrink-0 w-[180px] md:w-[200px] text-center relative"
                             >
                                 {/* Numbered Badge */}
-                                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-10 bg-[#3c59fc] text-white font-bold text-lg md:text-xl px-3 py-1 rounded-lg">
+                                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10 bg-[#3c59fc] text-white font-bold text-sm md:text-base px-3 py-1 rounded-xl shadow-[4px_4px_8px_rgba(0,0,0,0.15)]">
                                     {index + 1}
                                 </div>
 
@@ -104,7 +104,7 @@ const BestSmartphones = ({ products = [] }) => {
                                     <img
                                         src={productImage}
                                         alt={productName}
-                                        className="w-[120px] md:w-[140px] h-auto object-contain rounded-lg"
+                                        className="w-[120px] md:w-[140px] h-auto object-contain rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-3"
                                     />
                                 </div>
 
@@ -118,7 +118,7 @@ const BestSmartphones = ({ products = [] }) => {
                                                   )}`
                                                 : "#"
                                         }
-                                        className="text-sm md:text-base font-medium text-gray-900 hover:text-[#3c59fc] transition-colors"
+                                        className="text-sm md:text-base font-medium text-[#434343] hover:text-[#3c59fc] transition-colors"
                                     >
                                         {productName}
                                     </Link>
@@ -129,7 +129,7 @@ const BestSmartphones = ({ products = [] }) => {
                                     <div className="mt-4">
                                         <Link
                                             href="/quick-compare"
-                                            className="text-[#3c59fc] underline text-sm hover:text-[#2d47d4] transition-colors"
+                                            className="inline-block text-[#3c59fc] text-xs md:text-sm font-medium hover:text-[#2d47d4] transition-colors"
                                         >
                                             Show all
                                         </Link>
@@ -144,13 +144,13 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("right")}
                     disabled={!canScrollRight}
-                    className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md border border-gray-200 transition-all ${
+                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] border border-transparent transition-all ${
                         !canScrollRight
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-gray-50 hover:shadow-lg"
+                            ? "opacity-40 cursor-not-allowed"
+                            : "hover:shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]"
                     }`}
                 >
-                    <FaChevronRight className="w-5 h-5 text-gray-600" />
+                    <FaChevronRight className="w-5 h-5 text-[#616161]" />
                 </button>
             </div>
         </div>

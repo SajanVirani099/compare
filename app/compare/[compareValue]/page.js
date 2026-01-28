@@ -111,6 +111,36 @@ const ComparePage = ({ params }) => {
     return (Array.isArray(comparedProducts) ? comparedProducts : []).slice(0, 3);
   }, [comparedProducts]);
   
+  // Feature scores for the primary product (used for single-product view)
+  const primaryFeatureScores = useMemo(() => {
+    if (!limitedProducts || limitedProducts.length === 0) return [];
+    const firstProduct = limitedProducts[0];
+    const featureData = firstProduct?.featureData || [];
+
+    return featureData
+      .map((feature, idx) => {
+        const name =
+          feature?.featureName ||
+          feature?.featureId?.featureName ||
+          `Feature ${idx + 1}`;
+        const score =
+          feature?.scoreValue ??
+          feature?.featureId?.scoreValue ??
+          0;
+
+        const numericScore = score || 0;
+        // Normalize: API may send 0–100, but UI expects 0–10
+        const normalizedScore =
+          numericScore > 10 ? Math.round(numericScore / 10) : numericScore;
+
+        return {
+          name,
+          score: normalizedScore,
+        };
+      })
+      .filter((item) => item.name);
+  }, [limitedProducts]);
+  
   const productNames = limitedProducts.map((item, idx) =>
     getProductName(item, idx + 1)
   );
@@ -354,7 +384,9 @@ const ComparePage = ({ params }) => {
         icon: iconComponent,
         isApiIcon: !!apiIcon, // Store flag to know if it's an API icon
         background: index % 2 === 1, // Alternate backgrounds
-        subfeatures: subfeaturesData // Add subfeatures data
+        subfeatures: subfeaturesData, // Add subfeatures data
+        // Overall score for this feature (for single-product specs view)
+        score: Number(pointsObj.item1points) || 0,
       });
 
       // Add to tooltip map
@@ -367,6 +399,28 @@ const ComparePage = ({ params }) => {
       titleToTooltip: tooltipMap
     };
   }, [limitedProducts]);
+
+  // Ratings rows for 2–3 products view (one row per feature, scores per product)
+  const ratingRows = useMemo(() => {
+    if (!icons || icons.length === 0 || !limitedProducts || limitedProducts.length < 2) {
+      return [];
+    }
+
+    const productCount = Math.min(3, limitedProducts.length);
+
+    return icons.map((icon) => {
+      const scores = Array.from({ length: productCount }).map((_, idx) => {
+        const raw = Number(icon[`item${idx + 1}points`] || 0);
+        const numeric = Number.isNaN(raw) ? 0 : raw;
+        return numeric > 10 ? Math.round(numeric / 10) : numeric;
+      });
+
+      return {
+        name: icon.tooltip,
+        scores,
+      };
+    });
+  }, [icons, limitedProducts]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -896,26 +950,144 @@ const ComparePage = ({ params }) => {
               </div>
 
               <div className="mt-4 lg:mt-0">
-                {/* Dynamic ComparisonSummary based on selected item */}
-                {productNames.length > 0 ? (
-                  <ComparisonSummary
-                    comparisonItem1={comparisonItem || productNames[0]}
-                    comparisonItem2={productNames.filter(name => name !== comparisonItem)[0] || productNames[1] || "Product 2"}
-                    selectedFeature={selectedFeature}
-                  />
+                {/* Right side content beside radar chart */}
+                {limitedProducts?.length === 1 && primaryFeatureScores.length > 0 ? (
+                  /* Single-product feature review UI (circles) */
+                  <div className="bg-[#E6E7EE] rounded-xl shadow-md px-4 py-4 sm:px-5 sm:py-5">
+                    <h3 className="font-bold text-sm sm:text-base mb-3 text-[#434343]">
+                      {productNames[0]} Review
+                    </h3>
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
+                      {primaryFeatureScores.map((item, idx) => {
+                        const progress = Math.max(0, Math.min(10, item.score));
+                        const percent = (progress / 10) * 100;
+                        const color =
+                          progress >= 8 ? "#24B200" : "#F29A1F";
+                        return (
+                          <div
+                            key={`${item.name}-${idx}`}
+                            className="flex flex-col items-center min-w-[70px]"
+                          >
+                            <div className="relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full">
+                              <div
+                                className="absolute inset-0 rounded-full"
+                                style={{
+                                  background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
+                                }}
+                              />
+                              <div className="absolute inset-0 m-auto flex flex-col items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full">
+                                <p className="text-lg font-bold text-[#434343]">
+                                  {item?.score}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="mt-1 text-[10px] sm:text-xs text-[#616161] text-center leading-tight">
+                              {item?.name}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : limitedProducts?.length >= 2 && ratingRows.length > 0 ? (
+                  /* Ratings table view for 2–3 products */
+                  <div className="bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] overflow-hidden px-2 sm:px-3 py-3">
+                    <h3 className="text-xs sm:text-sm font-bold text-[#434343] mb-2 px-1">
+                      Ratings
+                    </h3>
+                    {/* Header row */}
+                    <div
+                      className="grid text-[10px] sm:text-xs font-semibold text-[#434343] border-b border-[#d1d9e6] bg-[#E6E7EE]"
+                      style={{
+                        gridTemplateColumns: `1.8fr repeat(${Math.min(
+                          3,
+                          limitedProducts.length
+                        )}, minmax(0, 1.4fr))`,
+                      }}
+                    >
+                      <div className="px-2 py-1.5 border-r border-[#d1d9e6]">
+                        Rating
+                      </div>
+                      {limitedProducts.slice(0, 3).map((_, idx) => (
+                        <div
+                          key={idx}
+                          className="px-2 py-1.5 text-center border-r last:border-r-0 border-[#d1d9e6] truncate"
+                        >
+                          {productNames[idx] || `Product ${idx + 1}`}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Rating rows */}
+                    <div className="divide-y divide-[#d1d9e6]">
+                      {ratingRows.map((row, rowIdx) => (
+                        <div
+                          key={`${row.name}-${rowIdx}`}
+                          className="grid text-[10px] sm:text-xs text-[#222222] bg-[#E6E7EE]"
+                          style={{
+                            gridTemplateColumns: `1.8fr repeat(${row.scores.length}, minmax(0, 1.4fr))`,
+                          }}
+                        >
+                          <div className="px-2 py-1.5 border-r border-[#d1d9e6] text-[#d02626] font-medium truncate">
+                            {row.name}
+                          </div>
+                          {row.scores.map((score, idx) => {
+                            const clamped = Math.max(0, Math.min(10, score));
+                            const percent = (clamped / 10) * 100;
+                            const color = clamped >= 8 ? "#24B200" : "#F29A1F";
+                            return (
+                              <div
+                                key={idx}
+                                className="flex items-center justify-center px-2 py-1.5"
+                              >
+                                {clamped > 0 ? (
+                                  <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full">
+                                    <div
+                                      className="absolute inset-0 rounded-full"
+                                      style={{
+                                        background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
+                                      }}
+                                    />
+                                    <div className="absolute inset-[3px] rounded-full bg-white flex items-center justify-center">
+                                      <span className="text-[10px] sm:text-xs font-bold text-[#434343] leading-none">
+                                        {clamped}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="text-[#999999]">-</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 ) : (
-                  <ComparisonSummary
-                    comparisonItem1={"Product 1"}
-                    comparisonItem2={"Product 2"}
-                    selectedFeature={selectedFeature}
-                  />
+                  /* Fallback: keep comparison summary if no ratings data */
+                  <>
+                    {productNames.length > 0 ? (
+                      <ComparisonSummary
+                        comparisonItem1={comparisonItem || productNames[0]}
+                        comparisonItem2={
+                          productNames.filter(
+                            (name) => name !== comparisonItem
+                          )[0] ||
+                          productNames[1] ||
+                          "Product 2"
+                        }
+                        selectedFeature={selectedFeature}
+                      />
+                    ) : (
+                      <ComparisonSummary
+                        comparisonItem1={"Product 1"}
+                        comparisonItem2={"Product 2"}
+                        selectedFeature={selectedFeature}
+                      />
+                    )}
+                  </>
                 )}
-                <div className="cursor-pointer mt-3 sm:mt-4 ml-2 sm:ml-4 text-[#434343] flex gap-1.5 sm:gap-2 items-center">
-                  <IoIosArrowDropdown color="#434343" size={14} className="sm:w-4 sm:h-4" />
-                  <p className="hover:underline text-xs sm:text-sm">
-                    Scroll down for more details
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -958,6 +1130,8 @@ const ComparePage = ({ params }) => {
               background={section.background}
               subfeatures={section.subfeatures}
               productNames={productNames}
+              isSingleProduct={limitedProducts?.length === 1}
+              score={section.score}
             />
           </div>
         ))}
