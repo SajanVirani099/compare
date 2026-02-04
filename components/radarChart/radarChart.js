@@ -11,6 +11,18 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
+import {
+  AiOutlineCamera,
+  AiOutlineMobile,
+  AiOutlinePicture,
+} from "react-icons/ai";
+import { GiProcessor } from "react-icons/gi";
+import { PiDevices } from "react-icons/pi";
+import { IoBatteryFullOutline } from "react-icons/io5";
+import { SlMusicToneAlt } from "react-icons/sl";
+import { CiCirclePlus } from "react-icons/ci";
+import { TbVs } from "react-icons/tb";
+import { imageUrl } from "@/components/utils/config";
 
 // Register required components
 ChartJS.register(
@@ -21,6 +33,25 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+
+// Helper function to map feature name to icon component
+const getFeatureIcon = (featureName, size = 28) => {
+  const normalizedName = featureName?.toLowerCase() || "";
+  
+  if (normalizedName.includes("design")) return <AiOutlineMobile size={size} />;
+  if (normalizedName.includes("display")) return <AiOutlinePicture size={size} />;
+  if (normalizedName.includes("performance")) return <GiProcessor size={size} />;
+  if (normalizedName.includes("camera")) return <AiOutlineCamera size={size} />;
+  if (normalizedName.includes("operating") || normalizedName.includes("os")) return <PiDevices size={size} />;
+  if (normalizedName.includes("battery") || normalizedName.includes("bettery")) return <IoBatteryFullOutline size={size} />;
+  if (normalizedName.includes("audio") || normalizedName.includes("sound")) return <SlMusicToneAlt size={size} />;
+  if (normalizedName.includes("storage") || normalizedName.includes("memory")) return <CiCirclePlus size={size} />;
+  if (normalizedName.includes("feature")) return <CiCirclePlus size={size} />;
+  if (normalizedName.includes("miscellaneous")) return <TbVs size={size} />;
+  
+  // Default icon
+  return <CiCirclePlus size={size} />;
+};
 
 const RadarChart = ({ products = [], productNames = [], productColors = ["#434343", "#3F51B5", "#10B981"] }) => {
     // Track window size for responsive font sizing
@@ -173,6 +204,33 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
         },
     }), [fontSize, padding]);
 
+    // Get features from first product for the features display (MUST be before early returns)
+    const activeProduct = products && products.length > 0 ? products[0] : null;
+    const featureData = activeProduct?.featureData || [];
+    
+    // Process features with icons and scores (MUST be before early returns - React Hooks rule)
+    const features = useMemo(() => {
+      if (!featureData || featureData.length === 0) return [];
+      
+      return featureData.map((feature, idx) => {
+        const featureName = feature?.featureName || feature?.featureId?.featureName || `Feature ${idx + 1}`;
+        const score = feature?.scoreValue ?? feature?.featureId?.scoreValue ?? 0;
+        const icon = feature?.icon || feature?.featureId?.icon;
+        const apiIcon = icon ? imageUrl + icon : null;
+        
+        // Normalize score: API may send 0-100, but UI expects 0-10
+        const normalizedScore = score > 10 ? Math.round(score / 10) : score;
+        const finalScore = Math.max(0, Math.min(10, normalizedScore));
+        
+        return {
+          name: featureName,
+          score: finalScore,
+          iconUrl: apiIcon,
+          rawScore: score
+        };
+      }).filter(f => f.name);
+    }, [featureData]);
+
     // Don't render chart if no data from API
     if (!chartData.labels || chartData.labels.length === 0 || !chartData.datasets || chartData.datasets.length === 0) {
         return (
@@ -183,10 +241,74 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
     }
 
     return (
-        <div className="w-full h-full min-h-[250px] sm:min-h-[300px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center p-2 sm:p-4">
-            <div className="w-full max-w-full h-full relative">
-                <Radar data={chartData} options={options} />
+        <div className="w-full">
+            {/* Radar Chart */}
+            <div className="w-full h-full min-h-[250px] sm:min-h-[300px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center p-2 sm:p-4">
+                <div className="w-full max-w-full h-full relative">
+                    <Radar data={chartData} options={options} />
+                </div>
             </div>
+
+            {/* Features Row Below Radar Chart - Horizontal Scrollable Circular Progress Indicators */}
+            {features.length > 0 && (
+                <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden">
+                    <div className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                        {features.map((feature, idx) => {
+                            const progress = feature.score;
+                            const percent = (progress / 10) * 100;
+                            const color = progress >= 8 ? "#24B200" : "#F29A1F";
+                            
+                            return (
+                                <div
+                                    key={`feature-${idx}`}
+                                    className="flex flex-col items-center flex-shrink-0"
+                                >
+                                    {/* Circular Progress Indicator - Neumorphic Up Theme */}
+                                    <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
+                                        {/* Score Circle Background - Outer Ring (Progress Ring) */}
+                                        <div
+                                            className="absolute inset-[2px] rounded-full"
+                                            style={{
+                                                background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
+                                            }}
+                                        />
+                                        {/* Inner Circle with Icon and Number - Neumorphic Down Theme */}
+                                        <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5" style={{zIndex: 99}}>
+                                            {/* Icon - Ensure it's visible with proper sizing */}
+                                            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center mb-1 flex-shrink-0" style={{ minHeight: '24px', minWidth: '24px' }}>
+                                                {feature?.iconUrl ? (
+                                                    <img 
+                                                        src={feature.iconUrl} 
+                                                        alt={feature.name} 
+                                                        className="w-full h-full object-contain"
+                                                        style={{ width: '100%', height: '100%', display: 'block' }}
+                                                       
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-[#434343]" style={{ color: '#434343' }}>
+                                                        {getFeatureIcon(feature?.name || 'Feature', 20)}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {/* Score Number - Make it more visible */}
+                                            <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#434343] leading-tight">
+                                                {feature?.score || 0}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {/* Total Points - Centered Below Features */}
+                    <div className="mt-3 text-center">
+                        <p className="text-sm sm:text-base text-[#616161] font-medium">
+                            {activeProduct?.scoreValue || 0} point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

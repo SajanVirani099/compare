@@ -16,6 +16,7 @@ import { PiDevices } from "react-icons/pi";
 import { IoBatteryFullOutline } from "react-icons/io5";
 import { SlMusicToneAlt } from "react-icons/sl";
 import { CiCirclePlus } from "react-icons/ci";
+import { IoShareSocialOutline } from "react-icons/io5";
 import { Tooltip } from "antd";
 import MostPopularComparison from "@/components/mostPopularComparison/mostPopularComparison";
 import PriceComparison from "@/components/priceComparison/priceComparison";
@@ -71,7 +72,11 @@ const ComparePage = ({ params }) => {
   const [activeScrollFeature, setActiveScrollFeature] = useState("");
   const [showStickyIcons, setShowStickyIcons] = useState(false);
   const [numOfComparisons, setNumOfComparisons] = useState(0);
+  const [selectedProductForSpecs, setSelectedProductForSpecs] = useState(null);
   const radarSectionRef = useRef(null);
+  const productSliderRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   // Normalize API response structure
   const comparisonResponse = resultProduct?.data || resultProduct || {};
@@ -111,7 +116,45 @@ const ComparePage = ({ params }) => {
     return (Array.isArray(comparedProducts) ? comparedProducts : []).slice(0, 3);
   }, [comparedProducts]);
   
-  // Feature scores for the primary product (used for single-product view)
+  // Feature scores for the selected product (used for Key Specs view)
+  const selectedProductFeatureScores = useMemo(() => {
+    if (!selectedProductForSpecs?.featureData) return [];
+    const featureData = selectedProductForSpecs.featureData || [];
+
+    return featureData
+      .map((feature, idx) => {
+        const name =
+          feature?.featureName ||
+          feature?.featureId?.featureName ||
+          `Feature ${idx + 1}`;
+        const score =
+          feature?.scoreValue ??
+          feature?.featureId?.scoreValue ??
+          0;
+        const icon = feature?.icon || feature?.featureId?.icon;
+
+        const numericScore = score || 0;
+        // Normalize: API may send 0–100, but UI expects 0–10
+        const normalizedScore =
+          numericScore > 10 ? Math.round(numericScore / 10) : numericScore;
+
+        // Get icon component
+        const apiIcon = icon ? `${imageUrl}${icon}` : null;
+        const iconComponent = apiIcon 
+          ? <img src={apiIcon} alt={name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
+          : getFeatureIcon(name, 20);
+
+        return {
+          name,
+          score: normalizedScore,
+          icon: iconComponent,
+          iconUrl: apiIcon,
+        };
+      })
+      .filter((item) => item.name);
+  }, [selectedProductForSpecs]);
+
+  // Feature scores for the primary product (used for single-product view - fallback)
   const primaryFeatureScores = useMemo(() => {
     if (!limitedProducts || limitedProducts.length === 0) return [];
     const firstProduct = limitedProducts[0];
@@ -127,15 +170,24 @@ const ComparePage = ({ params }) => {
           feature?.scoreValue ??
           feature?.featureId?.scoreValue ??
           0;
+        const icon = feature?.icon || feature?.featureId?.icon;
 
         const numericScore = score || 0;
         // Normalize: API may send 0–100, but UI expects 0–10
         const normalizedScore =
           numericScore > 10 ? Math.round(numericScore / 10) : numericScore;
 
+        // Get icon component
+        const apiIcon = icon ? `${imageUrl}${icon}` : null;
+        const iconComponent = apiIcon 
+          ? <img src={apiIcon} alt={name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
+          : getFeatureIcon(name, 20);
+
         return {
           name,
           score: normalizedScore,
+          icon: iconComponent,
+          iconUrl: apiIcon,
         };
       })
       .filter((item) => item.name);
@@ -469,6 +521,8 @@ const ComparePage = ({ params }) => {
     if (limitedProducts && limitedProducts.length > 0) {
       const firstName = getProductName(limitedProducts[0], 1);
       setComparisonItem(firstName);
+      // Set default selected product for Key Specs
+      setSelectedProductForSpecs(limitedProducts[0]);
     }
   }, [limitedProducts]);
 
@@ -494,6 +548,42 @@ const ComparePage = ({ params }) => {
       });
     }
   }, []);
+
+  // Slider scroll handler
+  const scrollSlider = (direction) => {
+    if (!productSliderRef.current) return;
+    const container = productSliderRef.current;
+    const cardWidth = container.offsetWidth;
+    const scrollAmount = cardWidth;
+    
+    if (direction === 'left') {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  // Check scroll position for slider navigation
+  useEffect(() => {
+    const checkScroll = () => {
+      if (!productSliderRef.current) return;
+      const container = productSliderRef.current;
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.offsetWidth - 10
+      );
+    };
+
+    const container = productSliderRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScroll);
+      checkScroll(); // Initial check
+      
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+      };
+    }
+  }, [limitedProducts]);
 
   // Track scroll to show/hide sticky icons
   useEffect(() => {
@@ -551,198 +641,348 @@ const ComparePage = ({ params }) => {
     <div className="min-h-screen bg-[#E6E7EE]">
       <Navbar />
       <div className="mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px]">
-        {/* TABS */}
-        <div className="w-full">
-          <div className="shadow-lg w-full fixed top-[60px] z-[9999] bg-[#E6E7EE]">
-            <div className="flex gap-4 sm:gap-6 md:gap-8 max-w-[1240px] mx-auto px-4 sm:px-10 md:px-0 overflow-x-auto scrollbar-hide">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-4 sm:pt-6">
+          <div className="rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-4 sm:py-6 md:py-8">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
+              <p className="text-xs sm:text-sm break-words text-[#616161]">
+                <Link href="/" className="hover:text-[#434343]">Home</Link> &gt; {comparisonCategory || "smartphone"} &gt;{" "}
+                <span className="text-[#434343]">
+                  {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
+                </span>
+              </p>
+              <button
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all flex items-center justify-center flex-shrink-0"
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: productNames.join(" vs ") || "Product Comparison",
+                      url: window.location.href,
+                    });
+                  }
+                }}
+                aria-label="Share"
+              >
+                <IoShareSocialOutline className="w-5 h-5 sm:w-6 sm:h-6 text-[#434343]" />
+              </button>
+            </div>
+
+            {/* Product Title */}
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#434343] mb-4 sm:mb-6 px-4 sm:px-6 md:px-6">
+              {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
+            </h1>
+
+            {/* Decorative Line */}
+            <div className="h-px bg-[#d1d9e6] mb-4 sm:mb-6"></div>
+
+            {/* TABS - Neumorphic Style (Up Theme) */}
+            <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 md:px-6">
               {tabs.map((tab, index) => (
-                <div
+                <button
                   key={index}
-                  className={`text-[10px] sm:text-xs font-medium py-2 sm:py-2.5 cursor-pointer whitespace-nowrap ${
+                  className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl whitespace-nowrap text-xs sm:text-sm md:text-base font-medium transition-all my-2 ${
                     selectedTab === index
-                      ? "text-[#434343] border-b-2 border-[#434343]"
-                      : "text-[#616161]"
-                  } hover:text-[#434343]`}
+                      ? "bg-[#E6E7EE] text-[#434343] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-semibold"
+                      : "bg-[#E6E7EE] text-[#616161] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
+                  }`}
                   onClick={() => setSelectedTab(index)}
                 >
                   {tab}
-                </div>
+                </button>
               ))}
             </div>
+
+          
           </div>
         </div>
 
-        <div className="max-w-[700px] mx-auto mt-4 px-4 sm:px-6 md:px-0 h-[60px] sm:h-[80px] md:h-[90px] border border-gray-500">
-          Ad
-        </div>
-
-        {/* Breadcrumb */}
         <div className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
-          <p className="text-xs sm:text-sm break-words">
-            <Link href="/">Home</Link> &gt; {comparisonCategory} comparison &gt;{" "}
-            <span className="text-gray-600">
-              {productNames.join(" vs ")}
-            </span>
-          </p>
-        </div>
-
-        {/* API data preview */}
-        {limitedProducts?.length > 0 && (
-          <div className="max-w-[1280px] mx-auto mt-4 sm:mt-6 px-4 sm:px-6 md:px-4">
-            <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset p-3 sm:p-4">
-              <h3 className="font-semibold text-base sm:text-lg mb-3">Comparison data</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {limitedProducts.map((item, idx) => (
-                  <div
-                    key={item?._id || item?.id || idx}
-                    className="p-2.5 sm:p-3 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset"
-                  >
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      {item?.thumbnail && (
-                        <img
-                          src={BASE_URL + item.thumbnail}
-                          alt={item?.title || item?.name || `Product ${idx + 1}`}
-                          className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-md flex-shrink-0"
-                        />
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-xs sm:text-sm truncate">
-                          {item?.title || item?.name || `Product ${idx + 1}`}
-                        </p>
-                        {item?.brand && (
-                          <p className="text-[10px] sm:text-xs text-gray-600 truncate">{item.brand}</p>
-                        )}
-                      </div>
-                    </div>
-                    {item?.price && (
-                      <p className="text-xs sm:text-sm text-gray-700 mt-2">
-                        Price: {item.price}
-                      </p>
-                    )}
-                    {item?.displaySize && (
-                      <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
-                        Display: {item.displaySize}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
-          {/* Dynamic Product Grid */}
-          <div className={`relative w-full md:w-[90%] mx-auto grid ${
-            limitedProducts?.length === 1 
-              ? "grid-cols-1 max-w-[400px]" 
-              : limitedProducts?.length === 2 
-                ? "grid-cols-1 sm:grid-cols-2" 
-                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          } ${
-            limitedProducts?.length > 1 ? "md:divide-x md:divide-gray-400" : ""
-          } gap-4 sm:gap-6 md:gap-0`}>
-            {limitedProducts?.map((product, index) => {
-              const color = productColors[index] || productColors[0];
-              const productName = getProductName(product, index + 1);
+          {limitedProducts?.length === 1 ? (
+            /* Single Product View - First Image Wireframe */
+            (() => {
+              const product = limitedProducts[0];
+              const productName = getProductName(product, 1);
               const productImage = product?.thumbnail 
                 ? `${imageUrl}${product.thumbnail}` 
-                : `/compare-item-${index + 1}.jpg`;
-              const productPrice = product?.price || product?.amazonPrice || null;
-              const productScore = product?.scoreValue || 75;
+                : `/compare-item-1.jpg`;
+              const productScore = product?.scoreValue || 0;
+              const storage = product?.storage || product?.internalStorage || null;
+              const ram = product?.ram || product?.memory || null;
+              const configuration = storage && ram 
+                ? `${ram} + ${storage}` 
+                : storage || ram || "1GB + 16GB";
 
               return (
-                <React.Fragment key={product?._id || index}>
-                  <div className="relative px-2 sm:px-3 md:px-4 py-3 sm:py-4 border-b sm:border-b-0 md:border-b-0 border-gray-300 md:border-0 last:border-b-0">
-                    <div className="flex gap-2 sm:gap-3 items-start sm:items-center flex-col sm:flex-row">
-                      <div
-                        className="inline-flex items-center justify-center rounded-full text-xs font-bold bg-white flex-shrink-0"
-                        style={{
-                          background: `conic-gradient(${color} ${productScore}%, #e5e7eb ${productScore}%)`,
-                        }}
-                      >
-                        <span className="text-gray-600 bg-white rounded-full flex flex-col items-center justify-center m-0.5 sm:m-1 py-1 sm:py-1.5 px-0.5 sm:px-1">
-                          <span className="text-sm sm:text-base leading-[1rem]">{productScore}</span>
-                          <span className="text-[8px] sm:text-[10px] leading-[0.5rem]">Points</span>
-                        </span>
-                      </div>
-                      <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl break-words">
-                        {productName}
-                      </p>
+                <div className="max-w-[600px] mx-auto">
+                  {/* Variant Selector - Neumorphic Up Theme */}
+                  <div className="mb-4 sm:mb-6">
+                    <div className="px-4 py-3 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-sm sm:text-base text-[#434343] font-medium">
+                      {configuration}
                     </div>
+                  </div>
 
-                    <div className="relative mt-3 sm:mt-4 w-full sm:w-[90%] md:w-[85%] mx-auto">
-                      {/* Product Image */}
+                  {/* Phone Image Container - Neumorphic Up/Down Theme */}
+                  <div className="relative w-full flex items-center justify-center bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-6 sm:p-8 min-h-[300px] sm:min-h-[400px]">
+                    {productImage ? (
                       <img
                         src={productImage}
                         alt={productName}
-                        className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] w-full object-contain object-top"
+                        className="max-h-[300px] sm:max-h-[400px] w-auto object-contain"
                       />
-
-                      {/* Fading Effect */}
-                      <div className="absolute bottom-0 left-0 w-full h-16 sm:h-20 md:h-24 bg-gradient-to-t from-white to-transparent"></div>
-                    </div>
-
-                    {/* Price & Amazon Logo */}
-                    {productPrice && (
-                      <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 right-2 sm:right-3 md:right-4 flex flex-col items-end">
-                        <div 
-                          className="rounded-full inline-flex mb-1 sm:mb-2 px-2 sm:px-3 md:px-4 py-0.5 sm:py-1 uppercase text-white text-[10px] sm:text-xs md:text-sm lg:text-base"
-                          style={{ backgroundColor: color }}
-                        >
-                          New
-                        </div>
-                        <div 
-                          className="flex items-center gap-1.5 sm:gap-2 md:gap-3 pl-2 sm:pl-3 pr-2 sm:pr-3 md:pr-4 py-0.5 sm:py-1 w-fit border-2 sm:border-[3px] rounded-full bg-white"
-                          style={{ borderColor: color }}
-                        >
-                          <div className="flex items-center sm:items-start gap-0.5 sm:gap-1 text-gray-700 italic">
-                            <span className="font-bold text-xs sm:text-sm md:text-base sm:mt-[2px]">₹</span>
-                            <span className="font-bold text-sm sm:text-base md:text-xl lg:text-2xl">
-                              {productPrice}
-                            </span>
-                          </div>
-                          <span>
-                            <img src={"/amazon.png"} className="w-[30px] sm:w-[40px] md:w-[50px] mt-1 sm:mt-2 mr-1 sm:mr-2 md:mr-4" />
-                          </span>
-                        </div>
+                    ) : (
+                      <div className="text-[#616161] text-center">
+                        <CiMobile1 size={120} className="mx-auto mb-4 opacity-50" />
+                        <p className="text-sm">No image available</p>
                       </div>
                     )}
+                    
+                    {/* Expand Popup Indicator - Top Right with "9" */}
+                    <button
+                      className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all flex items-center justify-center group"
+                      onClick={() => {
+                        // Handle expand popup - could open a modal or navigate
+                        console.log("Expand popup clicked");
+                      }}
+                      aria-label="Expand popup"
+                    >
+                      <span className="text-sm sm:text-base font-bold text-[#434343]">9</span>
+                      <span className="absolute -right-16 sm:-right-20 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-[#616161] whitespace-nowrap">
+                        Expand popup
+                      </span>
+                    </button>
                   </div>
 
-                  {/* VS Badge - show between products on mobile */}
-                  {index < (limitedProducts?.length || 0) - 1 && (
-                    <>
-                      {/* Mobile VS Badge */}
-                      <div className="sm:hidden flex justify-center items-center py-2">
-                        <div className="bg-white border-2 border-gray-400 rounded-full px-3 py-1 font-bold text-gray-600 text-sm">
-                          vs
-                        </div>
-                      </div>
-                      {/* Desktop VS Badge */}
-                      <div 
-                        className="hidden sm:block absolute bg-white border-2 border-gray-400 rounded-full px-2.5 py-1 font-bold text-gray-600 z-10"
-                        style={{
-                          left: `${((index + 1) / (limitedProducts?.length || 1)) * 100}%`,
-                          top: '55%',
-                          transform: 'translate(-50%, -50%)'
-                        }}
-                      >
-                        vs
-                      </div>
-                    </>
-                  )}
-                </React.Fragment>
+                  {/* Image Carousel Indicators */}
+                  <div className="flex gap-2 mt-4 justify-center">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <div
+                        key={num}
+                        className={`w-3 h-3 rounded-full transition-all ${
+                          num === 1
+                            ? "bg-[#434343] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
+                            : "bg-[#E6E7EE] shadow-[2px_2px_4px_#d1d9e6,-2px_-2px_4px_#ffffff]"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-[#616161] mt-2 text-center">{productScore} point{productScore !== 1 ? 's' : ''}</p>
+                </div>
               );
-            })}
-          </div>
+            })()
+          ) : (
+            /* Multiple Products View - Third/Fourth Image Wireframe */
+            <div className="relative">
+              {/* Mobile Slider View */}
+              <div className="relative sm:hidden">
+                {/* Left Navigation Arrow */}
+                {canScrollLeft && (
+                  <button
+                    onClick={() => scrollSlider('left')}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-[#E6E7EE] rounded-full shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all"
+                    aria-label="Previous product"
+                  >
+                    <svg className="w-5 h-5 text-[#434343]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                )}
 
-          {/* Title Section */}
+                {/* Slider Container */}
+                <div
+                  ref={productSliderRef}
+                  className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide gap-4 pb-4 -mx-2 px-2"
+                  style={{ 
+                    scrollbarWidth: 'none', 
+                    msOverflowStyle: 'none',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
+                >
+                  {limitedProducts?.map((product, index) => {
+                    const color = productColors[index] || productColors[0];
+                    const productName = getProductName(product, index + 1);
+                    const productImage = product?.thumbnail 
+                      ? `${imageUrl}${product.thumbnail}` 
+                      : `/compare-item-${index + 1}.jpg`;
+                    const productPrice = product?.price || product?.amazonPrice || null;
+                    const productScore = product?.scoreValue || 75;
+                    const storage = product?.storage || product?.internalStorage || null;
+                    const ram = product?.ram || product?.memory || null;
+                    const configuration = storage && ram 
+                      ? `${ram} + ${storage}` 
+                      : storage || ram || "";
+
+                    return (
+                      <div
+                        key={product?._id || index}
+                        className="flex-shrink-0 w-full snap-center px-2"
+                      >
+                        <div className="relative flex flex-col px-4 py-6 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]">
+                          {/* Product Name and Variant */}
+                          <div className="mb-3">
+                            <p className="font-bold text-lg text-center mb-2 break-words px-2 text-[#434343]">
+                              {productName}
+                            </p>
+                            <p className="text-sm text-center text-[#616161]">{configuration}</p>
+                          </div>
+
+                          {/* Product Image Container - Neumorphic */}
+                          <div className="relative mt-4 w-full flex items-center justify-center min-h-[200px] bg-[#E6E7EE] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-4">
+                            {productImage ? (
+                              <img
+                                src={productImage}
+                                alt={productName}
+                                className="h-[200px] w-full object-contain object-top"
+                              />
+                            ) : (
+                              <CiMobile1 size={120} className="opacity-30" />
+                            )}
+                            
+                            {/* Score Badge - Top Right */}
+                            <div className="absolute top-2 right-2">
+                              <div className="relative w-12 h-12 flex items-center justify-center">
+                                <div
+                                  className="absolute inset-0 rounded-full"
+                                  style={{
+                                    background: `conic-gradient(${color} ${productScore}%, #e5e7eb ${productScore}%)`,
+                                  }}
+                                />
+                                <div className="absolute inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+                                  <span className="text-xs font-bold text-[#434343] leading-none">
+                                    {productScore}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Price Button - Bottom */}
+                          {productPrice && (
+                            <div className="mt-4 flex justify-center">
+                              <button className="px-6 py-2.5 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all text-sm font-semibold text-[#434343]">
+                                ₹ {productPrice.toLocaleString()}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* VS Badge between products */}
+                        {index < (limitedProducts?.length || 0) - 1 && (
+                          <div className="flex justify-center items-center py-3">
+                            <div className="w-12 h-12 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
+                              <span className="font-bold text-[#434343] text-sm">VS</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Right Navigation Arrow */}
+                {canScrollRight && (
+                  <button
+                    onClick={() => scrollSlider('right')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center bg-[#E6E7EE] rounded-full shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all"
+                    aria-label="Next product"
+                  >
+                    <svg className="w-5 h-5 text-[#434343]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {/* Desktop Grid View */}
+              <div className={`hidden sm:grid relative w-full md:w-[90%] mx-auto ${
+                limitedProducts?.length === 2 
+                  ? "grid-cols-2 gap-4 sm:gap-6" 
+                  : "grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+              }`}>
+                {limitedProducts?.map((product, index) => {
+                  const color = productColors[index] || productColors[0];
+                  const productName = getProductName(product, index + 1);
+                  const productImage = product?.thumbnail 
+                    ? `${imageUrl}${product.thumbnail}` 
+                    : `/compare-item-${index + 1}.jpg`;
+                  const productPrice = product?.price || product?.amazonPrice || null;
+                  const productScore = product?.scoreValue || 75;
+                  const storage = product?.storage || product?.internalStorage || null;
+                  const ram = product?.ram || product?.memory || null;
+                  const configuration = storage && ram 
+                    ? `${ram} + ${storage}` 
+                    : storage || ram || "";
+
+                  return (
+                    <React.Fragment key={product?._id || index}>
+                      <div className="relative flex flex-col px-3 sm:px-4 md:px-6 py-4 sm:py-6 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]">
+                        {/* Product Name and Variant */}
+                        <div className="mb-3">
+                          <p className="font-bold text-base sm:text-lg md:text-xl text-center mb-2 break-words px-2 text-[#434343]">
+                            {productName}
+                          </p>
+                          <p className="text-xs sm:text-sm text-center text-[#616161]">{configuration}</p>
+                        </div>
+
+                        {/* Product Image Container - Neumorphic */}
+                        <div className="relative mt-2 sm:mt-4 w-full flex-1 flex items-center justify-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px] bg-[#E6E7EE] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-4">
+                          {productImage ? (
+                            <img
+                              src={productImage}
+                              alt={productName}
+                              className="h-[200px] sm:h-[250px] md:h-[300px] w-full object-contain object-top"
+                            />
+                          ) : (
+                            <CiMobile1 size={120} className="opacity-30" />
+                          )}
+                          
+                          {/* Score Badge - Top Right */}
+                          <div className="absolute top-2 right-2">
+                            <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
+                              <div
+                                className="absolute inset-0 rounded-full"
+                                style={{
+                                  background: `conic-gradient(${color} ${productScore}%, #e5e7eb ${productScore}%)`,
+                                }}
+                              />
+                              <div className="absolute inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+                                <span className="text-xs sm:text-sm font-bold text-[#434343] leading-none">
+                                  {productScore}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Price Button - Bottom */}
+                        {productPrice && (
+                          <div className="mt-4 sm:mt-6 flex justify-center">
+                            <button className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all text-xs sm:text-sm font-semibold text-[#434343]">
+                              ₹ {productPrice.toLocaleString()}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+                
+                {/* Desktop VS Badge - Centered between products (only for 2 products) */}
+                {limitedProducts?.length === 2 && (
+                  <div className="hidden sm:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center pointer-events-none">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
+                      <span className="font-bold text-[#434343] text-sm sm:text-base">VS</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Title Section - 0 Level Header */}
           <div className="mt-6 sm:mt-8 md:mt-10 text-center mx-auto px-4 sm:px-6 md:px-0">
             <p className="text-[#616161] text-[10px] sm:text-xs font-bold tracking-[0.5px] sm:tracking-[1px] mb-2 uppercase">
               {limitedProducts?.length > 0 ? `${limitedProducts.length * 100} FACTS IN COMPARISON` : "250 FACTS IN COMPARISON"}
             </p>
-            <h1 className="text-black text-lg sm:text-xl md:text-2xl lg:text-[40px] leading-[1.2] sm:leading-[1.1] m-0 font-bold break-words px-2">
+            <h1 className="text-[#434343] text-lg sm:text-xl md:text-2xl lg:text-[40px] leading-[1.2] sm:leading-[1.1] m-0 font-bold break-words px-2">
               {productNames.length > 0 ? (
                 productNames.map((name, idx) => (
                   <React.Fragment key={idx}>
@@ -768,60 +1008,71 @@ const ComparePage = ({ params }) => {
             Ad
           </div>
 
-          <div className="max-w-[1280px] w-full lg:w-[55%] mx-auto px-4 sm:px-6 md:px-8 lg:px-0">
-            <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-16 px-2 sm:px-4 md:px-6 lg:px-10 border-b border-gray-400 overflow-x-auto scrollbar-hide">
-              {productNames.length > 0 ? (
-                productNames.map((name, index) => {
-                  const isActive = comparisonItem === name;
+          <div className="max-w-[1280px] w-full lg:w-[55%] mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft ">
+            {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
+            <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-6 lg:px-10 pb-4 sm:pb-5 overflow-x-auto scrollbar-hide pt-6 border-b-[2px] border-[#d1d9e6]">
+              {limitedProducts && limitedProducts.length > 0 ? (
+                limitedProducts.map((prod, idx) => {
+                  const productName = getProductName(prod, idx + 1);
+                  const isActive = comparisonItem === productName || (comparisonItem === "" && idx === 0);
                   return (
-                    <div
-                      key={index}
-                      className={`py-2 cursor-pointer whitespace-nowrap transition-all duration-200 text-sm sm:text-base ${
-                        isActive
-                          ? "border-b-2 font-semibold"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      style={{
-                        borderColor: isActive ? productColors[index] : 'transparent',
-                        color: isActive ? productColors[index] : undefined
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setComparisonItem(productName);
+                        setSelectedProductForSpecs(prod);
                       }}
-                      onClick={() => setComparisonItem(name)}
+                      className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all whitespace-nowrap ${
+                        isActive
+                          ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                          : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
+                      }`}
                     >
-                      {name}
-                    </div>
+                      {productName}
+                    </button>
                   );
                 })
               ) : (
                 <>
-                  <div
-                    className={`py-2 cursor-pointer transition-all duration-200 text-sm sm:text-base ${
-                      comparisonItem === "Product 1"
-                        ? "border-b-2 border-[#434343] font-semibold text-[#434343]"
-                        : "text-gray-600 hover:text-gray-900"
+                  <button
+                    onClick={() => {
+                      setComparisonItem("Product 1");
+                      if (limitedProducts && limitedProducts.length > 0) {
+                        setSelectedProductForSpecs(limitedProducts[0]);
+                      }
+                    }}
+                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${
+                      comparisonItem === "Product 1" || comparisonItem === ""
+                        ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                        : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
                     }`}
-                    onClick={() => setComparisonItem("Product 1")}
                   >
                     Product 1
-                  </div>
-                  <div
-                    className={`py-2 cursor-pointer transition-all duration-200 text-sm sm:text-base ${
+                  </button>
+                  <button
+                    onClick={() => {
+                      setComparisonItem("Product 2");
+                      if (limitedProducts && limitedProducts.length > 1) {
+                        setSelectedProductForSpecs(limitedProducts[1]);
+                      }
+                    }}
+                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${
                       comparisonItem === "Product 2"
-                        ? "border-b-2 border-[#3F51B5] font-semibold text-[#3F51B5]"
-                        : "text-gray-600 hover:text-gray-900"
+                        ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                        : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
                     }`}
-                    onClick={() => setComparisonItem("Product 2")}
                   >
                     Product 2
-                  </div>
+                  </button>
                 </>
               )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
-              <div className="relative pl-0 lg:pl-0" ref={radarSectionRef}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 px-2 sm:px-4 md:px-6 lg:px-10">
+              <div className="relative pl-0 lg:pl-0 min-w-0" ref={radarSectionRef}>
                 <RadarChart 
-                  products={limitedProducts}
-                  productNames={productNames}
+                  products={selectedProductForSpecs ? [selectedProductForSpecs] : limitedProducts}
+                  productNames={selectedProductForSpecs ? [getProductName(selectedProductForSpecs)] : productNames}
                   productColors={productColors}
                 />
 
@@ -915,20 +1166,22 @@ const ComparePage = ({ params }) => {
                   })}
                 </div>
 
-                <div className="flex justify-center divide-x absolute bottom-0 left-[25%]">
-                  {productNames.length > 0 ? (
-                    productNames.map((name, index) => (
-                      <div key={index} className="flex flex-col items-center px-2 sm:px-3 md:px-4">
-                        <span 
-                          className="text-xl sm:text-2xl font-bold"
-                          style={{ color: productColors[index] }}
-                        >
-                          {limitedProducts?.[index]?.scoreValue || icons?.find((icon) => icon.tooltip === selectedFeature)?.[`item${index + 1}points`] || (75 + index * 10)}
-                        </span>
-                        <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
-                      </div>
-                    ))
-                  ) : (
+                {/* Points Display - Only for Multiple Products */}
+                {limitedProducts?.length > 1 && (
+                  <div className="flex justify-center divide-x absolute bottom-0 left-[25%]">
+                    {productNames.length > 0 ? (
+                      productNames.map((name, index) => (
+                        <div key={index} className="flex flex-col items-center px-2 sm:px-3 md:px-4">
+                          <span 
+                            className="text-xl sm:text-2xl font-bold"
+                            style={{ color: productColors[index] }}
+                          >
+                            {limitedProducts?.[index]?.scoreValue || icons?.find((icon) => icon.tooltip === selectedFeature)?.[`item${index + 1}points`] || (75 + index * 10)}
+                          </span>
+                          <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
+                        </div>
+                      ))
+                    ) : (
                     <>
                       <div className="flex flex-col items-center px-2 sm:px-3 md:px-4">
                         <span className="text-[#434343] text-xl sm:text-2xl font-bold">
@@ -946,148 +1199,155 @@ const ComparePage = ({ params }) => {
                       </div>
                     </>
                   )}
-                </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 lg:mt-0">
-                {/* Right side content beside radar chart */}
-                {limitedProducts?.length === 1 && primaryFeatureScores.length > 0 ? (
-                  /* Single-product feature review UI (circles) */
-                  <div className="bg-[#E6E7EE] rounded-xl shadow-md px-4 py-4 sm:px-5 sm:py-5">
-                    <h3 className="font-bold text-sm sm:text-base mb-3 text-[#434343]">
-                      {productNames[0]} Review
-                    </h3>
-                    <div className="flex flex-wrap gap-3 sm:gap-4">
-                      {primaryFeatureScores.map((item, idx) => {
-                        const progress = Math.max(0, Math.min(10, item.score));
-                        const percent = (progress / 10) * 100;
-                        const color =
-                          progress >= 8 ? "#24B200" : "#F29A1F";
-                        return (
-                          <div
-                            key={`${item.name}-${idx}`}
-                            className="flex flex-col items-center min-w-[70px]"
-                          >
-                            <div className="relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full">
-                              <div
-                                className="absolute inset-0 rounded-full"
-                                style={{
-                                  background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
-                                }}
-                              />
-                              <div className="absolute inset-0 m-auto flex flex-col items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full">
-                                <p className="text-lg font-bold text-[#434343]">
-                                  {item?.score}
-                                </p>
-                              </div>
-                            </div>
-                            <span className="mt-1 text-[10px] sm:text-xs text-[#616161] text-center leading-tight">
-                              {item?.name}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : limitedProducts?.length >= 2 && ratingRows.length > 0 ? (
-                  /* Ratings table view for 2–3 products */
-                  <div className="bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] overflow-hidden px-2 sm:px-3 py-3">
-                    <h3 className="text-xs sm:text-sm font-bold text-[#434343] mb-2 px-1">
-                      Ratings
-                    </h3>
-                    {/* Header row */}
-                    <div
-                      className="grid text-[10px] sm:text-xs font-semibold text-[#434343] border-b border-[#d1d9e6] bg-[#E6E7EE]"
-                      style={{
-                        gridTemplateColumns: `1.8fr repeat(${Math.min(
-                          3,
-                          limitedProducts.length
-                        )}, minmax(0, 1.4fr))`,
-                      }}
-                    >
-                      <div className="px-2 py-1.5 border-r border-[#d1d9e6]">
-                        Rating
-                      </div>
-                      {limitedProducts.slice(0, 3).map((_, idx) => (
-                        <div
-                          key={idx}
-                          className="px-2 py-1.5 text-center border-r last:border-r-0 border-[#d1d9e6] truncate"
-                        >
-                          {productNames[idx] || `Product ${idx + 1}`}
-                        </div>
-                      ))}
-                    </div>
+                {/* Key Specs Section - Always Show for 1, 2, or 3 products */}
+                {selectedProductForSpecs && (() => {
+                  const product = selectedProductForSpecs;
+                  
+                  // Get key specs from featureData with icons from API
+                  const keySpecsList = (() => {
+                    if (!product?.featureData) return [];
+                    
+                    const specs = [];
+                    product.featureData.forEach((feature) => {
+                      const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+                      const icon = feature?.icon || feature?.featureId?.icon;
+                      const subfeatures = feature?.subfeatures || [];
+                      
+                      // Get first important subfeature for each feature
+                      const firstSubfeature = subfeatures.find(sf => sf?.name && (sf?.details || sf?.unit || sf?.isTrueFalse));
+                      if (firstSubfeature) {
+                        const value = firstSubfeature?.details || 
+                                     (firstSubfeature?.isTrueFalse === "true" || firstSubfeature?.isTrueFalse === true ? "Yes" : 
+                                      firstSubfeature?.isTrueFalse === "false" || firstSubfeature?.isTrueFalse === false ? "No" : 
+                                      `${firstSubfeature?.unit || ""} ${firstSubfeature?.unitsymbol || ""}`.trim()) || "N/A";
+                        
+                        specs.push({
+                          label: firstSubfeature.name,
+                          value: value,
+                          icon: icon ? `${imageUrl}${icon}` : null,
+                          featureName: featureName
+                        });
+                      }
+                    });
+                    
+                    return specs.slice(0, 8); // Limit to 8 key specs
+                  })();
 
-                    {/* Rating rows */}
-                    <div className="divide-y divide-[#d1d9e6]">
-                      {ratingRows.map((row, rowIdx) => (
-                        <div
-                          key={`${row.name}-${rowIdx}`}
-                          className="grid text-[10px] sm:text-xs text-[#222222] bg-[#E6E7EE]"
-                          style={{
-                            gridTemplateColumns: `1.8fr repeat(${row.scores.length}, minmax(0, 1.4fr))`,
-                          }}
-                        >
-                          <div className="px-2 py-1.5 border-r border-[#d1d9e6] text-[#d02626] font-medium truncate">
-                            {row.name}
-                          </div>
-                          {row.scores.map((score, idx) => {
-                            const clamped = Math.max(0, Math.min(10, score));
-                            const percent = (clamped / 10) * 100;
-                            const color = clamped >= 8 ? "#24B200" : "#F29A1F";
+                  return (
+                    <div>
+                      {/* Product Selection Buttons - Neumorphic Up Theme (Above Header) */}
+                      {/* {limitedProducts.length > 1 && (
+                        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-5">
+                          {limitedProducts.map((prod, idx) => {
+                            const isSelected = selectedProductForSpecs?._id === prod._id;
                             return (
-                              <div
+                              <button
                                 key={idx}
-                                className="flex items-center justify-center px-2 py-1.5"
+                                onClick={() => setSelectedProductForSpecs(prod)}
+                                className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${
+                                  isSelected
+                                    ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                                    : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
+                                }`}
                               >
-                                {clamped > 0 ? (
-                                  <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full">
-                                    <div
-                                      className="absolute inset-0 rounded-full"
-                                      style={{
-                                        background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
-                                      }}
-                                    />
-                                    <div className="absolute inset-[3px] rounded-full bg-white flex items-center justify-center">
-                                      <span className="text-[10px] sm:text-xs font-bold text-[#434343] leading-none">
-                                        {clamped}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <span className="text-[#999999]">-</span>
-                                )}
-                              </div>
+                                {getProductName(prod, idx + 1)}
+                              </button>
                             );
                           })}
                         </div>
-                      ))}
+                      )} */}
+                      
+                      {/* Section Header - 0 Level (Completely Flat - No Shadows, No Background) */}
+                      <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-[#434343] mb-4 sm:mb-5 md:mb-6">
+                        Key Specs
+                      </h3>
+                      {/* Content - Neumorphic Theme (Up and Down) */}
+                      <div className="bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-3 sm:p-4 md:p-5 lg:p-6">
+                        
+                        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
+                          {keySpecsList.length > 0 ? (
+                            keySpecsList.map((spec, idx) => (
+                              <div
+                                key={idx}
+                                className="p-3 sm:p-3.5 md:p-4 rounded-xl bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
+                              >
+                                <div className="flex flex-col items-start gap-2.5 sm:gap-3">
+                                  {/* Icon - Top (Neumorphic Up Theme) */}
+                                  {spec.icon ? (
+                                    <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center p-1.5 sm:p-2 flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                      <img
+                                        src={spec.icon}
+                                        alt={spec.label}
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => {
+                                          e.target.style.display = "none";
+                                        }}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                      <span className="text-sm sm:text-base font-bold text-[#616161]">
+                                        {spec.label.charAt(0)}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {/* Label - Below Icon */}
+                                  <p className="text-xs sm:text-sm md:text-base font-medium text-[#616161] leading-tight">
+                                    {spec.label}
+                                  </p>
+                                  {/* Value - Below Label */}
+                                  <p className="text-xs sm:text-sm md:text-base font-bold text-[#434343] break-words line-clamp-2 leading-tight">
+                                    {spec.value}
+                                  </p>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-2 text-center py-8 text-[#616161]">
+                              <p className="text-sm">No specifications available</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Bottom Info Section - Zero Level Headers - 3 Columns with Dividers */}
+                        <div className="mt-5 sm:mt-6 md:mt-7 pt-4 sm:pt-5 border-t-2 border-[#d1d9e6]">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#d1d9e6]">
+                            {product?.marketStatus && (
+                              <div className="sm:pr-4 md:pr-6">
+                                <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Market status</p>
+                                <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.marketStatus}</p>
+                              </div>
+                            )}
+                            {product?.releaseDate && (
+                              <div className="pt-4 sm:pt-0 sm:px-4 md:px-6">
+                                <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Released date</p>
+                                <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.releaseDate}</p>
+                              </div>
+                            )}
+                            {product?.officialWebsite && (
+                              <div className="pt-4 sm:pt-0 sm:pl-4 md:pl-6">
+                                <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Official website</p>
+                                <a
+                                  href={product.officialWebsite}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm sm:text-base md:text-lg font-bold text-[#434343] hover:underline"
+                                >
+                                  Visit website
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  /* Fallback: keep comparison summary if no ratings data */
-                  <>
-                    {productNames.length > 0 ? (
-                      <ComparisonSummary
-                        comparisonItem1={comparisonItem || productNames[0]}
-                        comparisonItem2={
-                          productNames.filter(
-                            (name) => name !== comparisonItem
-                          )[0] ||
-                          productNames[1] ||
-                          "Product 2"
-                        }
-                        selectedFeature={selectedFeature}
-                      />
-                    ) : (
-                      <ComparisonSummary
-                        comparisonItem1={"Product 1"}
-                        comparisonItem2={"Product 2"}
-                        selectedFeature={selectedFeature}
-                      />
-                    )}
-                  </>
-                )}
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -1099,10 +1359,6 @@ const ComparePage = ({ params }) => {
 
         <MostPopularComparison popularComparison={popularComparisonList} />
 
-        {/* Key Specs - Only show when there's one product */}
-        {limitedProducts?.length === 1 && (
-          <KeySpecs product={limitedProducts[0]} />
-        )}
 
         <PriceComparison />
 

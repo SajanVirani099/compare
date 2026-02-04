@@ -329,23 +329,23 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
     <div className="max-w-[1400px] mx-auto px-6">
       {!onlyBlogGrid && (
         <>
-          <div className="mb-16">
-            <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
-              Ad Box
-            </div>
-          </div>
-          <div className="mt-5 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
-            <div className="border-b-2 border-gray-300 rounded-t-xl flex items-center justify-between p-3">
-              <h3 className="text-[20px] font-bold">Quick Compare</h3>
-              {/* <button
-              className="btn btn-primary !text-lg px-4 py-2 me-3"
-              onClick={() => router.push("/quick-compare")}
-            >
-              See all
-            </button> */}
-            </div>
-            <div className="p-6">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
+      <div className="mb-16">
+        <div className="hidden md:flex w-full h-[300px] border-2 border-dashed border-gray-400 items-center justify-center">
+          Ad Box
+        </div>
+      </div>
+      <div className="mt-5 border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
+        <div className="border-b-2 border-gray-300 rounded-t-xl flex items-center justify-between p-3">
+          <h3 className="text-[20px] font-bold">Quick Compare</h3>
+          {/* <button
+            className="btn btn-primary !text-lg px-4 py-2 me-3"
+            onClick={() => router.push("/quick-compare")}
+          >
+            See all
+          </button> */}
+        </div>
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
             {/* Product Slot 1 */}
             <div 
               className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
@@ -551,15 +551,15 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
               )}
             </div>
           </div>
-              <div className="flex items-center justify-center my-6 sm:mt-10">
-                <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
-                  More Compare
-                </button>
-              </div>
-            </div>
+          <div className="flex items-center justify-center my-6 sm:mt-10">
+            <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
+              More Compare
+            </button>
           </div>
+        </div>
+      </div>
 
-          {/* Product Selection Dialog */}
+      {/* Product Selection Dialog */}
       <Transition appear show={isDialogOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setIsDialogOpen(false)}>
           <Transition.Child
@@ -717,35 +717,35 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
 
       {!onlyBlogGrid && (
         <>
-          <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
-            <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
-              <h3 className="text-[20px] font-bold">Categories</h3>
-              <button 
-              className="btn btn-primary !text-sm px-2 !py-1 me-3"
-              onClick={() => router.push("/categories")}
-            >
-              See all
-            </button>
-            </div>
-            <div className="p-4">
-              <div className="flex flex-wrap items-center gap-4">
-                {category.map((item, index) => {
-                  return (
-                    <button
-                      key={index}
-                      className="btn focus shadow-soft"
-                      onClick={() => router.push("/categories")}
-                    >
-                      {item?.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+      <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
+        <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
+          <h3 className="text-[20px] font-bold">Categories</h3>
+          <button 
+            className="btn btn-primary !text-sm px-2 !py-1 me-3"
+            onClick={() => router.push("/categories")}
+          >
+            See all
+          </button>
+        </div>
+        <div className="p-4">
+          <div className="flex flex-wrap items-center gap-4">
+            {category.map((item, index) => {
+              return (
+                <button
+                  key={index}
+                  className="btn focus shadow-soft"
+                  onClick={() => router.push("/categories")}
+                >
+                  {item?.name}
+                </button>
+              );
+            })}
           </div>
-          <div className="hidden md:flex h-[150px] mt-4 border-2 border-dashed border-gray-700 items-center justify-center">
-            Ad Box
-          </div>
+        </div>
+      </div>
+      <div className="hidden md:flex h-[150px] mt-4 border-2 border-dashed border-gray-700 items-center justify-center">
+        Ad Box
+      </div>
         </>
       )}
       <div className="flex justify-center gap-4 mb-20 mt-10">
