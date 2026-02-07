@@ -26,7 +26,7 @@ const UserReviews = ({
 
   return (
     <div className="bg-[#f6f7fb] mt-6 py-10">
-      <div className="max-w-[1280px] w-[95%] md:w-[75%] lg:w-[55%] mx-auto">
+      <div className="max-w-[1280px] mx-auto">
         <h2 className="text-3xl font-bold mb-4 text-center">
           <span className="border-b border-black">User</span> reviews
         </h2>

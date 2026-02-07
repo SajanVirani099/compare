@@ -251,12 +251,18 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
 
             {/* Features Row Below Radar Chart - Horizontal Scrollable Circular Progress Indicators */}
             {features.length > 0 && (
-                <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden">
-                    <div className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden  border-[#d1d9e6] border-2 rounded-lg shadow-inset mb-8">
+                    <div className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
                         {features.map((feature, idx) => {
                             const progress = feature.score;
                             const percent = (progress / 10) * 100;
-                            const color = progress >= 8 ? "#24B200" : "#F29A1F";
+                            // Color logic: Red (0-3), Yellow (4-6), Green (7-10)
+                            let color = "#EF4444"; // Red (default)
+                            if (progress >= 7) {
+                                color = "#24B200"; // Green
+                            } else if (progress >= 4) {
+                                color = "#F29A1F"; // Yellow/Orange
+                            }
                             
                             return (
                                 <div
@@ -264,25 +270,27 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                                     className="flex flex-col items-center flex-shrink-0"
                                 >
                                     {/* Circular Progress Indicator - Neumorphic Up Theme */}
-                                    <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
-                                        {/* Score Circle Background - Outer Ring (Progress Ring) */}
+                                    <div className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
+                                        {/* Score Circle Background - Outer Ring (Progress Ring) - Colorful Border */}
                                         <div
                                             className="absolute inset-[2px] rounded-full"
                                             style={{
                                                 background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
                                             }}
                                         />
-                                        {/* Inner Circle with Icon and Number - Neumorphic Down Theme */}
-                                        <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5" style={{zIndex: 99}}>
-                                            {/* Icon - Ensure it's visible with proper sizing */}
-                                            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center mb-1 flex-shrink-0" style={{ minHeight: '24px', minWidth: '24px' }}>
+                                        {/* Inner Circle with Icon Only - Neumorphic Down Theme */}
+                                        <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5" style={{zIndex: 99}}>
+                                            {/* Icon - Centered and visible */}
+                                            <div className="w-full h-full flex items-center justify-center flex-shrink-0">
                                                 {feature?.iconUrl ? (
                                                     <img 
                                                         src={feature.iconUrl} 
                                                         alt={feature.name} 
-                                                        className="w-full h-full object-contain"
-                                                        style={{ width: '100%', height: '100%', display: 'block' }}
-                                                       
+                                                        className="w-6 h-6 object-contain"
+                                                        style={{display: 'block'}}
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-[#434343]" style={{ color: '#434343' }}>
@@ -290,23 +298,18 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                                                     </div>
                                                 )}
                                             </div>
-                                            {/* Score Number - Make it more visible */}
-                                            <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#434343] leading-tight">
-                                                {feature?.score || 0}
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             );
                         })}
-                    </div>
-                    
-                    {/* Total Points - Centered Below Features */}
-                    <div className="mt-3 text-center">
-                        <p className="text-sm sm:text-base text-[#616161] font-medium">
-                            {activeProduct?.scoreValue || 0} point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
-                        </p>
-                    </div>
+                        </div>
+                        <div className="mt-3 text-center border-t border-[#d1d9e6] py-3">
+                            <p className="text-sm sm:text-base text-[#616161] font-medium">
+                                {activeProduct?.scoreValue || 0} <br/> point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
+                            </p>
+                        </div>
+                       
                 </div>
             )}
         </div>

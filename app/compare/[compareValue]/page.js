@@ -29,6 +29,7 @@ import BestSmartphones from "@/components/bestSmartphones/bestSmartphones";
 import { getResultProduct, getPopularComparison } from "@/app/redux/slice/blogSlice";
 import Navbar from "@/components/Navbar";
 import { BASE_URL, imageUrl } from "@/components/utils/config";
+import Footer from "@/components/Footer";
 
 // Colors for different products
 const productColors = ["#434343", "#3F51B5", "#10B981"];
@@ -75,14 +76,17 @@ const ComparePage = ({ params }) => {
   const [selectedProductForSpecs, setSelectedProductForSpecs] = useState(null);
   const radarSectionRef = useRef(null);
   const productSliderRef = useRef(null);
+  const mostPopularSectionRef = useRef(null);
+  const headerSectionRef = useRef(null);
+  const footerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
   // Normalize API response structure
   const comparisonResponse = resultProduct?.data || resultProduct || {};
   const comparedProducts =
     comparisonResponse?.comparedProducts || comparisonResponse?.data?.comparedProducts || [];
-  console.log("🚀 ~ ComparePage ~ comparedProducts:", comparedProducts)
 
   // Normalize popular comparison data: array of { left, right }
   const popularComparisonList =
@@ -585,10 +589,42 @@ const ComparePage = ({ params }) => {
     }
   }, [limitedProducts]);
 
-  // Track scroll to show/hide sticky icons
+  // Track scroll to show/hide sticky icons and make header sticky
   useEffect(() => {
     const handleScroll = () => {
-      if (radarSectionRef.current) {
+      // Handle header sticky - check if header is stuck
+      if (headerSectionRef.current) {
+        const headerRect = headerSectionRef.current.getBoundingClientRect();
+        const navbarHeight = 95;
+        const scrollY = window.scrollY || window.pageYOffset;
+        
+        // Header is stuck when its top position is at or below navbar height
+        const isStuck = headerRect.top <= navbarHeight;
+        setIsHeaderSticky(isStuck);
+      }
+
+      // Handle sticky icons visibility
+      if (radarSectionRef.current && mostPopularSectionRef.current && footerRef.current) {
+        const radarRect = radarSectionRef.current.getBoundingClientRect();
+        const mostPopularRect = mostPopularSectionRef.current.getBoundingClientRect();
+        const footerRect = footerRef.current.getBoundingClientRect();
+        
+        // Check if MostPopularComparison section is in view or scrolled past
+        const isMostPopularVisible = mostPopularRect.top < window.innerHeight && mostPopularRect.bottom > 0;
+        
+        // Check if footer is in view or scrolled past
+        const isFooterVisible = footerRect.top < window.innerHeight;
+        
+        // Show sticky icons when radar section is scrolled past AND MostPopularComparison is not visible AND footer is not visible
+        const shouldShow = radarRect.bottom < 100 && !isMostPopularVisible && !isFooterVisible;
+        setShowStickyIcons(shouldShow);
+      } else if (radarSectionRef.current && footerRef.current) {
+        const radarRect = radarSectionRef.current.getBoundingClientRect();
+        const footerRect = footerRef.current.getBoundingClientRect();
+        const isFooterVisible = footerRect.top < window.innerHeight;
+        // Show sticky icons when radar section is scrolled past AND footer is not visible
+        setShowStickyIcons(radarRect.bottom < 100 && !isFooterVisible);
+      } else if (radarSectionRef.current) {
         const rect = radarSectionRef.current.getBoundingClientRect();
         // Show sticky icons when radar section is scrolled past
         setShowStickyIcons(rect.bottom < 100);
@@ -642,7 +678,25 @@ const ComparePage = ({ params }) => {
       <Navbar />
       <div className="mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-4 sm:pt-6">
-          <div className="rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-4 sm:py-6 md:py-8">
+          <div 
+            ref={headerSectionRef}
+            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-4 sm:py-6 md:py-8 transition-all duration-200 mb-4 sm:mb-6 ${
+              isHeaderSticky ? 'fixed z-[9999]' : 'sticky z-[9999]'
+            }`}
+            style={isHeaderSticky ? {
+              position: 'fixed',
+              top: '75px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'calc(100% - 2rem)',
+              maxWidth: '1280px',
+              paddingLeft: '1rem',
+              paddingRight: '1rem'
+            } : {
+              position: 'sticky',
+              top: '95px',
+            }}
+          >
             <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
               <p className="text-xs sm:text-sm break-words text-[#616161]">
                 <Link href="/" className="hover:text-[#434343]">Home</Link> &gt; {comparisonCategory || "smartphone"} &gt;{" "}
@@ -693,6 +747,10 @@ const ComparePage = ({ params }) => {
 
           
           </div>
+          {/* Spacer to prevent content jump when header becomes fixed */}
+          {isHeaderSticky && (
+            <div className="h-[1px] mb-4 sm:mb-6" style={{ height: headerSectionRef.current?.offsetHeight || 'auto' }}></div>
+          )}
         </div>
 
         <div className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
@@ -751,20 +809,7 @@ const ComparePage = ({ params }) => {
                     </button>
                   </div>
 
-                  {/* Image Carousel Indicators */}
-                  <div className="flex gap-2 mt-4 justify-center">
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                      <div
-                        key={num}
-                        className={`w-3 h-3 rounded-full transition-all ${
-                          num === 1
-                            ? "bg-[#434343] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
-                            : "bg-[#E6E7EE] shadow-[2px_2px_4px_#d1d9e6,-2px_-2px_4px_#ffffff]"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-xs text-[#616161] mt-2 text-center">{productScore} point{productScore !== 1 ? 's' : ''}</p>
+                 
                 </div>
               );
             })()
@@ -892,7 +937,7 @@ const ComparePage = ({ params }) => {
               </div>
 
               {/* Desktop Grid View */}
-              <div className={`hidden sm:grid relative w-full md:w-[90%] mx-auto ${
+              <div className={`hidden sm:grid relative w-full mx-auto ${
                 limitedProducts?.length === 2 
                   ? "grid-cols-2 gap-4 sm:gap-6" 
                   : "grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
@@ -1004,11 +1049,11 @@ const ComparePage = ({ params }) => {
         </div>
 
         <div className="bg-[#f6f7fb] mt-4 sm:mt-6 py-6 sm:py-8 md:py-10 flex relative">
-          <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 left-2 sm:left-10 lg:left-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
-            Ad
-          </div>
+          // <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 left-2 sm:left-10 lg:left-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
+          //   Ad
+          // </div>
 
-          <div className="max-w-[1280px] w-full lg:w-[55%] mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft ">
+          <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft">
             {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
             <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-6 lg:px-10 pb-4 sm:pb-5 overflow-x-auto scrollbar-hide pt-6 border-b-[2px] border-[#d1d9e6]">
               {limitedProducts && limitedProducts.length > 0 ? (
@@ -1166,41 +1211,7 @@ const ComparePage = ({ params }) => {
                   })}
                 </div>
 
-                {/* Points Display - Only for Multiple Products */}
-                {limitedProducts?.length > 1 && (
-                  <div className="flex justify-center divide-x absolute bottom-0 left-[25%]">
-                    {productNames.length > 0 ? (
-                      productNames.map((name, index) => (
-                        <div key={index} className="flex flex-col items-center px-2 sm:px-3 md:px-4">
-                          <span 
-                            className="text-xl sm:text-2xl font-bold"
-                            style={{ color: productColors[index] }}
-                          >
-                            {limitedProducts?.[index]?.scoreValue || icons?.find((icon) => icon.tooltip === selectedFeature)?.[`item${index + 1}points`] || (75 + index * 10)}
-                          </span>
-                          <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
-                        </div>
-                      ))
-                    ) : (
-                    <>
-                      <div className="flex flex-col items-center px-2 sm:px-3 md:px-4">
-                        <span className="text-[#434343] text-xl sm:text-2xl font-bold">
-                          {icons?.find((icon) => icon.tooltip === selectedFeature)
-                            ?.item1points || 75}
-                        </span>
-                        <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
-                      </div>
-                      <div className="flex flex-col items-center px-2 sm:px-3 md:px-4">
-                        <span className="text-[#3F51B5] text-xl sm:text-2xl font-bold">
-                          {icons?.find((icon) => icon.tooltip === selectedFeature)
-                            ?.item2points || 85}
-                        </span>
-                        <span className="font-light text-[#616161] text-xs sm:text-sm">Points</span>
-                      </div>
-                    </>
-                  )}
-                  </div>
-                )}
+              
               </div>
 
               <div className="mt-4 lg:mt-0">
@@ -1317,19 +1328,19 @@ const ComparePage = ({ params }) => {
                         {/* Bottom Info Section - Zero Level Headers - 3 Columns with Dividers */}
                         <div className="mt-5 sm:mt-6 md:mt-7 pt-4 sm:pt-5 border-t-2 border-[#d1d9e6]">
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#d1d9e6]">
-                            {product?.marketStatus && (
+                            {/* {product?.marketStatus && ( */}
                               <div className="sm:pr-4 md:pr-6">
                                 <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Market status</p>
                                 <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.marketStatus}</p>
                               </div>
-                            )}
-                            {product?.releaseDate && (
+                            {/* )} */}
+                            {/* {product?.releaseDate && ( */}
                               <div className="pt-4 sm:pt-0 sm:px-4 md:px-6">
                                 <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Released date</p>
                                 <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.releaseDate}</p>
                               </div>
-                            )}
-                            {product?.officialWebsite && (
+                            {/* )} */}
+                            {/* {product?.officialWebsite && ( */}
                               <div className="pt-4 sm:pt-0 sm:pl-4 md:pl-6">
                                 <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Official website</p>
                                 <a
@@ -1341,7 +1352,7 @@ const ComparePage = ({ params }) => {
                                   Visit website
                                 </a>
                               </div>
-                            )}
+                            {/* )} */}
                           </div>
                         </div>
                       </div>
@@ -1352,9 +1363,9 @@ const ComparePage = ({ params }) => {
             </div>
           </div>
 
-          <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 right-2 sm:right-10 lg:right-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
-            Ad
-          </div>
+          // <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 right-2 sm:right-10 lg:right-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
+          //   Ad
+          // </div>
         </div>
 
         <MostPopularComparison popularComparison={popularComparisonList} />
@@ -1392,7 +1403,9 @@ const ComparePage = ({ params }) => {
           </div>
         ))}
 
-        <PriceComparison />
+        <div ref={mostPopularSectionRef}>
+          <MostPopularComparison popularComparison={popularComparisonList} />
+        </div>
 
         <div className="max-w-[700px] mx-auto mt-4 px-4 sm:px-6 md:px-0 h-[150px] sm:h-[180px] md:h-[200px] border border-gray-500 mb-12 sm:mb-16 md:mb-20">
           Ad
@@ -1402,6 +1415,9 @@ const ComparePage = ({ params }) => {
         {bestSmartphoneProducts && bestSmartphoneProducts.length > 0 && (
           <BestSmartphones products={bestSmartphoneProducts} />
         )}
+      </div>
+      <div ref={footerRef}>
+        <Footer />
       </div>
     </div>
   );
