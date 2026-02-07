@@ -1049,9 +1049,7 @@ const ComparePage = ({ params }) => {
         </div>
 
         <div className="bg-[#f6f7fb] mt-4 sm:mt-6 py-6 sm:py-8 md:py-10 flex relative">
-          // <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 left-2 sm:left-10 lg:left-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
-          //   Ad
-          // </div>
+         
 
           <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft">
             {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
@@ -1363,9 +1361,7 @@ const ComparePage = ({ params }) => {
             </div>
           </div>
 
-          // <div className="border border-gray-500 w-[120px] lg:w-[160px] absolute top-5 right-2 sm:right-10 lg:right-40 h-[400px] sm:h-[500px] lg:h-[600px] hidden lg:block">
-          //   Ad
-          // </div>
+        
         </div>
 
         <MostPopularComparison popularComparison={popularComparisonList} />
