@@ -756,13 +756,12 @@ const QuickCompare = () => {
                   <div className="flex gap-2 mx-5">
                     <button
                       onClick={handleCompare}
-                      disabled={comparisonList.length < 2}
-                      className="flex-1 !px-5 !rounded-md bg-gradient-to-r from-[#1c1c1c] via-[#2e2e2e] to-[#434343] !text-white disabled:cursor-not-allowed transition-colors disabled:bg-none disabled:bg-gray-300 disabled:!text-gray-600"
+                      disabled={comparisonList?.length < 2}
+                      className="del"
                     >
-                      Compare{" "}
-                      {comparisonList.length > 0 &&
-                        `(${comparisonList.length})`}
+                      Compare
                     </button>
+
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false);

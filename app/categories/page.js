@@ -49,7 +49,6 @@ const Categories = () => {
 
   // Use categories from API if available, otherwise fallback to mockData
   const displayCategories = category?.length > 0 ? category : category;
-  console.log("🚀 ~ Categories ~ category:", category);
 
   const columns = 4;
   const categoryColumns = displayCategories
@@ -58,7 +57,6 @@ const Categories = () => {
 
   const handleCategoryClick = (categoryName) => {
     // Navigate to category page or handle category selection
-    console.log("Category clicked:", categoryName);
     // You can add navigation logic here
     // router.push(`/category/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
   };
@@ -198,7 +196,6 @@ const Categories = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6  px-4 sm:px-6 lg:px-8 ">
             {categoryColumns.slice(0, 23).map(
               (columns, colIndex) => (
-                console.log(columns, "-----"),
                 (
                   <div key={colIndex}>
                     {columns.map((category, index) => (

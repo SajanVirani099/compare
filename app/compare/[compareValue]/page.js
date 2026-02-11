@@ -1,10 +1,8 @@
 "use client";
-import ComparisonSummary from "@/components/comparisonSummary/comparisonSummary";
 import RadarChart from "@/components/radarChart/radarChart";
 import Link from "next/link";
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { IoIosArrowDropdown } from "react-icons/io";
 import { CiMobile1 } from "react-icons/ci";
 import {
   AiOutlineCamera,
