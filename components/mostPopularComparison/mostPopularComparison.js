@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { imageUrl } from "../utils/config";
+import { useRouter } from "next/navigation";
 
 // Popular comparisons carousel driven by API data
 // Expects an array like: [{ left: {...}, right: {...} }, ...]
 const MostPopularComparison = ({ popularComparison = [] }) => {
     const scrollRef = useRef(null);
+    const router = useRouter();
     const [scrollPos, setScrollPos] = useState(0);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
@@ -46,7 +48,7 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
     }
 
     return (
-        <div className="max-w-[1280px] w-full mx-auto mt-6 sm:mt-8 px-4 sm:px-6 md:px-8 lg:px-0 border-[#d1d9e6] border-2 rounded-lg">
+        <div className="max-w-[1280px] w-full mx-4 mt-6 sm:mt-8 sm:mx-auto px-4 sm:px-6 md:px-8 lg:px-0 border-[#d1d9e6] border-2 rounded-lg">
             {/* Header with Title and Navigation Arrows */}
             <div className="flex items-center justify-between gap-4 border-b border-[#d1d9e6] py-4 px-6">
                 {/* Left Navigation Arrow - Neumorphic Up Theme */}
@@ -113,7 +115,10 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
                         return (
                             <div
                                 key={index}
-                                className="flex-shrink-0 w-[200px] sm:w-[220px] md:w-[240px]"
+                                className="flex-shrink-0 w-[200px] sm:w-[220px] md:w-[240px] cursor-pointer"
+                                onClick={() => {
+                                    router.push(`/compare/${left?.uniqueTitle},${right?.uniqueTitle}`)
+                                }}
                             >
                                 {/* Card - Neumorphic Up Theme */}
                                 <div className="rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] p-4 sm:p-5">

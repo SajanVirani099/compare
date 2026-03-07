@@ -115,9 +115,7 @@ const FeatureSection = ({
     if (isSingleProduct) {
         return (
             <div
-                className={`py-10 sm:py-20 ${
-                    background ? "bg-[#f6f7fb]" : ""
-                }`}
+                className={`py-8 sm:py-10`}
             >
                 <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg" >
                     {/* Section Header - 0 Level (Flat) with Score */}
@@ -205,9 +203,7 @@ const FeatureSection = ({
 
     return (
         <div
-            className={`${background ? "pt-5 pb-10 sm:pb-20" : "py-10 sm:py-20"} ${
-                background ? "bg-[#f6f7fb]" : ""
-            }`}
+            className={`py-8 sm:py-18`}
         >
             <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg ">
                 {/* Section Header - 0 Level (Flat) with Score */}

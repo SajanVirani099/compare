@@ -357,7 +357,7 @@ const QuickCompare = () => {
       return encodeURIComponent(label);
     });
 
-    const compareUrl = `/compare/${compareValues.join(",")}`;
+    const compareUrl = `/`;
     router.push(compareUrl);
   };
 

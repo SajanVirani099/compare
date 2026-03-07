@@ -24,6 +24,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
   const [searchPhase, setSearchPhase] = useState("closed"); // 'opening' | 'open' | 'closing' | 'closed'
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const { category } = useSelector((state) => state.category);
@@ -91,24 +92,48 @@ const Navbar = () => {
           {/* Center: Links */}
           <div className="hidden lg:flex items-center gap-8">
             <CategoryDropdown categories={category} />
-            {/* <Link
-              href="/"
-              className="navMenuTitle text-white hover:text-gray-300"
-            >
-              Smartphones
-            </Link>
             <Link
-              href="/"
+              href="/news"
               className="navMenuTitle text-white hover:text-gray-300"
             >
-              Graphic Cards
+              Blog
             </Link>
-            <Link
-              href="/"
-              className="navMenuTitle text-white hover:text-gray-300"
-            >
-              CPUs
-            </Link> */}
+            
+            {/* More Dropdown */}
+            <div className="relative group py-2">
+              <button
+                className="navMenuTitle text-white flex items-center gap-1 hover:text-gray-300 outline-none"
+              >
+                More
+                <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute left-0 top-full pt-1 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="bg-white rounded-md shadow-lg py-1 border border-gray-200">
+                  <Link
+                    href="/privacy-policy"
+                    className="block px-4 py-2.5 text-sm font-medium text-[#434343] hover:bg-gray-50 hover:text-[#F98A1A] border-b border-gray-200 transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                  <Link
+                    href="/terms-condition"
+                    className="block px-4 py-2.5 text-sm font-medium text-[#434343] hover:bg-gray-50 hover:text-[#F98A1A] border-b border-gray-200 transition-colors"
+                  >
+                    Terms & condition
+                  </Link>
+                  <Link
+                    href="/cookies-policy"
+                    className="block px-4 py-2.5 text-sm font-medium text-[#434343] hover:bg-gray-50 hover:text-[#F98A1A] transition-colors"
+                  >
+                    Cookies Policy
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right: Search + Google Login */}
@@ -201,6 +226,68 @@ const Navbar = () => {
                               <CategoryIcon2 />
                               <span className="ml-3">Categories</span>
                             </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/news"
+                              onClick={() => setIsDrawerOpen(false)}
+                              className="flex items-center text-white hover:text-gray-300 transition"
+                            >
+                              <span className="ml-3">Blog</span>
+                            </Link>
+                          </li>
+
+                          {/* Mobile More Accordion */}
+                          <li>
+                            <button
+                              onClick={() => setIsMobileMoreOpen((prev) => !prev)}
+                              className="w-full flex items-center justify-between text-white hover:text-gray-300 transition"
+                            >
+                              <div className="flex items-center ml-3">
+                                <span>More</span>
+                              </div>
+                              <svg 
+                                className={`w-4 h-4 transition-transform duration-200 ${isMobileMoreOpen ? 'rotate-180' : ''}`} 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                            
+                            {/* Accordion Content */}
+                            <div className={`overflow-hidden transition-all duration-300 ${isMobileMoreOpen ? 'max-h-48 mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                              <ul className="pl-6 space-y-4 border-l border-white/20 ml-4 py-2">
+                                <li>
+                                  <Link
+                                    href="/privacy-policy"
+                                    onClick={() => setIsDrawerOpen(false)}
+                                    className="block text-sm text-gray-300 hover:text-white transition"
+                                  >
+                                    Privacy Policy
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    href="/terms-condition"
+                                    onClick={() => setIsDrawerOpen(false)}
+                                    className="block text-sm text-gray-300 hover:text-white transition"
+                                  >
+                                    Terms & condition
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    href="/cookies-policy"
+                                    onClick={() => setIsDrawerOpen(false)}
+                                    className="block text-sm text-gray-300 hover:text-white transition"
+                                  >
+                                    Cookies Policy
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
                           </li>
                         </ul>
                       </div>

@@ -3,6 +3,7 @@ import RadarChart from "@/components/radarChart/radarChart";
 import Link from "next/link";
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import { CiMobile1 } from "react-icons/ci";
 import {
   AiOutlineCamera,
@@ -61,6 +62,7 @@ const getFeatureIcon = (featureName, size = 28) => {
 
 const ComparePage = ({ params }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { resultProduct, popularComparison } = useSelector(
     (state) => state.blog || {}
   );
@@ -77,6 +79,10 @@ const ComparePage = ({ params }) => {
   const mostPopularSectionRef = useRef(null);
   const headerSectionRef = useRef(null);
   const footerRef = useRef(null);
+  const overviewRef = useRef(null);
+  const pricesRef = useRef(null);
+  const reviewsRef = useRef(null);
+  const specsRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
@@ -199,6 +205,37 @@ const ComparePage = ({ params }) => {
     getProductName(item, idx + 1)
   );
   const activeCompareIndex = Math.max(0, productNames.findIndex((n) => n === comparisonItem));
+
+  // Handler to remove a product from the comparison
+  const handleRemoveProduct = (e, productToRemove) => {
+    e.stopPropagation();
+    
+    // Update local storage syncing
+    if (typeof window !== "undefined") {
+      const storedList = JSON.parse(localStorage.getItem("comparisonList") || "[]");
+      const updatedList = storedList.filter(id => id !== productToRemove._id);
+      localStorage.setItem("comparisonList", JSON.stringify(updatedList));
+
+      const storedProducts = JSON.parse(localStorage.getItem("comparisonProducts") || "[]");
+      const updatedProducts = storedProducts.filter(p => p._id !== productToRemove._id);
+      localStorage.setItem("comparisonProducts", JSON.stringify(updatedProducts));
+      
+      window.dispatchEvent(new Event("comparisonListUpdated"));
+    }
+
+    // Prepare route update for the URL
+    const remainingProducts = limitedProducts.filter(p => p._id !== productToRemove._id);
+    
+    if (remainingProducts.length > 0) {
+      const compareValues = remainingProducts.map((p) => {
+        const title = p?.uniqueTitle || p?.name || p?.title || "";
+        return encodeURIComponent(title);
+      });
+      router.push(`/compare/${compareValues.join(",")}`);
+    } else {
+      router.push("/");
+    }
+  };
 
   // Refs for each FeatureSection
   const sectionRefs = useRef({});
@@ -551,6 +588,28 @@ const ComparePage = ({ params }) => {
     }
   }, []);
 
+  // Handle tab click mapping to section refs
+  const handleTabClick = (index) => {
+    setSelectedTab(index);
+    const offset = 150;
+    let ref = null;
+    
+    if (index === 0) ref = overviewRef;
+    else if (index === 1) ref = pricesRef;
+    else if (index === 2) ref = reviewsRef;
+    else if (index === 3) ref = specsRef;
+
+    if (ref && ref.current) {
+      const elementPosition = ref.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset - 180;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
+
   // Slider scroll handler
   const scrollSlider = (direction) => {
     if (!productSliderRef.current) return;
@@ -594,7 +653,6 @@ const ComparePage = ({ params }) => {
       if (headerSectionRef.current) {
         const headerRect = headerSectionRef.current.getBoundingClientRect();
         const navbarHeight = 95;
-        const scrollY = window.scrollY || window.pageYOffset;
         
         // Header is stuck when its top position is at or below navbar height
         const isStuck = headerRect.top <= navbarHeight;
@@ -678,7 +736,7 @@ const ComparePage = ({ params }) => {
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-4 sm:pt-6">
           <div 
             ref={headerSectionRef}
-            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-4 sm:py-6 md:py-8 transition-all duration-200 mb-4 sm:mb-6 ${
+            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-2 sm:py-4 transition-all duration-200 ${
               isHeaderSticky ? 'fixed z-[9999]' : 'sticky z-[9999]'
             }`}
             style={isHeaderSticky ? {
@@ -695,7 +753,7 @@ const ComparePage = ({ params }) => {
               top: '95px',
             }}
           >
-            <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
+            <div className="flex items-center justify-between mb-3 sm:mb-4 pb-3 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
               <p className="text-xs sm:text-sm break-words text-[#616161]">
                 <Link href="/" className="hover:text-[#434343]">Home</Link> &gt; {comparisonCategory || "smartphone"} &gt;{" "}
                 <span className="text-[#434343]">
@@ -718,25 +776,131 @@ const ComparePage = ({ params }) => {
               </button>
             </div>
 
-            {/* Product Title */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#434343] mb-4 sm:mb-6 px-4 sm:px-6 md:px-6">
-              {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
-            </h1>
+            {/* Product Title or Sticky Horizontal View */}
+            {!isHeaderSticky ? (
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#434343] mb-3 sm:mb-4 px-4 sm:px-6 md:px-6">
+                {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
+              </h1>
+            ) : (
+              <div className="mb-3 sm:mb-4 w-full">
+                {/* Unified Header matching FeatureSection column grid widths */}
+                
+                {/* Mobile version */}
+                <div className="sm:hidden overflow-x-auto scrollbar-hide -mx-2 px-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                  <div 
+                    className="grid min-w-[600px] border-b border-[#d1d9e6] pb-2 items-end"
+                    style={{ gridTemplateColumns: `180px repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(120px, 1fr))` }}
+                  >
+                    {/* First column: Amazon */}
+                    <div className="px-3">
+                      <div className="flex flex-col justify-center px-4 py-2 rounded-xl border border-[#434343] bg-[#E6E7EE] max-w-[120px]">
+                        <span className="text-[#434343] font-bold text-xs text-center mb-1.5">Amazon</span>
+                        <div className="w-full h-px bg-[#434343] mb-2"></div>
+                        <button className="w-full py-1 rounded-md border border-[#434343] bg-transparent hover:bg-gray-100 transition-all text-xs font-semibold text-[#434343]">
+                          Buy
+                        </button>
+                      </div>
+                    </div>
+                    {/* Products */}
+                    {limitedProducts?.map((product, index) => {
+                      const productName = getProductName(product, index + 1);
+                      const productImage = product?.thumbnail ? `${imageUrl}${product.thumbnail}` : `/compare-item-${index + 1}.jpg`;
+                      const storage = product?.storage || product?.internalStorage || null;
+                      const ram = product?.ram || product?.memory || null;
+                      const configuration = storage && ram ? `${ram} + ${storage}` : storage || ram || "N/A";
+                      
+                      return (
+                        <div key={product?._id || index} className="relative px-3 flex flex-col items-center justify-end h-full">
+                          {index > 0 && (
+                            <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-10">
+                              <div className="w-[1px] h-[15px] bg-[#434343]"></div>
+                              <div className="flex items-center justify-center w-[18px] h-[18px] rounded-full border border-[#434343] bg-[#E6E7EE]"><span className="text-[7px] font-bold text-[#434343]">VS</span></div>
+                              <div className="w-[1px] h-[15px] bg-[#434343]"></div>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-center gap-1 w-full mb-1">
+                            <span className="text-[#434343] font-medium text-[10px] sm:text-xs truncate max-w-[90px] text-center" title={productName}>{productName}</span>
+                            <button 
+                              className="w-[14px] h-[14px] rounded-full flex items-center justify-center text-[9px] text-[#434343] border border-[#434343] leading-none hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0 cursor-pointer"
+                              title={`Remove ${productName}`}
+                              onClick={(e) => handleRemoveProduct(e, product)}
+                            >
+                              ×
+                            </button>
+                          </div>
+                          <div className="w-10 h-10 sm:w-16 sm:h-16 mb-1.5 flex items-end justify-center">
+                            {product?.thumbnail ? <img src={productImage} alt={productName} className="max-w-full max-h-full object-contain" /> : <CiMobile1 className="w-8 h-8 text-[#616161]" />}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Desktop version */}
+                <div className="hidden sm:grid pb-2 items-end w-full"
+                     style={{ gridTemplateColumns: `2fr repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(0, 1.5fr))` }}>
+                  {/* First column: Amazon */}
+                  <div className="px-3 sm:px-4">
+                    <div className="flex flex-col justify-center px-4 py-2 rounded-xl border border-[#434343] bg-[#E6E7EE] max-w-[140px]">
+                      <span className="text-[#434343] font-bold text-sm text-center mb-1.5">Amazon</span>
+                      <div className="w-full h-px bg-[#434343] mb-2"></div>
+                      <button className="w-full py-1.5 rounded-md border border-[#434343] bg-transparent hover:bg-gray-100 transition-all text-xs font-semibold text-[#434343]">
+                        Buy
+                      </button>
+                    </div>
+                  </div>
+                  {/* Products */}
+                  {limitedProducts?.map((product, index) => {
+                    const productName = getProductName(product, index + 1);
+                    const productImage = product?.thumbnail ? `${imageUrl}${product.thumbnail}` : `/compare-item-${index + 1}.jpg`;
+                    const storage = product?.storage || product?.internalStorage || null;
+                    const ram = product?.ram || product?.memory || null;
+                    const configuration = storage && ram ? `${ram} + ${storage}` : storage || ram || "N/A";
+                    
+                    return (
+                      <div key={product?._id || index} className="relative px-3 sm:px-4 flex flex-col items-center justify-end h-full">
+                        {index > 0 && (
+                          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-10">
+                            <div className="w-[1px] h-[20px] bg-[#434343]"></div>
+                            <div className="flex items-center justify-center w-[22px] h-[22px] rounded-full border border-[#434343] bg-[#E6E7EE]"><span className="text-[9px] font-bold text-[#434343]">VS</span></div>
+                            <div className="w-[1px] h-[20px] bg-[#434343]"></div>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-center gap-1 w-full mb-1">
+                          <span className="text-[#434343] font-medium text-[11px] lg:text-sm truncate max-w-[110px] lg:max-w-[150px] text-center" title={productName}>{productName}</span>
+                          <button 
+                            className="w-[16px] h-[16px] rounded-full flex items-center justify-center text-[10px] text-[#434343] border border-[#434343] leading-none hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0 cursor-pointer"
+                            title={`Remove ${productName}`}
+                            onClick={(e) => handleRemoveProduct(e, product)}
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <div className="w-16 h-16 lg:w-20 lg:h-20 mb-2 flex items-end justify-center">
+                          {product?.thumbnail ? <img src={productImage} alt={productName} className="max-w-full max-h-full object-contain" /> : <CiMobile1 className="w-10 h-10 text-[#616161]" />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Decorative Line */}
-            <div className="h-px bg-[#d1d9e6] mb-4 sm:mb-6"></div>
+            <div className="h-px bg-[#d1d9e6] mb-3 sm:mb-4"></div>
 
             {/* TABS - Neumorphic Style (Up Theme) */}
             <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 md:px-6">
               {tabs.map((tab, index) => (
                 <button
                   key={index}
-                  className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl whitespace-nowrap text-xs sm:text-sm md:text-base font-medium transition-all my-2 ${
+                  className={`px-3 sm:px-4 md:px-6 py-2.5 sm:py-2 rounded-xl whitespace-nowrap text-xs sm:text-sm font-medium transition-all my-2 ${
                     selectedTab === index
                       ? "bg-[#E6E7EE] text-[#434343] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-semibold"
                       : "bg-[#E6E7EE] text-[#616161] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
                   }`}
-                  onClick={() => setSelectedTab(index)}
+                  onClick={() => handleTabClick(index)}
                 >
                   {tab}
                 </button>
@@ -747,11 +911,11 @@ const ComparePage = ({ params }) => {
           </div>
           {/* Spacer to prevent content jump when header becomes fixed */}
           {isHeaderSticky && (
-            <div className="h-[1px] mb-4 sm:mb-6" style={{ height: headerSectionRef.current?.offsetHeight || 'auto' }}></div>
+            <div className="h-[1px]" style={{ height: headerSectionRef.current?.offsetHeight || 'auto' }}></div>
           )}
         </div>
 
-        <div className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
+        <div ref={overviewRef} className="max-w-[1280px] mx-auto mt-4 px-4 sm:px-6 md:px-0">
           {limitedProducts?.length === 1 ? (
             /* Single Product View - First Image Wireframe */
             (() => {
@@ -852,6 +1016,8 @@ const ComparePage = ({ params }) => {
                     const configuration = storage && ram 
                       ? `${ram} + ${storage}` 
                       : storage || ram || "";
+
+                      console.log("productproduct", index < (limitedProducts?.length || 0) - 1);
 
                     return (
                       <div
@@ -1003,19 +1169,19 @@ const ComparePage = ({ params }) => {
                             </button>
                           </div>
                         )}
+
+                        {/* Desktop VS Badge between products */}
+                        {(index === 0 || (index === 1 && limitedProducts?.length === 3)) && (
+                          <div className={`hidden ${index === 1 ? 'lg:flex' : 'sm:flex'} absolute top-1/2 left-[calc(100%+0.75rem)] transform -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center pointer-events-none`}>
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
+                              <span className="font-bold text-[#434343] text-sm sm:text-base">VS</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </React.Fragment>
                   );
                 })}
-                
-                {/* Desktop VS Badge - Centered between products (only for 2 products) */}
-                {limitedProducts?.length === 2 && (
-                  <div className="hidden sm:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center pointer-events-none">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
-                      <span className="font-bold text-[#434343] text-sm sm:text-base">VS</span>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           )}
@@ -1049,7 +1215,7 @@ const ComparePage = ({ params }) => {
         <div className="bg-[#f6f7fb] mt-4 sm:mt-6 py-6 sm:py-8 md:py-10 flex relative">
          
 
-          <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft">
+          <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft" ref={pricesRef}>
             {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
             <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-6 lg:px-10 pb-4 sm:pb-5 overflow-x-auto scrollbar-hide pt-6 border-b-[2px] border-[#d1d9e6]">
               {limitedProducts && limitedProducts.length > 0 ? (
@@ -1180,37 +1346,9 @@ const ComparePage = ({ params }) => {
                     );
                   })}
                 </div>
-
-                {/* Original horizontal icons for mobile/tablet */}
-                <div className="flex justify-center flex-wrap sm:flex-nowrap flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 lg:mt-0 lg:static lg:hidden px-2 sm:px-0">
-                  {icons.map((icon, index) => {
-                    const isActive = selectedFeature === icon.tooltip || activeScrollFeature === icon.tooltip;
-                    return (
-                    <div
-                      key={index}
-                      className={`border p-1.5 sm:p-2 rounded-md shadow-xl text-base sm:text-lg lg:text-xl cursor-pointer transition-all duration-200 ${
-                          isActive
-                          ? "bg-[#434343] text-white border-[#434343]"
-                          : "bg-white border-gray-200 text-gray-600"
-                      }`}
-                      onClick={() => handleSelectFeature(icon.tooltip)}
-                    >
-                        {icon.isApiIcon && isActive ? (
-                          <div style={{ filter: 'invert(1)' }}>
-                      {icon.icon}
-                    </div>
-                        ) : (
-                          icon.icon
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-              
               </div>
 
-              <div className="mt-4 lg:mt-0">
+              <div className="mt-4 lg:mt-0" >
                 {/* Key Specs Section - Always Show for 1, 2, or 3 products */}
                 {selectedProductForSpecs && (() => {
                   const product = selectedProductForSpecs;
@@ -1276,7 +1414,7 @@ const ComparePage = ({ params }) => {
                       {/* Content - Neumorphic Theme (Up and Down) */}
                       <div className="bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-3 sm:p-4 md:p-5 lg:p-6">
                         
-                        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:gap-4">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 md:gap-4">
                           {keySpecsList.length > 0 ? (
                             keySpecsList.map((spec, idx) => (
                               <div
@@ -1365,37 +1503,43 @@ const ComparePage = ({ params }) => {
         <MostPopularComparison popularComparison={popularComparisonList} />
 
 
-        <PriceComparison />
+        <div>
+          <PriceComparison />
+        </div>
 
-        <UserReviews
-          products={limitedProducts || []}
-          colors={productColors}
-          activeIndex={activeCompareIndex}
-          onChangeActiveIndex={(idx) => {
-            const next = productNames[idx];
-            if (next) setComparisonItem(next);
-          }}
-        />
-
-        {featureSections.map((section, index) => (
-          <div
-            key={section.title}
-            ref={(el) => {
-              sectionRefs.current[section.title] = el;
+        <div ref={reviewsRef}>
+          <UserReviews
+            products={limitedProducts || []}
+            colors={productColors}
+            activeIndex={activeCompareIndex}
+            onChangeActiveIndex={(idx) => {
+              const next = productNames[idx];
+              if (next) setComparisonItem(next);
             }}
-            data-section-title={section.title}
-          >
-            <FeatureSection
-              icon={section.icon}
-              title={section.title}
-              background={section.background}
-              subfeatures={section.subfeatures}
-              productNames={productNames}
-              isSingleProduct={limitedProducts?.length === 1}
-              score={section.score}
-            />
-          </div>
-        ))}
+          />
+        </div>
+
+        <div ref={specsRef}>
+          {featureSections.map((section, index) => (
+            <div
+              key={section.title}
+              ref={(el) => {
+                sectionRefs.current[section.title] = el;
+              }}
+              data-section-title={section.title}
+            >
+              <FeatureSection
+                icon={section.icon}
+                title={section.title}
+                background={section.background}
+                subfeatures={section.subfeatures}
+                productNames={productNames}
+                isSingleProduct={limitedProducts?.length === 1}
+                score={section.score}
+              />
+            </div>
+          ))}
+        </div>
 
         <div ref={mostPopularSectionRef}>
           <MostPopularComparison popularComparison={popularComparisonList} />

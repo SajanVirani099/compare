@@ -3,7 +3,7 @@ const nextConfig = {
     images: {
         // Only bare hostnames are allowed here (no protocol or trailing slash)
         domains: [
-            "admin.compares360.com",
+            "admin.compareuniverse.com",
             "images.versus.io",
             "www.svgrepo.com",
             "www.kalakarhouse.com",

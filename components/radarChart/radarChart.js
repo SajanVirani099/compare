@@ -234,7 +234,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
     // Don't render chart if no data from API
     if (!chartData.labels || chartData.labels.length === 0 || !chartData.datasets || chartData.datasets.length === 0) {
         return (
-            <div className="w-full h-full min-h-[250px] sm:min-h-[300px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center p-2 sm:p-4">
+            <div className="w-full h-[300px] flex items-center justify-center p-2 sm:p-4">
                 <div className="text-gray-500 text-sm">No data available</div>
             </div>
         );
@@ -243,8 +243,8 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
     return (
         <div className="w-full">
             {/* Radar Chart */}
-            <div className="w-full h-full min-h-[250px] sm:min-h-[300px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center p-2 sm:p-4">
-                <div className="w-full max-w-full h-full relative">
+            <div className="w-full flex items-center justify-center p-2 sm:p-4">
+                <div className="w-full max-w-[350px] relative">
                     <Radar data={chartData} options={options} />
                 </div>
             </div>
@@ -252,7 +252,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
             {/* Features Row Below Radar Chart - Horizontal Scrollable Circular Progress Indicators */}
             {features.length > 0 && (
                 <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden  border-[#d1d9e6] border-2 rounded-lg shadow-inset mb-8">
-                    <div className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                    <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
                         {features.map((feature, idx) => {
                             const progress = feature.score;
                             const percent = (progress / 10) * 100;
@@ -304,7 +304,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                             );
                         })}
                         </div>
-                        <div className="mt-3 text-center border-t border-[#d1d9e6] py-3">
+                        <div className="mt-2 text-center border-t border-[#d1d9e6] py-3">
                             <p className="text-sm sm:text-base text-[#616161] font-medium">
                                 {activeProduct?.scoreValue || 0} <br/> point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
                             </p>
