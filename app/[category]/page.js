@@ -26,13 +26,13 @@ const SmartphoneComparison = ({ params }) => {
     return (
         <div className="bg-[#e6e7ee] min-h-screen">
             <Navbar />
-            <CategoryPageHeader
+            {/* <CategoryPageHeader
                 filters={filters}
                 title={`${category} comparison`}
                 breadcrumb={`${category} comparison`}
-            />
+            /> */}
 
-            <div className="flex pt-6 pb-10 max-w-[1280px] mx-auto px-4">
+            <div className="flex pt-6 pb-10 max-w-[1280px] mx-auto px-4 mt-16">
                 {/* Filters sidebar controls which products are shown via Redux */}
                 <PhoneFilters />
 

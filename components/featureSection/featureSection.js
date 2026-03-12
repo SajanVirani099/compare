@@ -119,10 +119,10 @@ const FeatureSection = ({
             >
                 <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg" >
                     {/* Section Header - 0 Level (Flat) with Score */}
-                    <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
+                    <div className="flex  md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
                         <p className="flex gap-2 items-center text-center">
                             {icon}
-                            <span className="font-bold text-xl sm:text-2xl md:text-3xl text-[#434343]">{title}</span>
+                            <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>
                         </p>
                         {/* Score Badge - Right Side */}
                         <div className="flex items-center gap-2 mb-2 md:mb-0">
@@ -207,10 +207,10 @@ const FeatureSection = ({
         >
             <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg ">
                 {/* Section Header - 0 Level (Flat) with Score */}
-                <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
+                <div className="flex md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
                     <p className="flex gap-2 items-center text-center">
                         {icon}
-                        <span className="font-bold text-xl sm:text-2xl md:text-3xl text-[#434343]">{title}</span>
+                        <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>
                     </p>
                     {/* Score Badge - Right Side */}
                     <div className="flex items-center gap-2 mb-2 md:mb-0">

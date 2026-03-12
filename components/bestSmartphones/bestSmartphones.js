@@ -58,12 +58,12 @@ const BestSmartphones = ({ products = [] }) => {
     return (
         <div className="max-w-[1280px] w-full mx-auto my-6 sm:my-8 px-4 sm:px-6 md:px-8 lg:px-0 border-[#d1d9e6] border-2 rounded-lg">
             {/* Header with Title and Navigation Arrows */}
-            <div className="flex items-center justify-between gap-4 border-b border-[#d1d9e6] py-4 px-6">
+            <div className="flex items-center justify-between gap-4 border-b border-[#d1d9e6] py-4 px-2 lg:px-4">
                 {/* Left Navigation Arrow - Neumorphic Up Theme */}
                 <button
                     onClick={() => scroll("left")}
                     disabled={!canScrollLeft}
-                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 !w-10 !h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollLeft
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
@@ -81,7 +81,7 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("right")}
                     disabled={!canScrollRight}
-                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 w-10 h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollRight
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"

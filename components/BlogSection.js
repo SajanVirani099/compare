@@ -344,11 +344,11 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             See all
           </button> */}
         </div>
-        <div className="p-6">
+        <div className="p-3">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
             {/* Product Slot 1 */}
             <div 
-              className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
+              className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
               onClick={() => !selectedProducts[0] && !isFirstProductLoaded && handlePlusClick(0)}
             >
               {selectedProducts[0] ? (
@@ -426,7 +426,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             
             {/* Product Slot 2 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[1] && handlePlusClick(1)}
             >
               {selectedProducts[1] ? (
@@ -494,7 +494,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             
             {/* Product Slot 3 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-5 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[2] && handlePlusClick(2)}
             >
               {selectedProducts[2] ? (
@@ -551,7 +551,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center my-6 sm:mt-10">
+          <div className="flex items-center justify-center my-4 sm:mt-4">
             <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
               More Compare
             </button>
@@ -798,7 +798,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
                           src={imageUrl + item.thumbnail}
                           onClick={() => handleBlogClick(item)}
                         />
-                        <div className="my-4 mb-[25px] text-[16px] font-medium">
+                        <div className="mt-3 text-[16px] font-medium">
                           {item.title}
                         </div>
                       </div>

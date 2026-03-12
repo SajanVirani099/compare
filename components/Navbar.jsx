@@ -169,7 +169,8 @@ const Navbar = () => {
       <Transition.Root show={isDrawerOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-10 lg:hidden"
+          className="relative lg:hidden"
+          style={{ zIndex: 999999 }}
           onClose={setIsDrawerOpen}
         >
           <Transition.Child
@@ -300,9 +301,9 @@ const Navbar = () => {
         </Dialog>
       </Transition.Root>
 
-      {/* Full-screen Search Overlay (custom CSS for scaleX spread) */}
+      {/* Full-screen Search Overlay */}
       {isSearchOpen && (
-        <div className={`searchOverlay ${searchPhase === "opening" ? "isOpening" : ""} ${searchPhase === "open" ? "isOpen" : ""} ${searchPhase === "closing" ? "isClosing" : ""}`}>
+        <div style={{ zIndex: 999999 }} className={`searchOverlay ${searchPhase === "opening" ? "isOpening" : ""} ${searchPhase === "open" ? "isOpen" : ""} ${searchPhase === "closing" ? "isClosing" : ""}`}>
           <div className="searchContentWrapper px-4 sm:px-6 lg:px-8">
             <div className="header">
               <button

@@ -475,7 +475,7 @@ const QuickCompare = () => {
                     {subCategoryProductss.map((product) => (
                       <React.Fragment key={product._id}>
                         <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-inset w-full flex items-center justify-center !relative">
-                          <div className="p-4 px-6 mt-14">
+                          <div className="p-4 px-6 mt-4">
                             <ImageWithShimmer
                               src={`${imageUrl}${product.thumbnail}`}
                               alt={product.title}
@@ -545,7 +545,7 @@ const QuickCompare = () => {
                                 readOnly
                               />
                               {/* <div className="checkmark"></div> */}
-                              <span className="!absolute !-top-[13px] !-left-3 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-4 pointer-events-none">
+                              <span className="!absolute !-top-[13px] !-left-3 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-[15px] pointer-events-none">
                                 {comparisonList.includes(product._id) ? (
                                   <svg
                                     className="plusIcon w-6 h-6 md:h-[30px] md:w-[30px]"

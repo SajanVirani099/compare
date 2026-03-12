@@ -44,7 +44,23 @@ const PhoneFilters = () => {
     );
 
     return (
-        <div className="w-[30%] h-screen bg-[#e6e7ee] border border-[#d1d9e6] p-4 rounded-xl shadow-inset sticky top-16 overflow-y-auto md:block hidden">
+        <div className="w-[30%] h-screen bg-[#e6e7ee] border border-[#d1d9e6] p-4 rounded-xl shadow-inset sticky top-16 overflow-y-auto md:block hidden custom-scrollbar">
+            <style dangerouslySetInnerHTML={{__html: `
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: #dadadaff;
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: #bcbcbcff;
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: #c0c0c0;
+                }
+            `}} />
             {/* Sort By */}
             <h2 className="text-lg font-semibold mb-3 text-gray-800">
                 SORT BY:
@@ -86,13 +102,13 @@ const PhoneFilters = () => {
                             renderTrack={({ props, children }) => (
                                 <div
                                     {...props}
-                                    className="h-[2px] w-full bg-gray-300"
+                                    className="h-[6px] w-full bg-[#1b2234] rounded-full"
                                     style={{
                                         ...props.style,
                                     }}
                                 >
                                     <div
-                                        className="h-[2px] bg-[#434343] absolute"
+                                        className="h-full bg-[#e6e7ee] absolute rounded-full shadow-inset"
                                         style={{
                                             left: `${
                                                 ((values[0] - 9030) /
@@ -109,16 +125,23 @@ const PhoneFilters = () => {
                                     {children}
                                 </div>
                             )}
-                            renderThumb={({ props }) => (
+                            renderThumb={({ props, index }) => {
+                                const { key, ...restProps } = props;
+                                return (
                                 <div
-                                    {...props}
-                                    className="h-5 w-5 rounded-full bg-white border-2 border-[#434343] shadow-md focus:outline-none"
+                                    key={key}
+                                    {...restProps}
+                                    className="h-5 w-5 rounded-full bg-[#e6e7ee] flex items-center justify-center focus:outline-none"
                                     style={{
-                                        ...props.style,
-                                        transform: "translate(-50%, -50%)",
+                                        ...restProps.style,
+                                        boxShadow: "3px 3px 6px #c8c9cc, -3px -3px 6px #ffffff",
                                     }}
-                                />
-                            )}
+                                >
+                                    <div className="absolute -top-10 bg-[#e6e7ee] px-3 py-1.5 rounded-xl text-xs text-[#20293a] shadow-inset whitespace-nowrap font-medium">
+                                        {values[index].toFixed(2)}
+                                    </div>
+                                </div>
+                            )}}
                         />
                     </div>
 
@@ -151,7 +174,7 @@ const PhoneFilters = () => {
                 </div>
 
                 {/* Brands List */}
-                <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg max-h-[300px] overflow-y-auto shadow-soft">
+                <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg max-h-[300px] overflow-y-auto shadow-soft custom-scrollbar">
                     {filteredBrands.map((brand) => (
                         <label
                             key={brand}
@@ -266,7 +289,7 @@ const PhoneFilters = () => {
                                             ))}
                                         </div>
                                     ) : spec.min !== undefined ? (
-                                        <div className="mt-4">
+                                        <div className="mt-12 px-2">
                                             <Range
                                                 step={0.1}
                                                 min={spec.min}
@@ -284,10 +307,11 @@ const PhoneFilters = () => {
                                                 }) => (
                                                     <div
                                                         {...props}
-                                                        className="h-[2px] w-full bg-gray-200"
+                                                        className="h-[6px] w-full bg-[#1b2234] rounded-full"
+                                                        style={{ ...props.style }}
                                                     >
                                                         <div
-                                                            className="h-[2px] bg-[#434343] absolute"
+                                                            className="h-full bg-[#e6e7ee] absolute rounded-full shadow-inset"
                                                             style={{
                                                                 left: `${
                                                                     ((designValues[
@@ -315,17 +339,23 @@ const PhoneFilters = () => {
                                                         {children}
                                                     </div>
                                                 )}
-                                                renderThumb={({ props }) => (
+                                                renderThumb={({ props, index }) => {
+                                                    const { key, ...restProps } = props;
+                                                    return (
                                                     <div
-                                                        {...props}
-                                                        className="h-6 w-6 rounded-full bg-white border-2 border-[#434343] shadow-md focus:outline-none"
+                                                        key={key}
+                                                        {...restProps}
+                                                        className="h-5 w-5 rounded-full bg-[#e6e7ee] flex items-center justify-center focus:outline-none"
                                                         style={{
-                                                            ...props.style,
-                                                            transform:
-                                                                "translate(-50%, -50%)",
+                                                            ...restProps.style,
+                                                            boxShadow: "3px 3px 6px #c8c9cc, -3px -3px 6px #ffffff",
                                                         }}
-                                                    />
-                                                )}
+                                                    >
+                                                        <div className="absolute -top-10 bg-[#e6e7ee] px-2 py-1.5 rounded-xl text-xs text-[#20293a] shadow-inset whitespace-nowrap font-medium">
+                                                            {designValues[spec.id][index].toFixed(2)}
+                                                        </div>
+                                                    </div>
+                                                )}}
                                             />
                                             <div className="flex justify-between mt-2 text-sm text-gray-600">
                                                 <span>

@@ -48,14 +48,14 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
     }
 
     return (
-        <div className="max-w-[1280px] w-full mx-4 mt-6 sm:mt-8 sm:mx-auto px-4 sm:px-6 md:px-8 lg:px-0 border-[#d1d9e6] border-2 rounded-lg">
+        <div className="max-w-[1280px] w-full mx-auto my-6 sm:my-8 px-4 sm:px-6 md:px-8 lg:px-0 border-[#d1d9e6] border-2 rounded-lg">
             {/* Header with Title and Navigation Arrows */}
-            <div className="flex items-center justify-between gap-4 border-b border-[#d1d9e6] py-4 px-6">
+            <div className="flex items-center justify-between gap-4 border-b border-[#d1d9e6] py-4 px-2 lg:px-4">
                 {/* Left Navigation Arrow - Neumorphic Up Theme */}
                 <button
                     onClick={() => scroll("left")}
                     disabled={!canScrollLeft}
-                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 !w-10 !h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollLeft
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
@@ -73,7 +73,7 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
                 <button
                     onClick={() => scroll("right")}
                     disabled={!canScrollRight}
-                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 w-10 h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollRight
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
@@ -140,7 +140,7 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
 
                                         {/* VS Badge - Circular Neumorphic Up Theme */}
                                         {left && right && (
-                                            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center z-10">
+                                            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center">
                                                 <span className="text-xs sm:text-sm font-bold text-[#434343]">VS</span>
                                             </div>
                                         )}
@@ -171,7 +171,7 @@ const MostPopularComparison = ({ popularComparison = [] }) => {
                                         {right && (
                                             <div className="relative w-full flex items-center justify-center">
                                                 {/* VS Badge with Horizontal Borders on Left and Right */}
-                                                <div className="relative bg-[#E6E7EE] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] rounded-full px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 font-bold text-[#434343] flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 before:content-[''] before:absolute before:h-[1px] before:w-[60px] sm:before:w-[40px] md:before:w-[60px] before:bg-[#d1d9e6] before:left-[-65px] sm:before:left-[-45px] md:before:left-[-65px] before:top-1/2 before:-translate-y-1/2 after:content-[''] after:absolute after:h-[1px] after:w-[60px] sm:after:w-[40px] md:after:w-[60px] after:bg-[#d1d9e6] after:right-[-65px] sm:after:right-[-45px] md:after:right-[-65px] after:top-1/2 after:-translate-y-1/2 z-10">
+                                                <div className="relative bg-[#E6E7EE] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] rounded-full px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 font-bold text-[#434343] flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 before:content-[''] before:absolute before:h-[1px] before:w-[60px] sm:before:w-[40px] md:before:w-[60px] before:bg-[#d1d9e6] before:left-[-65px] sm:before:left-[-45px] md:before:left-[-65px] before:top-1/2 before:-translate-y-1/2 after:content-[''] after:absolute after:h-[1px] after:w-[60px] sm:after:w-[40px] md:after:w-[60px] after:bg-[#d1d9e6] after:right-[-65px] sm:after:right-[-45px] md:after:right-[-65px] after:top-1/2 after:-translate-y-1/2">
                                                     <span className="text-[6px] sm:text-xs font-bold text-[#434343]">VS</span>
                                                 </div>
                                             </div>

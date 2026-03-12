@@ -5,9 +5,9 @@ import ImageWithShimmer from "../ImageWithShimmer";
 
 // Helper function to extract subfeature value from product
 const getSubfeatureValue = (product, featureName, subfeatureName) => {
-  if (!product?.featureData) return null;
+  if (!product?.subfeatureData) return null;
   
-  const feature = product.featureData.find(
+  const feature = product.subfeatureData.find(
     f => {
       const fName = f?.featureName || f?.featureId?.featureName || "";
       return fName.toLowerCase().includes(featureName.toLowerCase());
@@ -116,6 +116,7 @@ const CircularScore = React.memo(({ value = 0 }) => {
 CircularScore.displayName = "CircularScore";
 
 const ProductCard = ({ index, phone, category }) => {
+  console.log("Phone", phone)
   const router = useRouter();
   const [isInComparison, setIsInComparison] = useState(false);
 
@@ -193,10 +194,35 @@ const ProductCard = ({ index, phone, category }) => {
     }
   };
 
+  const formatTitle = (title) => {
+    if (!title || title.length <= 15) return title;
+    
+    // Break at the last space within the first 15 characters to avoid splitting words
+    const spaceIndex = title.lastIndexOf(' ', 15);
+    
+    if (spaceIndex > -1) {
+      return (
+        <>
+          {title.substring(0, spaceIndex)}
+          <br />
+          {title.substring(spaceIndex + 1)}
+        </>
+      );
+    }
+    
+    return (
+      <>
+        {title.substring(0, 15)}
+        <br />
+        {title.substring(15)}
+      </>
+    );
+  };
+
   return (
     <div
       key={index}
-      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-4 md:p-5 md:pt-6 w-full h-fit flex gap-4 md:gap-6"
+      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-4 md:p-5 md:pt-6 w-full h-full flex gap-4 md:gap-6"
     >
       {/* Add/Remove Button - Top Right Corner of Card */}
       <div className="absolute !top-8 !right-top-8 md:!top-8 md:!right-8 z-10">
@@ -209,7 +235,7 @@ const ProductCard = ({ index, phone, category }) => {
             type="checkbox"
             readOnly
           />
-          <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-4 pointer-events-none">
+          <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-[15px] pointer-events-none">
             {isInComparison ? (
               <svg
                 className="plusIcon"
@@ -268,12 +294,12 @@ const ProductCard = ({ index, phone, category }) => {
           className="font-semibold text-gray-900 text-base md:text-lg mb-2 hover:text-[#F98A1A] transition-all duration-300 cursor-pointer"
           onClick={() => phone?.uniqueTitle && router.push(`/compare/${phone.uniqueTitle}`)}
         >
-          {productSpecs.title}
+          {formatTitle(productSpecs.title)}
         </h3>
         
         {/* Price */}
         {productSpecs.price && (
-          <p className="text-blue-600 font-semibold text-sm md:text-base mb-3">
+          <p className="text-[#F98A1A] font-semibold text-sm md:text-base mb-3">
             {typeof productSpecs.price === 'number' 
               ? `₹${productSpecs.price.toLocaleString("en-IN")}`
               : productSpecs.price
@@ -282,78 +308,80 @@ const ProductCard = ({ index, phone, category }) => {
         )}
 
         {/* FeatureData from API - Same as quick-compare */}
-        {phone?.featureData && phone.featureData.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
-            {phone.featureData
-              .slice(0, 4)
-              .map((feature, idx) => (
-                <div
-                  key={feature._id || feature?.featureId?._id || idx}
-                  className="flex items-center gap-2"
-                >
-                  {/* Feature icon from API */}
-                  {feature?.featureId?.icon ? (
-                    <img
-                      src={`${imageUrl}${feature.featureId.icon}`}
-                      alt={
-                        feature.featureId.featureName ||
-                        "Feature"
-                      }
-                      className="w-5 h-5 object-contain flex-shrink-0"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ) : feature?.icon ? (
-                    <img
-                      src={`${imageUrl}${feature.icon}`}
-                      alt={
-                        feature.featureName ||
-                        "Feature"
-                      }
-                      className="w-5 h-5 object-contain flex-shrink-0"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
-                  )}
-                  <span className="text-sm truncate text-gray-800">
-                    {feature?.featureId?.unit ||
-                      feature?.featureId?.featureName ||
-                      feature?.featureName ||
-                      feature?.unit ||
-                      "N/A"}
-                  </span>
+        <div className="mt-auto w-full">
+          {phone?.subfeatureData && phone.subfeatureData.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 text-gray-600 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+              {phone.subfeatureData
+                .slice(0, 4)
+                .map((feature, idx) => (
+                  <div
+                    key={feature._id || feature?.featureId?._id || idx}
+                    className="flex items-center gap-2"
+                  >
+                    {/* Feature icon from API */}
+                    {feature?.featureId?.icon ? (
+                      <img
+                        src={`${imageUrl}${feature.featureId.icon}`}
+                        alt={
+                          feature.featureId.featureName ||
+                          "Feature"
+                        }
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : feature?.icon ? (
+                      <img
+                        src={`${imageUrl}${feature.icon}`}
+                        alt={
+                          feature.featureName ||
+                          "Feature"
+                        }
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-5 h-5 bg-gray-300 rounded flex-shrink-0"></div>
+                    )}
+                    <span className="text-sm truncate text-gray-800">
+                      {feature?.featureId?.unit ||
+                        feature?.featureId?.featureName ||
+                        feature?.featureName ||
+                        feature?.unit ||
+                        "N/A"}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          ) : category == "phone" ? (
+            /* Fallback to extracted specs if no subfeatureData */
+            <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mt-2 border-t-[2px] border-[#d1d9e6] pt-3">
+              {productSpecs.screenSize && (
+                <div className="text-sm text-gray-800">
+                  {productSpecs.screenSize}
                 </div>
-              ))}
-          </div>
-        ) : category == "phone" ? (
-          /* Fallback to extracted specs if no featureData */
-          <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
-            {productSpecs.screenSize && (
-              <div className="text-sm text-gray-800">
-                {productSpecs.screenSize}
-              </div>
-            )}
-            {productSpecs.ram && (
-              <div className="text-sm text-gray-800">
-                {productSpecs.ram}
-              </div>
-            )}
-            {productSpecs.ppi && (
-              <div className="text-sm text-gray-800">
-                {productSpecs.ppi}
-              </div>
-            )}
-            {productSpecs.battery && (
-              <div className="text-sm text-gray-800">
-                {productSpecs.battery}
-              </div>
-            )}
-          </div>
-        ) : null}
+              )}
+              {productSpecs.ram && (
+                <div className="text-sm text-gray-800">
+                  {productSpecs.ram}
+                </div>
+              )}
+              {productSpecs.ppi && (
+                <div className="text-sm text-gray-800">
+                  {productSpecs.ppi}
+                </div>
+              )}
+              {productSpecs.battery && (
+                <div className="text-sm text-gray-800">
+                  {productSpecs.battery}
+                </div>
+              )}
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
