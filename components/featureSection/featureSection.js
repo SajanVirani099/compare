@@ -119,14 +119,14 @@ const FeatureSection = ({
             >
                 <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg" >
                     {/* Section Header - 0 Level (Flat) with Score */}
-                    <div className="flex  md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
-                        <p className="flex gap-2 items-center text-center">
+                    <div className="flex  md:flex-row justify-between items-center md:items-end px-3 border-b-[#d1d9e6] border-b-2">
+                        <div className="flex gap-2 items-center text-center">
                             {icon}
                             <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>
-                        </p>
+                        </div>
                         {/* Score Badge - Right Side */}
-                        <div className="flex items-center gap-2 mb-2 md:mb-0">
-                            <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-center gap-2">
+                            <div className="relative w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0">
                                 <div
                                     className="absolute inset-0 rounded-full"
                                     style={{
@@ -207,14 +207,14 @@ const FeatureSection = ({
         >
             <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg ">
                 {/* Section Header - 0 Level (Flat) with Score */}
-                <div className="flex md:flex-row justify-between items-center md:items-end px-3 py-2 border-b-[#d1d9e6] border-b-2">
-                    <p className="flex gap-2 items-center text-center">
+                <div className="flex md:flex-row justify-between items-center md:items-end px-3 pb-2 pt-1 border-b-[#d1d9e6] border-b-2">
+                    <div className="flex gap-2 items-center text-center">
                         {icon}
                         <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>
-                    </p>
+                    </div>
                     {/* Score Badge - Right Side */}
                     <div className="flex items-center gap-2 mb-2 md:mb-0">
-                        <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="relative w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0">
                             <div
                                 className="absolute inset-0 rounded-full"
                                 style={{

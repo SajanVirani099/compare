@@ -63,7 +63,7 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("left")}
                     disabled={!canScrollLeft}
-                    className={`p-2 sm:p-0 !w-10 !h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 w-10 h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollLeft
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"

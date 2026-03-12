@@ -57,73 +57,73 @@ const getFeatureIcon = (featureName, size = 28) => {
   return <CiCirclePlus size={size} />;
 };
 
-// const CircularScore = React.memo(({ value = 0 }) => {
-//   const [progressPercent, setProgressPercent] = useState(0);
-//   const [displayCount, setDisplayCount] = useState(0);
+const CircularScore = React.memo(({ value = 0 }) => {
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [displayCount, setDisplayCount] = useState(0);
 
-//   useEffect(() => {
-//     let rafId;
-//     let isCancelled = false;
-//     let startTimestamp = null;
+  useEffect(() => {
+    let rafId;
+    let isCancelled = false;
+    let startTimestamp = null;
 
-//     const fullSweepDurationMs = 800;
-//     const settleDurationMs = 500;
-//     const counterDurationMs = 1200;
+    const fullSweepDurationMs = 800;
+    const settleDurationMs = 500;
+    const counterDurationMs = 1200;
 
-//     const animate = (timestamp) => {
-//       if (isCancelled) return;
-//       if (startTimestamp === null) startTimestamp = timestamp;
-//       const elapsed = timestamp - startTimestamp;
+    const animate = (timestamp) => {
+      if (isCancelled) return;
+      if (startTimestamp === null) startTimestamp = timestamp;
+      const elapsed = timestamp - startTimestamp;
 
-//       if (elapsed <= fullSweepDurationMs) {
-//         const p = Math.min(1, elapsed / fullSweepDurationMs) * 100;
-//         setProgressPercent(p);
-//       } else if (elapsed <= fullSweepDurationMs + settleDurationMs) {
-//         const afterFull = elapsed - fullSweepDurationMs;
-//         const t = Math.min(1, afterFull / settleDurationMs);
-//         const p = 100 - t * (100 - value);
-//         setProgressPercent(p);
-//       } else {
-//         setProgressPercent(value);
-//       }
+      if (elapsed <= fullSweepDurationMs) {
+        const p = Math.min(1, elapsed / fullSweepDurationMs) * 100;
+        setProgressPercent(p);
+      } else if (elapsed <= fullSweepDurationMs + settleDurationMs) {
+        const afterFull = elapsed - fullSweepDurationMs;
+        const t = Math.min(1, afterFull / settleDurationMs);
+        const p = 100 - t * (100 - value);
+        setProgressPercent(p);
+      } else {
+        setProgressPercent(value);
+      }
 
-//       if (elapsed <= counterDurationMs) {
-//         const t = Math.min(1, elapsed / counterDurationMs);
-//         setDisplayCount(Math.round(t * value));
-//       } else {
-//         setDisplayCount(value);
-//       }
+      if (elapsed <= counterDurationMs) {
+        const t = Math.min(1, elapsed / counterDurationMs);
+        setDisplayCount(Math.round(t * value));
+      } else {
+        setDisplayCount(value);
+      }
 
-//       if (
-//         elapsed <
-//         Math.max(fullSweepDurationMs + settleDurationMs, counterDurationMs)
-//       ) {
-//         rafId = window.requestAnimationFrame(animate);
-//       }
-//     };
+      if (
+        elapsed <
+        Math.max(fullSweepDurationMs + settleDurationMs, counterDurationMs)
+      ) {
+        rafId = window.requestAnimationFrame(animate);
+      }
+    };
 
-//     rafId = window.requestAnimationFrame(animate);
-//     return () => {
-//       isCancelled = true;
-//       if (rafId) window.cancelAnimationFrame(rafId);
-//     };
-//   }, [value]);
+    rafId = window.requestAnimationFrame(animate);
+    return () => {
+      isCancelled = true;
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [value]);
 
-//   return (
-//     <div
-//       className="relative h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full p-[2px] sm:p-[3px] md:p-[4px]"
-//       style={{
-//         background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
-//         zIndex: 2,
-//       }}
-//     >
-//       <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
-//         <span className="text-[8px] sm:text-[10px] md:text-[12px] font-extrabold">{displayCount}</span>
-//         <span className="text-[2px] sm:text-[4px] md:text-[6px] font-semibold">Points</span>
-//       </div>
-//     </div>
-//   );
-// });
+  return (
+    <div
+      className="relative h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full p-[2px] sm:p-[3px] md:p-[4px]"
+      style={{
+        background: `conic-gradient(#F98A1A 0 ${progressPercent}%, #e5e7eb ${progressPercent}% 100%)`,
+        zIndex: 2,
+      }}
+    >
+      <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
+        <span className="text-[8px] sm:text-[10px] md:text-[12px] font-extrabold">{displayCount}</span>
+        <span className="text-[2px] sm:text-[4px] md:text-[6px] font-semibold">Points</span>
+      </div>
+    </div>
+  );
+});
 
 const ComparePage = ({ params }) => {
   const dispatch = useDispatch();
@@ -885,38 +885,28 @@ const ComparePage = ({ params }) => {
                             </div>
                           )}
                           <div className="flex flex-col items-center w-full relative z-20">
-                            {/* Name + Close Button Inline */}
-                            <div className="flex items-center justify-center gap-1.5 w-full mb-1">
+                            {/* Name Inline */}
+                            <div className="flex items-center justify-center w-full mb-1">
                               <span className="text-[#434343] font-medium text-[10px] sm:text-xs truncate max-w-[80px] text-center" title={productName}>{productName}</span>
-                              <div className="flex-shrink-0 w-4 h-4 flex items-center justify-center relative scale-[0.6] origin-center cursor-pointer group">
-                                <button
-                                  className="add-btn no-checkmark"
-                                  onClick={(e) => handleRemoveProduct(e, product)}
-                                  title={`Remove ${productName}`}
-                                >
-                                  <input checked={true} type="checkbox" readOnly />
-                                  <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-[15px] pointer-events-none group-hover:scale-110 transition-transform">
-                                    <svg className="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height={30} width={30}>
-                                      <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
-                                    </svg>
-                                  </span>
-                                </button>
-                              </div>
                             </div>
 
                             {/* Image Box */}
                             <div className="relative w-12 h-12 sm:w-16 sm:h-16 mb-2 flex flex-col items-center justify-center bg-[#E6E7EE] rounded-[8px] sm:rounded-[10px] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5 sm:p-2">
-                              {/* Score Badge Top Right precisely aligning with ProductCard score styling */}
-                              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10">
-                                <div className="relative w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-                                  <div
-                                    className="absolute inset-0 rounded-full"
-                                    style={{ background: `conic-gradient(${color} ${productScore}%, #d1d9e6 ${productScore}%)` }}
-                                  />
-                                  <div className="absolute inset-[1.5px] sm:inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_1px_1px_2px_#d1d9e6,inset_-1px_-1px_2px_#ffffff]">
-                                    <span className="text-[8px] sm:text-[10px] font-bold text-[#434343] leading-none">{productScore}</span>
-                                  </div>
-                                </div>
+                              {/* Score Badge Top Left precisely aligning with ProductCard score styling */}
+                              <div className="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 z-10">
+                                <CircularScore value={productScore} />
+                              </div>
+                              {/* Close Button Top Right */}
+                              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10 flex-shrink-0 flex items-center justify-center origin-center cursor-pointer group">
+                                <button
+                                  className="w-5 h-5 sm:w-6 sm:h-6 bg-[#E6E7EE] shadow-[2px_2px_4px_#d1d9e6,-2px_-2px_4px_#ffffff] rounded-full flex items-center justify-center hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+                                  onClick={(e) => handleRemoveProduct(e, product)}
+                                  title={`Remove ${productName}`}
+                                >
+                                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
+                                  </svg>
+                                </button>
                               </div>
 
                               {/* Image */}
@@ -963,38 +953,29 @@ const ComparePage = ({ params }) => {
                         )}
                         <div className="flex flex-col items-center w-full relative z-[90]">
 
-                          {/* Name + Close Button Inline */}
-                          <div className="flex items-center justify-center gap-1.5 w-full mb-1.5">
+                          {/* Name Inline */}
+                          <div className="flex items-center justify-center w-full mb-1.5">
                             <span className="text-[#434343] font-medium text-[11px] lg:text-sm truncate max-w-[100px] lg:max-w-[140px] text-center" title={productName}>{productName}</span>
-                            <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center relative scale-[0.6] origin-center cursor-pointer group">
-                              <button
-                                className="add-btn no-checkmark"
-                                onClick={(e) => handleRemoveProduct(e, product)}
-                                title={`Remove ${productName}`}
-                              >
-                                <input checked={true} type="checkbox" readOnly />
-                                <span className="!absolute !-top-[10px] !-left-2 sm:!-top-[12px] sm:!-left-3 md:!-top-[15px] md:!-left-[15px] pointer-events-none group-hover:scale-110 transition-transform">
-                                  <svg className="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height={30} width={30}>
-                                    <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
-                                  </svg>
-                                </span>
-                              </button>
-                            </div>
                           </div>
 
                           {/* Image Box */}
-                          <div className="relative w-16 h-16 lg:w-20 lg:h-20 mb-2 flex flex-col items-center justify-center bg-[#E6E7EE] rounded-[10px] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-2 sm:p-3">
-                            {/* Score Badge Top Right matching main overview styling exactly */}
-                            <div className="absolute -top-3 -right-3 z-10">
-                              <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                                <div
-                                  className="absolute inset-0 rounded-full"
-                                  style={{ background: `conic-gradient(${color} ${productScore}%, #d1d9e6 ${productScore}%)` }}
-                                />
-                                <div className="absolute inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_1px_1px_3px_#d1d9e6,inset_-1px_-1px_3px_#ffffff]">
-                                  <span className="text-[10px] sm:text-xs font-bold text-[#434343] leading-none">{productScore}</span>
-                                </div>
-                              </div>
+                          <div className="relative w-24 h-24 lg:w-28 lg:h-28 mb-2 flex flex-col items-center justify-center bg-[#E6E7EE] rounded-[10px] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-2 sm:p-3">
+                            {/* Score Badge Top Left matching main overview styling exactly */}
+                            <div className="absolute -top-3 -left-3 z-10">
+                              <CircularScore value={productScore} />
+                            </div>
+
+                            {/* Close Button Top Right */}
+                            <div className="absolute -top-4 -right-4 lg:-top-5 lg:-right-5 z-10 flex-shrink-0 flex items-center justify-center origin-center cursor-pointer group">
+                              <button
+                                className="w-6 h-6 lg:w-7 lg:h-7 bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] rounded-full flex items-center justify-center hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+                                onClick={(e) => handleRemoveProduct(e, product)}
+                                title={`Remove ${productName}`}
+                              >
+                                <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                  <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
+                                </svg>
+                              </button>
                             </div>
 
                             {/* Image */}
