@@ -57,7 +57,7 @@ const getFeatureIcon = (featureName, size = 28) => {
   return <CiCirclePlus size={size} />;
 };
 
-const CircularScore = React.memo(({ value = 0 }) => {
+const CircularScore = ({ value = 0 }) => {
   const [progressPercent, setProgressPercent] = useState(0);
   const [displayCount, setDisplayCount] = useState(0);
 
@@ -123,7 +123,7 @@ const CircularScore = React.memo(({ value = 0 }) => {
       </div>
     </div>
   );
-});
+};
 
 const ComparePage = ({ params }) => {
   const dispatch = useDispatch();
@@ -725,30 +725,11 @@ const ComparePage = ({ params }) => {
       }
 
       // Handle sticky icons visibility
-      if (radarSectionRef.current && mostPopularSectionRef.current && footerRef.current) {
-        const radarRect = radarSectionRef.current.getBoundingClientRect();
-        const mostPopularRect = mostPopularSectionRef.current.getBoundingClientRect();
-        const footerRect = footerRef.current.getBoundingClientRect();
-
-        // Check if MostPopularComparison section is in view or scrolled past
-        const isMostPopularVisible = mostPopularRect.top < window.innerHeight && mostPopularRect.bottom > 0;
-
-        // Check if footer is in view or scrolled past
-        const isFooterVisible = footerRect.top < window.innerHeight;
-
-        // Show sticky icons when radar section is scrolled past AND MostPopularComparison is not visible AND footer is not visible
-        const shouldShow = radarRect.bottom < 100 && !isMostPopularVisible && !isFooterVisible;
+      if (specsRef.current) {
+        const specsRect = specsRef.current.getBoundingClientRect();
+        // Show sticky icons when the feature/specs section comes into view and hide when scrolled past
+        const shouldShow = specsRect.top < window.innerHeight * 0.6 && specsRect.bottom > 200;
         setShowStickyIcons(shouldShow);
-      } else if (radarSectionRef.current && footerRef.current) {
-        const radarRect = radarSectionRef.current.getBoundingClientRect();
-        const footerRect = footerRef.current.getBoundingClientRect();
-        const isFooterVisible = footerRect.top < window.innerHeight;
-        // Show sticky icons when radar section is scrolled past AND footer is not visible
-        setShowStickyIcons(radarRect.bottom < 100 && !isFooterVisible);
-      } else if (radarSectionRef.current) {
-        const rect = radarSectionRef.current.getBoundingClientRect();
-        // Show sticky icons when radar section is scrolled past
-        setShowStickyIcons(rect.bottom < 100);
       }
     };
 
@@ -1381,7 +1362,7 @@ const ComparePage = ({ params }) => {
                 />
 
                 {/* Sticky Icons Sidebar - Only visible when scrolling past radar chart */}
-                <div className={`hidden xl:flex flex-col gap-2 fixed left-2 xl:left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-[100] transition-all duration-300 ${showStickyIcons ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
+                <div className={`hidden lg:flex flex-col gap-2 fixed left-2 xl:left-4 2xl:left-8 bottom-8 z-[100] transition-all duration-300 ${showStickyIcons ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
                   }`}>
                   {icons.map((icon, index) => {
                     const isActive = activeScrollFeature === icon.tooltip || selectedFeature === icon.tooltip;
