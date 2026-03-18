@@ -63,7 +63,7 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("left")}
                     disabled={!canScrollLeft}
-                    className={`p-2 sm:p-0 w-10 h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollLeft
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
@@ -73,7 +73,7 @@ const BestSmartphones = ({ products = [] }) => {
                 </button>
 
                 {/* Title */}
-                <h2 className="text-base sm:text-lg md:text-xl font-bold text-[#434343] text-center uppercase">
+                <h2 className="text-base sm:text-md md:text-lg font-bold text-[#434343] text-center uppercase">
                     Which are the best smartphones?
                 </h2>
 
@@ -81,7 +81,7 @@ const BestSmartphones = ({ products = [] }) => {
                 <button
                     onClick={() => scroll("right")}
                     disabled={!canScrollRight}
-                    className={`p-2 sm:p-0 w-10 h-full sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
+                    className={`p-2 sm:p-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center transition-all duration-200 ${
                         !canScrollRight
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
@@ -113,7 +113,7 @@ const BestSmartphones = ({ products = [] }) => {
                         return (
                             <div
                                 key={product?._id || product?.id || index}
-                                className="flex-shrink-0 w-[200px] sm:w-[220px] md:w-[240px]"
+                                className="flex-shrink-0 w-[200px]"
                             >
                                 {/* Card - Neumorphic Up Theme */}
                                 <Link
@@ -122,11 +122,11 @@ const BestSmartphones = ({ products = [] }) => {
                                             ? `/compare/${encodeURIComponent(productUniqueTitle)}`
                                             : "#"
                                     }
-                                    className="block rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] p-4 sm:p-5 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200"
+                                    className="block rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] p-2 sm:p-3 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200"
                                 >
                                     {/* Product Image */}
                                     <div className="w-full flex items-center justify-center mb-4">
-                                        <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg bg-white shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5 sm:p-2 flex items-center justify-center overflow-hidden">
+                                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-lg bg-white shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5 sm:p-2 flex items-center justify-center overflow-hidden">
                                             <img
                                                 src={productImage}
                                                 alt={productName}

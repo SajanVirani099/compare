@@ -370,19 +370,19 @@ const QuickCompare = () => {
             Ad Box
           </div>
         </div>
-        <div className="max-w-7xl mx-auto pb-8 pt-4 border-[2px] border-[#d1d9e6] my-10 shadow-inset">
-          <ol className="flex items-center space-x-2 border-b-[2px] border-[#d1d9e6] pb-4 px-4 sm:px-6 lg:px-8 ">
+        <div className="max-w-7xl mx-auto pb-4 pt-2 border-[2px] border-[#d1d9e6] my-10 shadow-inset">
+          <ol className="flex items-center space-x-2 border-b-[2px] border-[#d1d9e6] pb-2 px-4 sm:px-6 lg:px-8 ">
             <li>
               <a
                 href="/"
-                className="text-gray-500 hover:text-gray-700 font-medium text-lg"
+                className="text-gray-500 hover:text-gray-700 font-medium lg:text-md"
               >
                 Home
               </a>
             </li>
             <li>
               <span className="text-gray-400 mx-2">/</span>
-              <span className="text-gray-900 font-medium text-lg">
+              <span className="text-gray-900 font-medium lg:text-md">
                 Quick Compare
               </span>
             </li>
@@ -391,14 +391,14 @@ const QuickCompare = () => {
             {/* Category Selection */}
             <div className="border-b-[2px] border-[#d1d9e6]">
               <div
-                className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-4"
+                className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-2"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
                 {category?.map((cat) => (
                   <button
                     key={cat._id}
                     onClick={() => handleCategorySelect(cat)}
-                    className={`px-4 py-2 btn whitespace-nowrap flex-shrink-0 ${
+                    className={`btn whitespace-nowrap flex-shrink-0 ${
                       selectedCategory?._id === cat._id
                         ? "btn-primary-focus"
                         : "btn-primary"
@@ -415,7 +415,7 @@ const QuickCompare = () => {
               <div className="border-b-[2px] border-[#d1d9e6]">
                 {selectedCategory.subCategory.length > 0 ? (
                   <div
-                    className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-4"
+                    className="flex gap-3 overflow-x-auto scrollbar-hide px-4 py-2"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
                     {selectedCategory.subCategory.map((subCat) => (

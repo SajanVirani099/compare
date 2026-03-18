@@ -326,7 +326,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6">
+    <div className="max-w-[1280px] mx-auto px-6">
       {!onlyBlogGrid && (
         <>
       <div className="mb-16">
@@ -344,16 +344,16 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             See all
           </button> */}
         </div>
-        <div className="p-3">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-5">
+        <div className="p-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 lg:gap-0 w-full mt-1 lg:mt-3">
             {/* Product Slot 1 */}
             <div 
-              className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
+              className={`border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[500px] lg:max-w-[400px] flex items-center justify-center relative ${isFirstProductLoaded ? 'cursor-default' : 'cursor-pointer'}`}
               onClick={() => !selectedProducts[0] && !isFirstProductLoaded && handlePlusClick(0)}
             >
               {selectedProducts[0] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 px-6 mt-20 w-full">
+                  <div className="p-4 px-6 mt-4 lg:mt-16 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[0].thumbnail}`}
                       alt={selectedProducts[0].title}
@@ -416,7 +416,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             </div>
             
             {/* VS Badge 1 - Horizontal lines on mobile, vertical on desktop */}
-            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
+            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-xs md:text-sm lg:text-base text-gray-600 
               before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
               after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[50%] md:after:top-[122%] after:-translate-y-1/2
               sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
@@ -426,12 +426,12 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             
             {/* Product Slot 2 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[45%] md:w-[30%] max-w-[500px] lg:max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[1] && handlePlusClick(1)}
             >
               {selectedProducts[1] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 px-6 mt-20 w-full">
+                  <div className="p-4 px-6 mt-4 lg:mt-16 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[1].thumbnail}`}
                       alt={selectedProducts[1].title}
@@ -484,7 +484,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             </div>
             
             {/* VS Badge 2 - Horizontal lines on mobile, vertical on desktop */}
-            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-gray-600 
+            <div className="relative bg-[#e6e7ee] shadow-inset rounded-full px-2.5 py-2 font-bold text-xs md:text-sm lg:text-base text-gray-600 
               before:content-[''] before:absolute before:h-[2px] before:w-[80px] before:bg-gray-300 before:left-[-90px] before:top-1/2 before:-translate-y-1/2
               after:content-[''] after:absolute after:h-[2px] after:w-[80px] after:bg-gray-300 after:right-[-90px] after:top-[50%] md:after:top-[122%] after:-translate-y-1/2
               sm:before:h-[150px] sm:before:w-[2px] sm:before:left-1/2 sm:before:top-[-160px] sm:before:-translate-x-1/2 sm:before:translate-y-0
@@ -494,12 +494,12 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             
             {/* Product Slot 3 */}
             <div 
-              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
+              className="border border-[#d1d9e6] rounded-xl mx-2 sm:mx-3 bg-[#e6e7ee] shadow-inset w-full sm:w-[30%] max-w-[500px] lg:max-w-[400px] flex items-center justify-center relative cursor-pointer h-[-webkit-fill-available]"
               onClick={() => !selectedProducts[2] && handlePlusClick(2)}
             >
               {selectedProducts[2] ? (
                 <div className="w-full flex items-center justify-center relative">
-                  <div className="p-4 px-6 mt-20 w-full">
+                  <div className="p-4 px-6 mt-4 lg:mt-16 w-full">
                     <ImageWithShimmer
                       src={`${imageUrl}${selectedProducts[2].thumbnail}`}
                       alt={selectedProducts[2].title}
@@ -551,7 +551,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center my-4 sm:mt-4">
+          <div className="flex items-center justify-center my-2 sm:mt-3">
             <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
               More Compare
             </button>
@@ -718,7 +718,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
       {!onlyBlogGrid && (
         <>
       <div className="my-8 border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft">
-        <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-3">
+        <div className="border-b-2 border-gray-300 rounded-t-xl rounded-tr-xl flex items-center justify-between p-2 px-3">
           <h3 className="text-[20px] font-bold">Categories</h3>
           <button 
             className="btn btn-primary !text-sm px-2 !py-1 me-3"
@@ -784,13 +784,13 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             </div>
           ) : (
             <div className="">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3 lg:gap-6">
                 {blogColumns?.slice(0, 23).map((column, colIndex) => (
                   <div key={colIndex}>
                     {column.map((item, i) => (
                       <div
                         key={i}
-                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-6"
+                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6"
                       >
                         <img
                           className="!h-auto max-w-full rounded-xl"

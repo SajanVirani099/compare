@@ -29,12 +29,12 @@ const BlogImageCarousel = ({ images = [], title = "" }) => {
   };
 
   return (
-    <div className="relative w-full mb-8 bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-14">
-       <div className="absolute top-4 left-1/2 bg-black/50 text-white px-3 py-1 rounded-lg text-xs sm:text-sm">
+    <div className="relative w-full mb-8 bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-3">
+       <div className="absolute top-5 left-1/2 bg-black/50 text-white px-3 py-1 rounded-lg text-xs sm:text-sm">
           Credit
         </div>
       {/* Main Image Container */}
-      <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] rounded-xl overflow-hidden border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft">
+      <div className="relative w-full h-[150px] sm:h-[250px] md:h-[350px] rounded-xl overflow-hidden border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft">
         <Image
           src={imageUrl + images[currentIndex]}
           alt={title || `Image ${currentIndex + 1}`}

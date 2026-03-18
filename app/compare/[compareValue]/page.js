@@ -1,7 +1,13 @@
 "use client";
 import RadarChart from "@/components/radarChart/radarChart";
 import Link from "next/link";
-import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { CiMobile1 } from "react-icons/ci";
@@ -22,7 +28,10 @@ import UserReviews from "@/components/userReviews/userReviews";
 import FeatureSection from "@/components/featureSection/featureSection";
 import { TbVs } from "react-icons/tb";
 import BestSmartphones from "@/components/bestSmartphones/bestSmartphones";
-import { getResultProduct, getPopularComparison } from "@/app/redux/slice/blogSlice";
+import {
+  getResultProduct,
+  getPopularComparison,
+} from "@/app/redux/slice/blogSlice";
 import Navbar from "@/components/Navbar";
 import { imageUrl } from "@/components/utils/config";
 import Footer from "@/components/Footer";
@@ -33,23 +42,26 @@ const productColors = ["#434343", "#3F51B5", "#10B981"];
 const tabs = ["OVERVIEW", "PRICES", "REVIEWS", "SPECS"];
 
 const getProductName = (item, idx = 1) =>
-  item?.title ||
-  item?.name ||
-  item?.uniqueTitle ||
-  `Product ${idx}`;
+  item?.title || item?.name || item?.uniqueTitle || `Product ${idx}`;
 
 // Helper function to map feature name to icon component
 const getFeatureIcon = (featureName, size = 28) => {
   const normalizedName = featureName?.toLowerCase() || "";
 
   if (normalizedName.includes("design")) return <AiOutlineMobile size={size} />;
-  if (normalizedName.includes("display")) return <AiOutlinePicture size={size} />;
-  if (normalizedName.includes("performance")) return <GiProcessor size={size} />;
+  if (normalizedName.includes("display"))
+    return <AiOutlinePicture size={size} />;
+  if (normalizedName.includes("performance"))
+    return <GiProcessor size={size} />;
   if (normalizedName.includes("camera")) return <AiOutlineCamera size={size} />;
-  if (normalizedName.includes("operating") || normalizedName.includes("os")) return <PiDevices size={size} />;
-  if (normalizedName.includes("battery") || normalizedName.includes("bettery")) return <IoBatteryFullOutline size={size} />;
-  if (normalizedName.includes("audio") || normalizedName.includes("sound")) return <SlMusicToneAlt size={size} />;
-  if (normalizedName.includes("storage") || normalizedName.includes("memory")) return <CiCirclePlus size={size} />;
+  if (normalizedName.includes("operating") || normalizedName.includes("os"))
+    return <PiDevices size={size} />;
+  if (normalizedName.includes("battery") || normalizedName.includes("bettery"))
+    return <IoBatteryFullOutline size={size} />;
+  if (normalizedName.includes("audio") || normalizedName.includes("sound"))
+    return <SlMusicToneAlt size={size} />;
+  if (normalizedName.includes("storage") || normalizedName.includes("memory"))
+    return <CiCirclePlus size={size} />;
   if (normalizedName.includes("feature")) return <CiCirclePlus size={size} />;
   if (normalizedName.includes("miscellaneous")) return <TbVs size={size} />;
 
@@ -118,8 +130,12 @@ const CircularScore = ({ value = 0 }) => {
       }}
     >
       <div className="h-full w-full rounded-full bg-[#e6e7ee] shadow-inset flex flex-col items-center justify-center leading-tight">
-        <span className="text-[8px] sm:text-[10px] md:text-[12px] font-extrabold">{displayCount}</span>
-        <span className="text-[2px] sm:text-[4px] md:text-[6px] font-semibold">Points</span>
+        <span className="text-[8px] sm:text-[10px] md:text-[12px] font-extrabold">
+          {displayCount}
+        </span>
+        <span className="text-[2px] sm:text-[4px] md:text-[6px] font-semibold">
+          Points
+        </span>
       </div>
     </div>
   );
@@ -129,7 +145,7 @@ const ComparePage = ({ params }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { resultProduct, popularComparison } = useSelector(
-    (state) => state.blog || {}
+    (state) => state.blog || {},
   );
   const [selectedTab, setSelectedTab] = useState(0);
   const [comparisonCategory, setComparisonCategory] = useState("");
@@ -149,13 +165,16 @@ const ComparePage = ({ params }) => {
   const reviewsRef = useRef(null);
   const specsRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+  const [showStickyProducts, setShowStickyProducts] = useState(false);
+  const headerTopRef = useRef(null);
 
   // Normalize API response structure
   const comparisonResponse = resultProduct?.data || resultProduct || {};
   const comparedProducts =
-    comparisonResponse?.comparedProducts || comparisonResponse?.data?.comparedProducts || [];
+    comparisonResponse?.comparedProducts ||
+    comparisonResponse?.data?.comparedProducts ||
+    [];
 
   // Normalize popular comparison data: array of { left, right }
   const popularComparisonList =
@@ -186,7 +205,10 @@ const ComparePage = ({ params }) => {
 
   // Limit products to max 3
   const limitedProducts = useMemo(() => {
-    return (Array.isArray(comparedProducts) ? comparedProducts : []).slice(0, 3);
+    return (Array.isArray(comparedProducts) ? comparedProducts : []).slice(
+      0,
+      3,
+    );
   }, [comparedProducts]);
 
   // Feature scores for the selected product (used for Key Specs view)
@@ -201,9 +223,7 @@ const ComparePage = ({ params }) => {
           feature?.featureId?.featureName ||
           `Feature ${idx + 1}`;
         const score =
-          feature?.scoreValue ??
-          feature?.featureId?.scoreValue ??
-          0;
+          feature?.scoreValue ?? feature?.featureId?.scoreValue ?? 0;
         const icon = feature?.icon || feature?.featureId?.icon;
 
         const numericScore = score || 0;
@@ -213,9 +233,15 @@ const ComparePage = ({ params }) => {
 
         // Get icon component
         const apiIcon = icon ? `${imageUrl}${icon}` : null;
-        const iconComponent = apiIcon
-          ? <img src={apiIcon} alt={name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
-          : getFeatureIcon(name, 20);
+        const iconComponent = apiIcon ? (
+          <img
+            src={apiIcon}
+            alt={name}
+            className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+          />
+        ) : (
+          getFeatureIcon(name, 20)
+        );
 
         return {
           name,
@@ -240,9 +266,7 @@ const ComparePage = ({ params }) => {
           feature?.featureId?.featureName ||
           `Feature ${idx + 1}`;
         const score =
-          feature?.scoreValue ??
-          feature?.featureId?.scoreValue ??
-          0;
+          feature?.scoreValue ?? feature?.featureId?.scoreValue ?? 0;
         const icon = feature?.icon || feature?.featureId?.icon;
 
         const numericScore = score || 0;
@@ -252,9 +276,15 @@ const ComparePage = ({ params }) => {
 
         // Get icon component
         const apiIcon = icon ? `${imageUrl}${icon}` : null;
-        const iconComponent = apiIcon
-          ? <img src={apiIcon} alt={name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
-          : getFeatureIcon(name, 20);
+        const iconComponent = apiIcon ? (
+          <img
+            src={apiIcon}
+            alt={name}
+            className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+          />
+        ) : (
+          getFeatureIcon(name, 20)
+        );
 
         return {
           name,
@@ -267,9 +297,12 @@ const ComparePage = ({ params }) => {
   }, [limitedProducts]);
 
   const productNames = limitedProducts.map((item, idx) =>
-    getProductName(item, idx + 1)
+    getProductName(item, idx + 1),
   );
-  const activeCompareIndex = Math.max(0, productNames.findIndex((n) => n === comparisonItem));
+  const activeCompareIndex = Math.max(
+    0,
+    productNames.findIndex((n) => n === comparisonItem),
+  );
 
   // Handler to remove a product from the comparison
   const handleRemoveProduct = (e, productToRemove) => {
@@ -277,19 +310,30 @@ const ComparePage = ({ params }) => {
 
     // Update local storage syncing
     if (typeof window !== "undefined") {
-      const storedList = JSON.parse(localStorage.getItem("comparisonList") || "[]");
-      const updatedList = storedList.filter(id => id !== productToRemove._id);
+      const storedList = JSON.parse(
+        localStorage.getItem("comparisonList") || "[]",
+      );
+      const updatedList = storedList.filter((id) => id !== productToRemove._id);
       localStorage.setItem("comparisonList", JSON.stringify(updatedList));
 
-      const storedProducts = JSON.parse(localStorage.getItem("comparisonProducts") || "[]");
-      const updatedProducts = storedProducts.filter(p => p._id !== productToRemove._id);
-      localStorage.setItem("comparisonProducts", JSON.stringify(updatedProducts));
+      const storedProducts = JSON.parse(
+        localStorage.getItem("comparisonProducts") || "[]",
+      );
+      const updatedProducts = storedProducts.filter(
+        (p) => p._id !== productToRemove._id,
+      );
+      localStorage.setItem(
+        "comparisonProducts",
+        JSON.stringify(updatedProducts),
+      );
 
       window.dispatchEvent(new Event("comparisonListUpdated"));
     }
 
     // Prepare route update for the URL
-    const remainingProducts = limitedProducts.filter(p => p._id !== productToRemove._id);
+    const remainingProducts = limitedProducts.filter(
+      (p) => p._id !== productToRemove._id,
+    );
 
     if (remainingProducts.length > 0) {
       const compareValues = remainingProducts.map((p) => {
@@ -312,7 +356,7 @@ const ComparePage = ({ params }) => {
       return {
         icons: [],
         featureSections: [],
-        titleToTooltip: {}
+        titleToTooltip: {},
       };
     }
 
@@ -324,7 +368,7 @@ const ComparePage = ({ params }) => {
       return {
         icons: [],
         featureSections: [],
-        titleToTooltip: {}
+        titleToTooltip: {},
       };
     }
 
@@ -334,30 +378,46 @@ const ComparePage = ({ params }) => {
     const tooltipMap = {};
 
     featureData.forEach((feature, index) => {
-      const featureName = feature?.featureName || feature?.featureId?.featureName || "";
+      const featureName =
+        feature?.featureName || feature?.featureId?.featureName || "";
       if (!featureName) return;
 
       // Get icon from API if available, otherwise use fallback icon component
       const apiIcon = feature?.icon || feature?.featureId?.icon;
 
       // Create icon component - use API icon if available, otherwise use fallback
-      const iconComponent = apiIcon
-        ? <img src={`${imageUrl}${apiIcon}`} alt={featureName} style={{ fill: '#fff' }} className="w-4 h-4 lg:w-7 lg:h-7 object-contain" />
-        : getFeatureIcon(featureName, 28);
-      const iconSmallComponent = apiIcon
-        ? <img src={`${imageUrl}${apiIcon}`} alt={featureName} style={{ fill: '#fff' }} className="w-5 h-5 lg:w-7 lg:h-7 object-contain" />
-        : getFeatureIcon(featureName);
+      const iconComponent = apiIcon ? (
+        <img
+          src={`${imageUrl}${apiIcon}`}
+          alt={featureName}
+          style={{ fill: "#fff" }}
+          className="w-4 h-4 lg:w-7 lg:h-7 object-contain"
+        />
+      ) : (
+        getFeatureIcon(featureName, 28)
+      );
+      const iconSmallComponent = apiIcon ? (
+        <img
+          src={`${imageUrl}${apiIcon}`}
+          alt={featureName}
+          style={{ fill: "#fff" }}
+          className="w-5 h-5 lg:w-7 lg:h-7 object-contain"
+        />
+      ) : (
+        getFeatureIcon(featureName)
+      );
 
       // Build points object for icons (scoreValue for each product)
       const pointsObj = {};
       limitedProducts.forEach((product, prodIdx) => {
-        const productFeature = product?.featureData?.find(
-          f => {
-            const fName = f?.featureName || f?.featureId?.featureName;
-            return fName === featureName;
-          }
-        );
-        const scoreValue = productFeature?.scoreValue || productFeature?.featureId?.scoreValue || 0;
+        const productFeature = product?.featureData?.find((f) => {
+          const fName = f?.featureName || f?.featureId?.featureName;
+          return fName === featureName;
+        });
+        const scoreValue =
+          productFeature?.scoreValue ||
+          productFeature?.featureId?.scoreValue ||
+          0;
         pointsObj[`item${prodIdx + 1}points`] = String(scoreValue);
       });
 
@@ -367,12 +427,10 @@ const ComparePage = ({ params }) => {
       // Get all unique subfeature names from all products for this feature
       const allSubfeatureNames = new Set();
       limitedProducts.forEach((product) => {
-        const productFeature = product?.featureData?.find(
-          f => {
-            const fName = f?.featureName || f?.featureId?.featureName;
-            return fName === featureName;
-          }
-        );
+        const productFeature = product?.featureData?.find((f) => {
+          const fName = f?.featureName || f?.featureId?.featureName;
+          return fName === featureName;
+        });
         const subfeatures = productFeature?.subfeatures || [];
         subfeatures.forEach((subfeature) => {
           const subfeatureName = subfeature?.name || "";
@@ -387,14 +445,12 @@ const ComparePage = ({ params }) => {
         const subfeatureValues = [];
 
         limitedProducts.forEach((product, prodIdx) => {
-          const productFeature = product?.featureData?.find(
-            f => {
-              const fName = f?.featureName || f?.featureId?.featureName;
-              return fName === featureName;
-            }
-          );
+          const productFeature = product?.featureData?.find((f) => {
+            const fName = f?.featureName || f?.featureId?.featureName;
+            return fName === featureName;
+          });
           const subfeature = productFeature?.subfeatures?.find(
-            sf => sf?.name === subfeatureName
+            (sf) => sf?.name === subfeatureName,
           );
 
           if (subfeature) {
@@ -420,7 +476,9 @@ const ComparePage = ({ params }) => {
               displayValue = details;
               // Try to extract numeric value from details if it's a number
               const numMatch = details.match(/[\d.]+/);
-              numericValue = numMatch ? parseFloat(numMatch[0]) : (scorevalue || 0);
+              numericValue = numMatch
+                ? parseFloat(numMatch[0])
+                : scorevalue || 0;
             } else if (unit) {
               displayValue = `${unit}${unitSymbol ? ` ${unitSymbol}` : ""}`;
               // Use unit as numeric value, or scorevalue if available
@@ -445,7 +503,9 @@ const ComparePage = ({ params }) => {
               details: details,
               isTrueFalse: isTrueFalse,
               type: type,
-              isNumeric: !!(unit && !isNaN(parseFloat(unit))) || !!(details && details.match(/[\d.]+/))
+              isNumeric:
+                !!(unit && !isNaN(parseFloat(unit))) ||
+                !!(details && details.match(/[\d.]+/)),
             });
           } else {
             // Subfeature not found for this product
@@ -455,7 +515,7 @@ const ComparePage = ({ params }) => {
               scorevalue: 0,
               description: "",
               unknown: false,
-              na: true
+              na: true,
             });
           }
         });
@@ -470,23 +530,31 @@ const ComparePage = ({ params }) => {
           const param3 = subfeatureValues[2]?.displayValue || "N/A";
 
           // Get description from any available product
-          const description = subfeatureValues.find(sv => sv?.description)?.description ||
-            subfeatureValues[0]?.description || "";
+          const description =
+            subfeatureValues.find((sv) => sv?.description)?.description ||
+            subfeatureValues[0]?.description ||
+            "";
 
           // Check if all are unknown
-          const allUnknown = subfeatureValues.every(sv => sv?.unknown);
+          const allUnknown = subfeatureValues.every((sv) => sv?.unknown);
           // Check if all are N/A (not applicable)
-          const allNA = subfeatureValues.every(sv => sv?.na);
+          const allNA = subfeatureValues.every((sv) => sv?.na);
 
           // Check if this is a numeric comparison (has numeric values)
-          const hasNumericValues = subfeatureValues.some(sv => sv?.isNumeric && sv?.scorevalue > 0);
+          const hasNumericValues = subfeatureValues.some(
+            (sv) => sv?.isNumeric && sv?.scorevalue > 0,
+          );
 
           // Check if this is an IP rating or similar text-only value (starts with IP, or is pure text without numbers)
-          const isIPRating = param1 && param1.toString().toUpperCase().startsWith('IP');
-          const isTextOnly = param1 && !param1.toString().match(/[\d.]+/) && !isIPRating;
+          const isIPRating =
+            param1 && param1.toString().toUpperCase().startsWith("IP");
+          const isTextOnly =
+            param1 && !param1.toString().match(/[\d.]+/) && !isIPRating;
 
           // Calculate percentage for range bars
-          let percent1 = 0, percent2 = 0, percent3 = 0;
+          let percent1 = 0,
+            percent2 = 0,
+            percent3 = 0;
 
           if (hasNumericValues) {
             // For numeric values (weight, thickness, etc.), calculate percentage based on max value
@@ -521,7 +589,7 @@ const ComparePage = ({ params }) => {
             value3: percent3,
             text: description,
             unknown: allUnknown,
-            na: allNA
+            na: allNA,
           });
         }
       });
@@ -531,7 +599,7 @@ const ComparePage = ({ params }) => {
         icon: iconSmallComponent,
         tooltip: featureName,
         isApiIcon: !!apiIcon, // Store flag to know if it's an API icon
-        ...pointsObj
+        ...pointsObj,
       });
 
       // Add to feature sections with subfeatures
@@ -552,13 +620,18 @@ const ComparePage = ({ params }) => {
     return {
       icons: iconArray,
       featureSections: sections,
-      titleToTooltip: tooltipMap
+      titleToTooltip: tooltipMap,
     };
   }, [limitedProducts]);
 
   // Ratings rows for 2–3 products view (one row per feature, scores per product)
   const ratingRows = useMemo(() => {
-    if (!icons || icons.length === 0 || !limitedProducts || limitedProducts.length < 2) {
+    if (
+      !icons ||
+      icons.length === 0 ||
+      !limitedProducts ||
+      limitedProducts.length < 2
+    ) {
       return [];
     }
 
@@ -648,7 +721,7 @@ const ComparePage = ({ params }) => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, []);
@@ -666,11 +739,12 @@ const ComparePage = ({ params }) => {
 
     if (ref && ref.current) {
       const elementPosition = ref.current.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset - 180;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - offset - 180;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -682,10 +756,10 @@ const ComparePage = ({ params }) => {
     const cardWidth = container.offsetWidth;
     const scrollAmount = cardWidth;
 
-    if (direction === 'left') {
-      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    if (direction === "left") {
+      container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     } else {
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -695,18 +769,18 @@ const ComparePage = ({ params }) => {
       if (!productSliderRef.current) return;
       const container = productSliderRef.current;
       setCanScrollLeft(container.scrollLeft > 0);
-      setCanScrollRight(
-        container.scrollLeft < container.scrollWidth - container.offsetWidth - 10
-      );
+      // setCanScrollRight(
+      //   container.scrollLeft < container.scrollWidth - container.offsetWidth - 10
+      // );
     };
 
     const container = productSliderRef.current;
     if (container) {
-      container.addEventListener('scroll', checkScroll);
+      container.addEventListener("scroll", checkScroll);
       checkScroll(); // Initial check
 
       return () => {
-        container.removeEventListener('scroll', checkScroll);
+        container.removeEventListener("scroll", checkScroll);
       };
     }
   }, [limitedProducts]);
@@ -714,21 +788,41 @@ const ComparePage = ({ params }) => {
   // Track scroll to show/hide sticky icons and make header sticky
   useEffect(() => {
     const handleScroll = () => {
-      // Handle header sticky - check if header is stuck
-      if (headerSectionRef.current) {
-        const headerRect = headerSectionRef.current.getBoundingClientRect();
-        const navbarHeight = 95;
+      // When scrolled to the very top, disable the sticky header and hide the spacer.
+      if (window.scrollY === 0) {
+        setIsHeaderSticky(false);
+        return;
+      }
 
-        // Header is stuck when its top position is at or below navbar height
-        const isStuck = headerRect.top <= navbarHeight;
+      // Handle header sticky - check if we have scrolled past the header's original position.
+      if (headerSectionRef.current) {
+        // Store the header's original offsetTop before it becomes fixed.
+        if (headerTopRef.current === null) {
+          headerTopRef.current = headerSectionRef.current.offsetTop;
+        }
+
+        const headerTop = headerTopRef.current;
+        const stickyOffset = 70; // match the fixed header top value
+        const isStuck = window.scrollY + stickyOffset >= headerTop;
         setIsHeaderSticky(isStuck);
+      } else {
+        setIsHeaderSticky(false);
+      }
+
+      // Show sticky products ONLY when scrolling reaches the review section or specs section
+      if (reviewsRef.current) {
+        const reviewsRect = reviewsRef.current.getBoundingClientRect();
+        // The sticky products will appear when the top of the reviews section is near or above the viewport top
+        const shouldShowProducts = reviewsRect.top <= setTimeout; // we want something like 150px
+        setShowStickyProducts(reviewsRect.top <= 250);
       }
 
       // Handle sticky icons visibility
       if (specsRef.current) {
         const specsRect = specsRef.current.getBoundingClientRect();
         // Show sticky icons when the feature/specs section comes into view and hide when scrolled past
-        const shouldShow = specsRect.top < window.innerHeight * 0.6 && specsRect.bottom > 200;
+        const shouldShow =
+          specsRect.top < window.innerHeight * 0.6 && specsRect.bottom > 200;
         setShowStickyIcons(shouldShow);
       }
     };
@@ -746,7 +840,7 @@ const ComparePage = ({ params }) => {
     const observerOptions = {
       root: null,
       rootMargin: "-20% 0px -60% 0px", // Trigger when section is in upper portion of viewport
-      threshold: 0
+      threshold: 0,
     };
 
     const observerCallback = (entries) => {
@@ -761,7 +855,10 @@ const ComparePage = ({ params }) => {
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
 
     // Observe all feature sections
     Object.values(sectionRefs.current).forEach((ref) => {
@@ -779,30 +876,40 @@ const ComparePage = ({ params }) => {
     <div className="min-h-screen bg-[#E6E7EE]">
       <Navbar />
       <div className="mx-2 lg:mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px]">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-4 sm:pt-6">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-2 sm:pt-4">
           <div
             ref={headerSectionRef}
-            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-2 sm:py-3 transition-all duration-200 ${isHeaderSticky ? 'fixed z-[999]' : 'sticky z-[999]'
-              }`}
-            style={isHeaderSticky ? {
-              position: 'fixed',
-              top: '75px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 'calc(100% - 2rem)',
-              maxWidth: '1280px',
-              paddingLeft: '1rem',
-              paddingRight: '1rem'
-            } : {
-              position: 'sticky',
-              top: '95px',
-            }}
+            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-2 sm:py-3 transition-all duration-200 ${
+              isHeaderSticky ? "fixed z-[999]" : "sticky z-[999]"
+            }`}
+            style={
+              isHeaderSticky
+                ? {
+                    position: "fixed",
+                    top: "70px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "calc(100% - 2rem)",
+                    maxWidth: "1280px",
+                    paddingLeft: "1rem",
+                    paddingRight: "1rem",
+                  }
+                : {
+                    position: "sticky",
+                    top: "90px",
+                  }
+            }
           >
-            <div className="flex items-center justify-between mb-3 sm:mb-4 pb-3 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
+            <div className="flex items-center justify-between mb-1 sm:mb-2 pb-3 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
               <p className="text-xs sm:text-sm break-words text-[#616161]">
-                <Link href="/" className="hover:text-[#434343]">Home</Link> &gt; {comparisonCategory || "smartphone"} &gt;{" "}
+                <Link href="/" className="hover:text-[#434343]">
+                  Home
+                </Link>{" "}
+                &gt; {comparisonCategory || "smartphone"} &gt;{" "}
                 <span className="text-[#434343]">
-                  {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
+                  {productNames.length > 0
+                    ? productNames.join(" vs ")
+                    : "Product Comparison"}
                 </span>
               </p>
               <button
@@ -822,24 +929,37 @@ const ComparePage = ({ params }) => {
             </div>
 
             {/* Product Title or Sticky Horizontal View */}
-            {!isHeaderSticky ? (
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#434343] mb-2 sm:mb-3 px-4 sm:px-6 md:px-6">
-                {productNames.length > 0 ? productNames.join(" vs ") : "Product Comparison"}
+            {!isHeaderSticky || !showStickyProducts ? (
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-[#434343] mb-2 sm:mb-3 px-4 sm:px-6 md:px-6">
+                {productNames.length > 0
+                  ? productNames.join(" vs ")
+                  : "Product Comparison"}
               </h1>
             ) : (
-              <div className="mb-3 sm:mb-4 w-full">
+              <div className="mb-2 sm:mb-0 w-full">
                 {/* Unified Header matching FeatureSection column grid widths */}
 
                 {/* Mobile version */}
-                <div className="sm:hidden overflow-x-auto scrollbar-hide -mx-2 px-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <div
+                  className="sm:hidden overflow-x-auto scrollbar-hide -mx-2 px-2"
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    WebkitOverflowScrolling: "touch",
+                  }}
+                >
                   <div
                     className="grid min-w-[600px] border-b border-[#d1d9e6] pb-2 items-end"
-                    style={{ gridTemplateColumns: `180px repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(120px, 1fr))` }}
+                    style={{
+                      gridTemplateColumns: `180px repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(120px, 1fr))`,
+                    }}
                   >
                     {/* First column: Amazon */}
                     <div className="px-3">
                       <div className="flex flex-col justify-center px-4 py-2 rounded-xl border border-[#434343] bg-[#E6E7EE] max-w-[120px]">
-                        <span className="text-[#434343] font-bold text-xs text-center mb-1.5">Amazon</span>
+                        <span className="text-[#434343] font-bold text-xs text-center mb-1.5">
+                          Amazon
+                        </span>
                         <div className="w-full h-px bg-[#434343] mb-2"></div>
                         <button className="w-full py-1 rounded-md border border-[#434343] bg-transparent hover:bg-gray-100 transition-all text-xs font-semibold text-[#434343]">
                           Buy
@@ -850,25 +970,43 @@ const ComparePage = ({ params }) => {
                     {limitedProducts?.map((product, index) => {
                       const color = productColors[index] || productColors[0];
                       const productName = getProductName(product, index + 1);
-                      const productImage = product?.thumbnail ? `${imageUrl}${product.thumbnail}` : `/compare-item-${index + 1}.jpg`;
-                      const storage = product?.storage || product?.internalStorage || null;
+                      const productImage = product?.thumbnail
+                        ? `${imageUrl}${product.thumbnail}`
+                        : `/compare-item-${index + 1}.jpg`;
+                      const storage =
+                        product?.storage || product?.internalStorage || null;
                       const ram = product?.ram || product?.memory || null;
-                      const configuration = storage && ram ? `${ram} + ${storage}` : storage || ram || "N/A";
+                      const configuration =
+                        storage && ram
+                          ? `${ram} + ${storage}`
+                          : storage || ram || "N/A";
                       const productScore = product?.scoreValue || 75;
 
                       return (
-                        <div key={product?._id || index} className="relative px-3 flex flex-col items-center justify-end h-full pt-4">
+                        <div
+                          key={product?._id || index}
+                          className="relative px-3 flex flex-col items-center justify-end h-full pt-4"
+                        >
                           {index > 0 && (
-                            <div className="absolute left-0 top-[60%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full h-[70%] pointer-events-none">
+                            <div className="absolute left-0 top-[60%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full h-[70%] pointer-events-none z-50">
                               <div className="w-[1px] flex-1 bg-[#d1d9e6]"></div>
-                              <div className="flex items-center justify-center w-[16px] h-[16px] rounded-full border border-[#d1d9e6] bg-[#E6E7EE] my-1"><span className="text-[7px] font-bold text-[#616161]">VS</span></div>
+                              <div className="flex items-center justify-center w-[16px] h-[16px] rounded-full border border-[#d1d9e6] bg-[#E6E7EE] my-1">
+                                <span className="text-[5px] font-bold text-[#616161]">
+                                  VS
+                                </span>
+                              </div>
                               <div className="w-[1px] flex-1 bg-[#d1d9e6]"></div>
                             </div>
                           )}
                           <div className="flex flex-col items-center w-full relative z-20">
                             {/* Name Inline */}
                             <div className="flex items-center justify-center w-full mb-1">
-                              <span className="text-[#434343] font-medium text-[10px] sm:text-xs truncate max-w-[80px] text-center" title={productName}>{productName}</span>
+                              <span
+                                className="text-[#434343] font-medium text-[10px] sm:text-xs truncate max-w-[80px] text-center"
+                                title={productName}
+                              >
+                                {productName}
+                              </span>
                             </div>
 
                             {/* Image Box */}
@@ -881,17 +1019,34 @@ const ComparePage = ({ params }) => {
                               <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10 flex-shrink-0 flex items-center justify-center origin-center cursor-pointer group">
                                 <button
                                   className="w-5 h-5 sm:w-6 sm:h-6 bg-[#E6E7EE] shadow-[2px_2px_4px_#d1d9e6,-2px_-2px_4px_#ffffff] rounded-full flex items-center justify-center hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
-                                  onClick={(e) => handleRemoveProduct(e, product)}
+                                  onClick={(e) =>
+                                    handleRemoveProduct(e, product)
+                                  }
                                   title={`Remove ${productName}`}
                                 >
-                                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
+                                  <svg
+                                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      fill="currentColor"
+                                      d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z"
+                                    />
                                   </svg>
                                 </button>
                               </div>
 
                               {/* Image */}
-                              {product?.thumbnail ? <img src={productImage} alt={productName} className="max-w-full max-h-full object-contain mx-auto" /> : <CiMobile1 className="w-6 h-6 sm:w-8 sm:h-8 text-[#616161] mx-auto opacity-30" />}
+                              {product?.thumbnail ? (
+                                <img
+                                  src={productImage}
+                                  alt={productName}
+                                  className="max-w-full max-h-full object-contain mx-auto"
+                                />
+                              ) : (
+                                <CiMobile1 className="w-6 h-6 sm:w-8 sm:h-8 text-[#616161] mx-auto opacity-30" />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -901,12 +1056,18 @@ const ComparePage = ({ params }) => {
                 </div>
 
                 {/* Desktop version */}
-                <div className="hidden sm:grid pb-2 items-end w-full"
-                  style={{ gridTemplateColumns: `2fr repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(0, 1.5fr))` }}>
+                <div
+                  className="hidden sm:grid pb-2 items-end w-full"
+                  style={{
+                    gridTemplateColumns: `2fr repeat(${Math.max(Math.min(3, limitedProducts?.length || 0), 2)}, minmax(0, 1.5fr))`,
+                  }}
+                >
                   {/* First column: Amazon */}
                   <div className="px-3 sm:px-4">
                     <div className="flex flex-col justify-center px-4 py-2 rounded-xl border border-[#434343] bg-[#E6E7EE] max-w-[140px]">
-                      <span className="text-[#434343] font-bold text-sm text-center mb-1.5">Amazon</span>
+                      <span className="text-[#434343] font-bold text-sm text-center mb-1.5">
+                        Amazon
+                      </span>
                       <div className="w-full h-px bg-[#434343] mb-2"></div>
                       <button className="w-full py-1.5 rounded-md border border-[#434343] bg-transparent hover:bg-gray-100 transition-all text-xs font-semibold text-[#434343]">
                         Buy
@@ -917,30 +1078,47 @@ const ComparePage = ({ params }) => {
                   {limitedProducts?.map((product, index) => {
                     const color = productColors[index] || productColors[0];
                     const productName = getProductName(product, index + 1);
-                    const productImage = product?.thumbnail ? `${imageUrl}${product.thumbnail}` : `/compare-item-${index + 1}.jpg`;
-                    const storage = product?.storage || product?.internalStorage || null;
+                    const productImage = product?.thumbnail
+                      ? `${imageUrl}${product.thumbnail}`
+                      : `/compare-item-${index + 1}.jpg`;
+                    const storage =
+                      product?.storage || product?.internalStorage || null;
                     const ram = product?.ram || product?.memory || null;
-                    const configuration = storage && ram ? `${ram} + ${storage}` : storage || ram || "N/A";
+                    const configuration =
+                      storage && ram
+                        ? `${ram} + ${storage}`
+                        : storage || ram || "N/A";
                     const productScore = product?.scoreValue || 75;
 
                     return (
-                      <div key={product?._id || index} className="relative px-3 sm:px-4 flex flex-col items-center justify-end h-full pt-4">
+                      <div
+                        key={product?._id || index}
+                        className="relative px-3 sm:px-4 flex flex-col items-center justify-end h-full"
+                      >
                         {index > 0 && (
-                          <div className="absolute left-0 top-[60%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full h-[70%] pointer-events-none">
+                          <div className="absolute left-0 top-[60%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full h-[70%] pointer-events-none z-[100]">
                             <div className="w-[1px] flex-1 bg-[#d1d9e6]"></div>
-                            <div className="flex items-center justify-center w-[20px] h-[20px] rounded-full border border-[#d1d9e6] bg-[#E6E7EE] my-1"><span className="text-[9px] font-bold text-[#616161]">VS</span></div>
+                            <div className="flex items-center justify-center w-[20px] h-[20px] rounded-full border border-[#d1d9e6] bg-[#E6E7EE] my-1">
+                              <span className="text-[9px] font-bold text-[#616161]">
+                                VS
+                              </span>
+                            </div>
                             <div className="w-[1px] flex-1 bg-[#d1d9e6]"></div>
                           </div>
                         )}
                         <div className="flex flex-col items-center w-full relative z-[90]">
-
                           {/* Name Inline */}
                           <div className="flex items-center justify-center w-full mb-1.5">
-                            <span className="text-[#434343] font-medium text-[11px] lg:text-sm truncate max-w-[100px] lg:max-w-[140px] text-center" title={productName}>{productName}</span>
+                            <span
+                              className="text-[#434343] font-medium text-[11px] lg:text-sm truncate max-w-[100px] lg:max-w-[140px] text-center"
+                              title={productName}
+                            >
+                              {productName}
+                            </span>
                           </div>
 
                           {/* Image Box */}
-                          <div className="relative w-24 h-24 lg:w-28 lg:h-28 mb-2 flex flex-col items-center justify-center bg-[#E6E7EE] rounded-[10px] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-2 sm:p-3">
+                          <div className="relative w-24 h-24 lg:w-40 lg:h-40 flex flex-col items-center justify-center bg-[#E6E7EE] rounded-[10px] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-2">
                             {/* Score Badge Top Left matching main overview styling exactly */}
                             <div className="absolute -top-3 -left-3 z-10">
                               <CircularScore value={productScore} />
@@ -953,14 +1131,29 @@ const ComparePage = ({ params }) => {
                                 onClick={(e) => handleRemoveProduct(e, product)}
                                 title={`Remove ${productName}`}
                               >
-                                <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                  <path fill="currentColor" d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z" />
+                                <svg
+                                  className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#616161] hover:text-[#434343] group-hover:scale-110 transition-transform"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    fill="currentColor"
+                                    d="M18.3 5.71a1 1 0 010 1.41L13.41 12l4.89 4.88a1 1 0 11-1.42 1.42L12 13.41l-4.88 4.89a1 1 0 11-1.42-1.42L10.59 12 5.7 7.12A1 1 0 117.12 5.7L12 10.59l4.88-4.89a1 1 0 011.42 0z"
+                                  />
                                 </svg>
                               </button>
                             </div>
 
                             {/* Image */}
-                            {product?.thumbnail ? <img src={productImage} alt={productName} className="max-w-full max-h-full object-contain mx-auto" /> : <CiMobile1 className="w-10 h-10 text-[#616161] mx-auto opacity-30" />}
+                            {product?.thumbnail ? (
+                              <img
+                                src={productImage}
+                                alt={productName}
+                                className="max-w-full max-h-full object-contain mx-auto"
+                              />
+                            ) : (
+                              <CiMobile1 className="w-10 h-10 text-[#616161] mx-auto opacity-30" />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -974,30 +1167,35 @@ const ComparePage = ({ params }) => {
             <div className="h-px bg-[#d1d9e6] mb-2 sm:mb-3"></div>
 
             {/* TABS - Neumorphic Style (Up Theme) */}
-            <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-6 md:px-6">
+            <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide px-2 sm:px-4">
               {tabs.map((tab, index) => (
                 <button
                   key={index}
-                  className={`px-3 sm:px-4 md:px-6 py-2.5 sm:py-2 rounded-xl whitespace-nowrap text-xs sm:text-sm font-medium transition-all my-2 ${selectedTab === index
-                    ? "bg-[#E6E7EE] text-[#434343] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-semibold"
-                    : "bg-[#E6E7EE] text-[#616161] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
-                    }`}
+                  className={`px-3 sm:px-4 md:px-4 py-2.5 sm:py-2 rounded-xl whitespace-nowrap text-xs font-medium transition-all my-2 ${
+                    selectedTab === index
+                      ? "bg-[#E6E7EE] text-[#434343] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-semibold"
+                      : "bg-[#E6E7EE] text-[#616161] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
+                  }`}
                   onClick={() => handleTabClick(index)}
                 >
                   {tab}
                 </button>
               ))}
             </div>
-
-
           </div>
           {/* Spacer to prevent content jump when header becomes fixed */}
           {isHeaderSticky && (
-            <div className="h-[1px]" style={{ height: headerSectionRef.current?.offsetHeight || 'auto' }}></div>
+            <div
+              className="h-[1px]"
+              style={{ height: headerSectionRef.current?.offsetHeight || "0" }}
+            ></div>
           )}
         </div>
 
-        <div ref={overviewRef} className={`max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 ${isHeaderSticky ? 'mt-8' : 'mt-6'}`}>
+        <div
+          ref={overviewRef}
+          className={`max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 ${isHeaderSticky ? "mt-4" : "mt-2"}`}
+        >
           {limitedProducts?.length === 1 ? (
             /* Single Product View - First Image Wireframe */
             (() => {
@@ -1007,11 +1205,13 @@ const ComparePage = ({ params }) => {
                 ? `${imageUrl}${product.thumbnail}`
                 : `/compare-item-1.jpg`;
               const productScore = product?.scoreValue || 0;
-              const storage = product?.storage || product?.internalStorage || null;
+              const storage =
+                product?.storage || product?.internalStorage || null;
               const ram = product?.ram || product?.memory || null;
-              const configuration = storage && ram
-                ? `${ram} + ${storage}`
-                : storage || ram || "1GB + 16GB";
+              const configuration =
+                storage && ram
+                  ? `${ram} + ${storage}`
+                  : storage || ram || "1GB + 16GB";
 
               return (
                 <div className="max-w-[600px] mx-auto">
@@ -1032,7 +1232,10 @@ const ComparePage = ({ params }) => {
                       />
                     ) : (
                       <div className="text-[#616161] text-center">
-                        <CiMobile1 size={120} className="mx-auto mb-4 opacity-50" />
+                        <CiMobile1
+                          size={120}
+                          className="mx-auto mb-4 opacity-50"
+                        />
                         <p className="text-sm">No image available</p>
                       </div>
                     )}
@@ -1046,14 +1249,14 @@ const ComparePage = ({ params }) => {
                       }}
                       aria-label="Expand popup"
                     >
-                      <span className="text-sm sm:text-base font-bold text-[#434343]">9</span>
+                      <span className="text-sm sm:text-base font-bold text-[#434343]">
+                        9
+                      </span>
                       <span className="absolute -right-16 sm:-right-20 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-[#616161] whitespace-nowrap">
                         Expand popup
                       </span>
                     </button>
                   </div>
-
-
                 </div>
               );
             })()
@@ -1065,12 +1268,22 @@ const ComparePage = ({ params }) => {
                 {/* Left Navigation Arrow */}
                 {canScrollLeft && (
                   <button
-                    onClick={() => scrollSlider('left')}
+                    onClick={() => scrollSlider("left")}
                     className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#E6E7EE] rounded-full shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all"
                     aria-label="Previous product"
                   >
-                    <svg className="w-5 h-5 text-[#434343]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    <svg
+                      className="w-5 h-5 text-[#434343]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                   </button>
                 )}
@@ -1080,9 +1293,9 @@ const ComparePage = ({ params }) => {
                   ref={productSliderRef}
                   className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide gap-4 pb-4 -mx-2 px-2"
                   style={{
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none',
-                    WebkitOverflowScrolling: 'touch'
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    WebkitOverflowScrolling: "touch",
                   }}
                 >
                   {limitedProducts?.map((product, index) => {
@@ -1091,15 +1304,21 @@ const ComparePage = ({ params }) => {
                     const productImage = product?.thumbnail
                       ? `${imageUrl}${product.thumbnail}`
                       : `/compare-item-${index + 1}.jpg`;
-                    const productPrice = product?.price || product?.amazonPrice || null;
+                    const productPrice =
+                      product?.price || product?.amazonPrice || null;
                     const productScore = product?.scoreValue || 75;
-                    const storage = product?.storage || product?.internalStorage || null;
+                    const storage =
+                      product?.storage || product?.internalStorage || null;
                     const ram = product?.ram || product?.memory || null;
-                    const configuration = storage && ram
-                      ? `${ram} + ${storage}`
-                      : storage || ram || "";
+                    const configuration =
+                      storage && ram
+                        ? `${ram} + ${storage}`
+                        : storage || ram || "";
 
-                    console.log("productproduct", index < (limitedProducts?.length || 0) - 1);
+                    console.log(
+                      "productproduct",
+                      index < (limitedProducts?.length || 0) - 1,
+                    );
 
                     return (
                       <div
@@ -1112,7 +1331,9 @@ const ComparePage = ({ params }) => {
                             <p className="font-bold text-lg text-center mb-2 break-words px-2 text-[#434343]">
                               {productName}
                             </p>
-                            <p className="text-sm text-center text-[#616161]">{configuration}</p>
+                            <p className="text-sm text-center text-[#616161]">
+                              {configuration}
+                            </p>
                           </div>
 
                           {/* Product Image Container - Neumorphic */}
@@ -1159,7 +1380,9 @@ const ComparePage = ({ params }) => {
                         {index < (limitedProducts?.length || 0) - 1 && (
                           <div className="flex justify-center items-center py-3">
                             <div className="w-12 h-12 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
-                              <span className="font-bold text-[#434343] text-sm">VS</span>
+                              <span className="font-bold text-[#434343] text-sm">
+                                VS
+                              </span>
                             </div>
                           </div>
                         )}
@@ -1169,7 +1392,7 @@ const ComparePage = ({ params }) => {
                 </div>
 
                 {/* Right Navigation Arrow */}
-                {canScrollRight && (
+                {/* {canScrollRight && (
                   <button
                     onClick={() => scrollSlider('right')}
                     className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#E6E7EE] rounded-full shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all"
@@ -1179,27 +1402,33 @@ const ComparePage = ({ params }) => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
-                )}
+                )} */}
               </div>
 
               {/* Desktop Grid View */}
-              <div className={`hidden sm:grid relative w-full mx-auto ${limitedProducts?.length === 2
-                ? "grid-cols-2 gap-4 sm:gap-6"
-                : "grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-                }`}>
+              <div
+                className={`hidden sm:grid relative w-full mx-auto ${
+                  limitedProducts?.length === 2
+                    ? "grid-cols-2 gap-4 sm:gap-6"
+                    : "grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+                }`}
+              >
                 {limitedProducts?.map((product, index) => {
                   const color = productColors[index] || productColors[0];
                   const productName = getProductName(product, index + 1);
                   const productImage = product?.thumbnail
                     ? `${imageUrl}${product.thumbnail}`
                     : `/compare-item-${index + 1}.jpg`;
-                  const productPrice = product?.price || product?.amazonPrice || null;
+                  const productPrice =
+                    product?.price || product?.amazonPrice || null;
                   const productScore = product?.scoreValue || 75;
-                  const storage = product?.storage || product?.internalStorage || null;
+                  const storage =
+                    product?.storage || product?.internalStorage || null;
                   const ram = product?.ram || product?.memory || null;
-                  const configuration = storage && ram
-                    ? `${ram} + ${storage}`
-                    : storage || ram || "";
+                  const configuration =
+                    storage && ram
+                      ? `${ram} + ${storage}`
+                      : storage || ram || "";
 
                   return (
                     <React.Fragment key={product?._id || index}>
@@ -1209,7 +1438,9 @@ const ComparePage = ({ params }) => {
                           <p className="font-bold text-base sm:text-lg md:text-xl text-center break-words px-2 text-[#434343]">
                             {productName}
                           </p>
-                          <p className="text-xs sm:text-sm text-center text-[#616161]">{configuration}</p>
+                          <p className="text-xs sm:text-sm text-center text-[#616161]">
+                            {configuration}
+                          </p>
                         </div>
 
                         {/* Product Image Container - Neumorphic */}
@@ -1252,10 +1483,15 @@ const ComparePage = ({ params }) => {
                         )}
 
                         {/* Desktop VS Badge between products */}
-                        {(index === 0 || (index === 1 && limitedProducts?.length === 3)) && (
-                          <div className={`hidden ${index === 1 ? 'lg:flex' : 'sm:flex'} absolute top-1/2 left-[calc(100%+0.75rem)] transform -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none`}>
+                        {(index === 0 ||
+                          (index === 1 && limitedProducts?.length === 3)) && (
+                          <div
+                            className={`hidden ${index === 1 ? "lg:flex" : "sm:flex"} absolute top-1/2 left-[calc(100%+0.75rem)] transform -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none`}
+                          >
                             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
-                              <span className="font-bold text-[#434343] text-sm sm:text-base">VS</span>
+                              <span className="font-bold text-[#434343] text-sm sm:text-base">
+                                VS
+                              </span>
                             </div>
                           </div>
                         )}
@@ -1268,41 +1504,50 @@ const ComparePage = ({ params }) => {
           )}
 
           {/* Title Section - 0 Level Header */}
-          <div className="mt-6 sm:mt-8 md:mt-10 text-center mx-auto px-4 sm:px-6 md:px-0">
+          <div className="mt-4 sm:mt-5 md:mt-6 text-center mx-auto px-4 sm:px-6 md:px-0">
             <p className="text-[#616161] text-[10px] sm:text-xs font-bold tracking-[0.5px] sm:tracking-[1px] mb-2 uppercase">
-              {limitedProducts?.length > 0 ? `${limitedProducts.length * 100} FACTS IN COMPARISON` : "250 FACTS IN COMPARISON"}
+              {limitedProducts?.length > 0
+                ? `${limitedProducts.length * 100} FACTS IN COMPARISON`
+                : "250 FACTS IN COMPARISON"}
             </p>
-            <h1 className="text-[#434343] text-lg sm:text-xl md:text-2xl lg:text-[40px] leading-[1.2] sm:leading-[1.1] m-0 font-bold break-words px-2">
+            <h1 className="text-[#434343] text-md sm:text-lg md:text-xl lg:text-2xl leading-[1.2] sm:leading-[1.1] m-0 font-bold break-words px-2">
               {productNames.length > 0 ? (
                 productNames.map((name, idx) => (
                   <React.Fragment key={idx}>
                     <span className="inline-block">{name}</span>
                     {idx < productNames.length - 1 && (
-                      <span className="border-b border-black mx-1 sm:mx-2 pb-1 inline-block">vs</span>
+                      <span className="border-b border-black mx-1 sm:mx-2 pb-1 inline-block">
+                        vs
+                      </span>
                     )}
                   </React.Fragment>
                 ))
               ) : (
                 <>
                   Product 1{" "}
-                  <span className="border-b border-black mx-1 sm:mx-2 pb-1">vs</span>
-                  {" "}Product 2
+                  <span className="border-b border-black mx-1 sm:mx-2 pb-1">
+                    vs
+                  </span>{" "}
+                  Product 2
                 </>
               )}
             </h1>
           </div>
         </div>
 
-        <div className="bg-[#f6f7fb] mt-4 sm:mt-6 py-6 sm:py-8 md:py-10 flex relative">
-
-
-          <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft" ref={pricesRef}>
+        <div className="bg-[#f6f7fb] mt-2 sm:mt-4 py-4 sm:py-6 flex relative">
+          <div
+            className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft"
+            ref={pricesRef}
+          >
             {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
-            <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 px-2 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-5 overflow-x-auto scrollbar-hide pt-6 border-b-[2px] border-[#d1d9e6]">
+            <div className="flex flex-wrap gap-2 sm:gap-3 px-2 sm:px-2 md:px-4 lg:px-6 pb-2 sm:pb-3 overflow-x-auto scrollbar-hide pt-4 border-b-[2px] border-[#d1d9e6]">
               {limitedProducts && limitedProducts.length > 0 ? (
                 limitedProducts.map((prod, idx) => {
                   const productName = getProductName(prod, idx + 1);
-                  const isActive = comparisonItem === productName || (comparisonItem === "" && idx === 0);
+                  const isActive =
+                    comparisonItem === productName ||
+                    (comparisonItem === "" && idx === 0);
                   return (
                     <button
                       key={idx}
@@ -1310,10 +1555,11 @@ const ComparePage = ({ params }) => {
                         setComparisonItem(productName);
                         setSelectedProductForSpecs(prod);
                       }}
-                      className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all whitespace-nowrap ${isActive
-                        ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
-                        : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
-                        }`}
+                      className={`px-2 sm:px-2 md:px-3 py-1 sm:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap hover:text-[#F98A1A] ${
+                        isActive
+                          ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#F98A1A] font-semibold"
+                          : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
+                      }`}
                     >
                       {productName}
                     </button>
@@ -1328,10 +1574,11 @@ const ComparePage = ({ params }) => {
                         setSelectedProductForSpecs(limitedProducts[0]);
                       }
                     }}
-                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${comparisonItem === "Product 1" || comparisonItem === ""
-                      ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
-                      : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
-                      }`}
+                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${
+                      comparisonItem === "Product 1" || comparisonItem === ""
+                        ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                        : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
+                    }`}
                   >
                     Product 1
                   </button>
@@ -1342,10 +1589,11 @@ const ComparePage = ({ params }) => {
                         setSelectedProductForSpecs(limitedProducts[1]);
                       }
                     }}
-                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${comparisonItem === "Product 2"
-                      ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
-                      : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
-                      }`}
+                    className={`px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all ${
+                      comparisonItem === "Product 2"
+                        ? "bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] text-[#434343] font-semibold"
+                        : "bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-[#616161] hover:text-[#434343] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]"
+                    }`}
                   >
                     Product 2
                   </button>
@@ -1353,22 +1601,40 @@ const ComparePage = ({ params }) => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 px-2 sm:px-4 md:px-6 lg:px-10">
-              <div className="relative pl-0 lg:pl-0 min-w-0" ref={radarSectionRef}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3 sm:mt-4 px-2 sm:px-4 md:px-6 lg:px-8">
+              <div
+                className="relative pl-0 lg:pl-0 min-w-0"
+                ref={radarSectionRef}
+              >
                 <RadarChart
-                  products={selectedProductForSpecs ? [selectedProductForSpecs] : limitedProducts}
-                  productNames={selectedProductForSpecs ? [getProductName(selectedProductForSpecs)] : productNames}
+                  products={
+                    selectedProductForSpecs
+                      ? [selectedProductForSpecs]
+                      : limitedProducts
+                  }
+                  productNames={
+                    selectedProductForSpecs
+                      ? [getProductName(selectedProductForSpecs)]
+                      : productNames
+                  }
                   productColors={productColors}
                 />
 
                 {/* Sticky Icons Sidebar - Only visible when scrolling past radar chart */}
-                <div className={`hidden lg:flex flex-col gap-2 fixed left-2 xl:left-4 2xl:left-8 bottom-8 z-[100] transition-all duration-300 ${showStickyIcons ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
-                  }`}>
+                <div
+                  className={`hidden lg:flex flex-col gap-2 fixed left-2 xl:left-4 2xl:left-8 bottom-8 z-[100] transition-all duration-300 ${
+                    showStickyIcons
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 -translate-x-4 pointer-events-none"
+                  }`}
+                >
                   {icons.map((icon, index) => {
-                    const isActive = activeScrollFeature === icon.tooltip || selectedFeature === icon.tooltip;
+                    const isActive =
+                      activeScrollFeature === icon.tooltip ||
+                      selectedFeature === icon.tooltip;
                     // Find corresponding section title
                     const sectionTitle = Object.keys(titleToTooltip).find(
-                      key => titleToTooltip[key] === icon.tooltip
+                      (key) => titleToTooltip[key] === icon.tooltip,
                     );
 
                     return (
@@ -1384,13 +1650,14 @@ const ComparePage = ({ params }) => {
                       >
                         {/* Icon container */}
                         <div
-                          className={`border p-2 sm:p-2.5 rounded-lg shadow-lg text-lg sm:text-xl flex items-center justify-center transition-all duration-200 ${isActive
-                            ? "bg-[#434343] text-white border-[#434343] rounded-r-none"
-                            : "bg-white border-gray-200 text-gray-600 group-hover:border-[#434343] group-hover:text-[#434343]"
-                            }`}
+                          className={`border p-2 sm:p-2.5 rounded-lg shadow-lg text-lg sm:text-xl flex items-center justify-center transition-all duration-200 ${
+                            isActive
+                              ? "bg-[#434343] text-white border-[#434343] rounded-r-none"
+                              : "bg-white border-gray-200 text-gray-600 group-hover:border-[#434343] group-hover:text-[#434343]"
+                          }`}
                         >
                           {icon.isApiIcon && isActive ? (
-                            <div style={{ filter: 'invert(1)' }}>
+                            <div style={{ filter: "invert(1)" }}>
                               {icon.icon}
                             </div>
                           ) : (
@@ -1400,16 +1667,18 @@ const ComparePage = ({ params }) => {
 
                         {/* Expandable label - shows on hover or when active */}
                         <div
-                          className={`absolute left-full ml-0 overflow-hidden transition-all duration-200 whitespace-nowrap ${isActive
-                            ? " opacity-100"
-                            : "max-w-0 opacity-0 group-hover:opacity-100"
-                            }`}
+                          className={`absolute left-full ml-0 overflow-hidden transition-all duration-200 whitespace-nowrap ${
+                            isActive
+                              ? " opacity-100"
+                              : "max-w-0 opacity-0 group-hover:opacity-100"
+                          }`}
                         >
                           <span
-                            className={`inline-block px-2 sm:px-3 py-[8px] sm:py-[10px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${isActive
-                              ? "bg-[#434343] text-white border-[#434343]"
-                              : "bg-white text-gray-700 border-gray-200 group-hover:border-[#434343] group-hover:text-[#434343]"
-                              }`}
+                            className={`inline-block px-2 sm:px-3 py-[8px] sm:py-[10px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${
+                              isActive
+                                ? "bg-[#434343] text-white border-[#434343]"
+                                : "bg-white text-gray-700 border-gray-200 group-hover:border-[#434343] group-hover:text-[#434343]"
+                            }`}
                           >
                             {icon.tooltip}
                           </span>
@@ -1420,45 +1689,59 @@ const ComparePage = ({ params }) => {
                 </div>
               </div>
 
-              <div className="mt-4 lg:mt-0" >
+              <div className="mt-4 lg:mt-0 h-full flex flex-col">
                 {/* Key Specs Section - Always Show for 1, 2, or 3 products */}
-                {selectedProductForSpecs && (() => {
-                  const product = selectedProductForSpecs;
+                {selectedProductForSpecs &&
+                  (() => {
+                    const product = selectedProductForSpecs;
 
-                  // Get key specs from featureData with icons from API
-                  const keySpecsList = (() => {
-                    if (!product?.featureData) return [];
+                    // Get key specs from featureData with icons from API
+                    const keySpecsList = (() => {
+                      if (!product?.featureData) return [];
 
-                    const specs = [];
-                    product.featureData.forEach((feature) => {
-                      const featureName = feature?.featureName || feature?.featureId?.featureName || "";
-                      const icon = feature?.icon || feature?.featureId?.icon;
-                      const subfeatures = feature?.subfeatures || [];
+                      const specs = [];
+                      product.featureData.forEach((feature) => {
+                        const featureName =
+                          feature?.featureName ||
+                          feature?.featureId?.featureName ||
+                          "";
+                        const icon = feature?.icon || feature?.featureId?.icon;
+                        const subfeatures = feature?.subfeatures || [];
 
-                      // Get first important subfeature for each feature
-                      const firstSubfeature = subfeatures.find(sf => sf?.name && (sf?.details || sf?.unit || sf?.isTrueFalse));
-                      if (firstSubfeature) {
-                        const value = firstSubfeature?.details ||
-                          (firstSubfeature?.isTrueFalse === "true" || firstSubfeature?.isTrueFalse === true ? "Yes" :
-                            firstSubfeature?.isTrueFalse === "false" || firstSubfeature?.isTrueFalse === false ? "No" :
-                              `${firstSubfeature?.unit || ""} ${firstSubfeature?.unitsymbol || ""}`.trim()) || "N/A";
+                        // Get first important subfeature for each feature
+                        const firstSubfeature = subfeatures.find(
+                          (sf) =>
+                            sf?.name &&
+                            (sf?.details || sf?.unit || sf?.isTrueFalse),
+                        );
+                        if (firstSubfeature) {
+                          const value =
+                            firstSubfeature?.details ||
+                            (firstSubfeature?.isTrueFalse === "true" ||
+                            firstSubfeature?.isTrueFalse === true
+                              ? "Yes"
+                              : firstSubfeature?.isTrueFalse === "false" ||
+                                  firstSubfeature?.isTrueFalse === false
+                                ? "No"
+                                : `${firstSubfeature?.unit || ""} ${firstSubfeature?.unitsymbol || ""}`.trim()) ||
+                            "N/A";
 
-                        specs.push({
-                          label: firstSubfeature.name,
-                          value: value,
-                          icon: icon ? `${imageUrl}${icon}` : null,
-                          featureName: featureName
-                        });
-                      }
-                    });
+                          specs.push({
+                            label: firstSubfeature.name,
+                            value: value,
+                            icon: icon ? `${imageUrl}${icon}` : null,
+                            featureName: featureName,
+                          });
+                        }
+                      });
 
-                    return specs.slice(0, 8); // Limit to 8 key specs
-                  })();
+                      return specs.slice(0, 8); // Limit to 8 key specs
+                    })();
 
-                  return (
-                    <div>
-                      {/* Product Selection Buttons - Neumorphic Up Theme (Above Header) */}
-                      {/* {limitedProducts.length > 1 && (
+                    return (
+                      <div className="h-full flex flex-col">
+                        {/* Product Selection Buttons - Neumorphic Up Theme (Above Header) */}
+                        {/* {limitedProducts.length > 1 && (
                         <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-5">
                           {limitedProducts.map((prod, idx) => {
                             const isSelected = selectedProductForSpecs?._id === prod._id;
@@ -1479,103 +1762,115 @@ const ComparePage = ({ params }) => {
                         </div>
                       )} */}
 
-                      {/* Section Header - 0 Level (Completely Flat - No Shadows, No Background) */}
-                      <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-[#434343] mb-4 sm:mb-5 md:mb-6">
-                        Key Specs
-                      </h3>
-                      {/* Content - Neumorphic Theme (Up and Down) */}
-                      <div className="bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-3 sm:p-4 md:p-5 lg:p-6">
-
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 md:gap-4">
-                          {keySpecsList.length > 0 ? (
-                            keySpecsList.map((spec, idx) => (
-                              <div
-                                key={idx}
-                                className="p-3 sm:p-3.5 md:p-4 rounded-xl bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
-                              >
-                                <div className="flex items-center gap-2.5 sm:gap-3">
-                                  {/* Icon - Top (Neumorphic Up Theme) */}
-                                  {spec.icon ? (
-                                    <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center p-1.5 sm:p-2 flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
-                                      <img
-                                        src={spec.icon}
-                                        alt={spec.label}
-                                        className="w-full h-full object-contain"
-                                        onError={(e) => {
-                                          e.target.style.display = "none";
-                                        }}
-                                      />
+                        {/* Section Header - 0 Level (Completely Flat - No Shadows, No Background) */}
+                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#434343] mb-3 sm:mb-4">
+                          Key Specs
+                        </h3>
+                        {/* Content - Neumorphic Theme (Up and Down) */}
+                        <div className="min-h-[508px] h-full mb-6 flex flex-col bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-2 md:p-3 lg:p-4">
+                          <div className="flex flex-col flex-1">
+                            <div className="flex-1 h-full">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+                              {keySpecsList.length > 0 ? (
+                                keySpecsList.map((spec, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="p-3 sm:p-3.5 md:p-4 rounded-xl bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
+                                  >
+                                    <div className="flex items-center gap-2.5 sm:gap-3">
+                                      {/* Icon - Top (Neumorphic Up Theme) */}
+                                      {spec.icon ? (
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center p-1.5 sm:p-2 flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                          <img
+                                            src={spec.icon}
+                                            alt={spec.label}
+                                            className="w-full h-full object-contain"
+                                            onError={(e) => {
+                                              e.target.style.display = "none";
+                                            }}
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                          <span className="text-sm sm:text-base font-bold text-[#616161]">
+                                            {spec.label.charAt(0)}
+                                          </span>
+                                        </div>
+                                      )}
+                                      <div>
+                                        {/* Label - Below Icon */}
+                                        <p className="text-xs sm:text-sm md:text-base font-medium text-[#616161] leading-tight">
+                                          {spec.label}
+                                        </p>
+                                        {/* Value - Below Label */}
+                                        <p className="text-xs sm:text-sm md:text-base font-bold text-[#434343] break-words line-clamp-2 leading-tight">
+                                          {spec.value}
+                                        </p>
+                                      </div>
                                     </div>
-                                  ) : (
-                                    <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
-                                      <span className="text-sm sm:text-base font-bold text-[#616161]">
-                                        {spec.label.charAt(0)}
-                                      </span>
-                                    </div>
-                                  )}
-                                  <div>
-                                    {/* Label - Below Icon */}
-                                    <p className="text-xs sm:text-sm md:text-base font-medium text-[#616161] leading-tight">
-                                      {spec.label}
-                                    </p>
-                                    {/* Value - Below Label */}
-                                    <p className="text-xs sm:text-sm md:text-base font-bold text-[#434343] break-words line-clamp-2 leading-tight">
-                                      {spec.value}
-                                    </p>
                                   </div>
+                                ))
+                              ) : (
+                                <div className="col-span-2 text-center py-8 text-[#616161]">
+                                  <p className="text-sm">
+                                    No specifications available
+                                  </p>
                                 </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="col-span-2 text-center py-8 text-[#616161]">
-                              <p className="text-sm">No specifications available</p>
+                              )}
                             </div>
-                          )}
-                        </div>
+                            </div>
 
-                        {/* Bottom Info Section - Zero Level Headers - 3 Columns with Dividers */}
-                        <div className="mt-5 sm:mt-6 md:mt-7 pt-4 sm:pt-5 border-t-2 border-[#d1d9e6]">
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#d1d9e6]">
-                            {/* {product?.marketStatus && ( */}
-                            <div className="sm:pr-4 md:pr-6">
-                              <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Market status</p>
-                              <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.marketStatus}</p>
+                            {/* Bottom Info Section - Zero Level Headers - 3 Columns with Dividers */}
+                            <div className="mt-auto pt-4 sm:pt-5 border-t-2 border-[#d1d9e6]">
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#d1d9e6]">
+                                {/* {product?.marketStatus && ( */}
+                                <div className="sm:pr-4 md:pr-6">
+                                  <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">
+                                    Market status
+                                  </p>
+                                  <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">
+                                    {product.marketStatus}
+                                  </p>
+                                </div>
+                                {/* )} */}
+                                {/* {product?.releaseDate && ( */}
+                                <div className="pt-4 sm:pt-0 sm:px-4 md:px-6">
+                                  <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">
+                                    Released date
+                                  </p>
+                                  <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">
+                                    {product.releaseDate}
+                                  </p>
+                                </div>
+                                {/* )} */}
+                                {/* {product?.officialWebsite && ( */}
+                                <div className="pt-4 sm:pt-0 sm:pl-4 md:pl-6">
+                                  <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">
+                                    Official website
+                                  </p>
+                                  <a
+                                    href={product.officialWebsite}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm sm:text-base md:text-lg font-bold text-[#434343] hover:underline"
+                                  >
+                                    Visit website
+                                  </a>
+                                </div>
+                                {/* )} */}
+                              </div>
                             </div>
-                            {/* )} */}
-                            {/* {product?.releaseDate && ( */}
-                            <div className="pt-4 sm:pt-0 sm:px-4 md:px-6">
-                              <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Released date</p>
-                              <p className="text-sm sm:text-base md:text-lg font-bold text-[#434343]">{product.releaseDate}</p>
-                            </div>
-                            {/* )} */}
-                            {/* {product?.officialWebsite && ( */}
-                            <div className="pt-4 sm:pt-0 sm:pl-4 md:pl-6">
-                              <p className="text-xs sm:text-sm font-medium text-[#616161] mb-1.5 sm:mb-2">Official website</p>
-                              <a
-                                href={product.officialWebsite}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm sm:text-base md:text-lg font-bold text-[#434343] hover:underline"
-                              >
-                                Visit website
-                              </a>
-                            </div>
-                            {/* )} */}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })()}
+                    );
+                  })()}
               </div>
             </div>
           </div>
-
-
         </div>
 
         <MostPopularComparison popularComparison={popularComparisonList} />
-
 
         <div>
           <PriceComparison />
@@ -1619,7 +1914,7 @@ const ComparePage = ({ params }) => {
           <MostPopularComparison popularComparison={popularComparisonList} />
         </div>
 
-        <div className="max-w-[700px] mx-auto mt-4 px-4 sm:px-6 md:px-0 h-[150px] sm:h-[180px] md:h-[200px] border border-gray-500 mb-12 sm:mb-16 md:mb-20">
+        <div className="max-w-[700px] mx-auto mt-4 px-4 sm:px-6 md:px-0 h-[150px] sm:h-[180px] md:h-[200px] border border-gray-500 mb-6 sm:mb-8 md:mb-10">
           Ad
         </div>
 

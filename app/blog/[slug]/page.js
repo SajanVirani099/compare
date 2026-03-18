@@ -82,7 +82,7 @@ const Page = async ({ params }) => {
           <p className="text-gray-600 text-sm sm:text-base">
             <Link href="/" className="hover:text-[#F98A1A] transition-colors">HOME</Link>
             <span className="mx-2">/</span>
-            <Link href="/news" className="hover:text-[#F98A1A] transition-colors">NEWS</Link>
+            <Link href="/news" className="hover:text-[#F98A1A] transition-colors">BLOGS</Link>
             {slug && (
               <>
                 <span className="mx-2">/</span>
@@ -93,7 +93,7 @@ const Page = async ({ params }) => {
         </nav>
 
         {/* Main Content Card */}
-        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-6 md:p-8 lg:p-10">
+        <div className="border border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-3 md:p-5 lg:p-7">
           {/* Category Badge */}
           {blogData?.category && (
             <div className="mb-4">
@@ -137,16 +137,16 @@ const Page = async ({ params }) => {
 
             {/* Google Preferred + Channel Join Buttons */}
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-3">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#434343]">
+              <button className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium text-[#434343] btn btn-primary">
                 <FcGoogle className="w-4 h-4" />
                 <span>Google preferred</span>
-              </div>
+              </button>
 
               <a
                 href={whatsappChannelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#128C7E] hover:shadow-lg transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium btn btn-primary text-[#128C7E]"
               >
                 <FaWhatsapp className="w-4 h-4" />
                 <span>Join WhatsApp channel</span>
@@ -156,7 +156,7 @@ const Page = async ({ params }) => {
                 href={telegramChannelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#e6e7ee] border border-[#d1d9e6] shadow-soft text-[10px] sm:text-xs font-medium text-[#0088cc] hover:shadow-lg transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium btn btn-primary text-[#0088cc]"
               >
                 <FaTelegram className="w-4 h-4" />
                 <span>Join Telegram channel</span>
@@ -172,7 +172,7 @@ const Page = async ({ params }) => {
           {/* Content */}
           {blogData?.content && (
             <div 
-              className="mt-6 sm:mt-8 leading-7 text-base sm:text-lg text-gray-700 blog-content" 
+              className="mt-4 sm:mt-6 leading-4 text-base sm:text-lg text-gray-700 blog-content" 
               dangerouslySetInnerHTML={{ __html: blogData.content }} 
             />
           )}
@@ -191,7 +191,7 @@ const Page = async ({ params }) => {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft flex items-center justify-center hover:shadow-lg transition-all"
+                className="!py-3 !px-3 flex items-center justify-center btn btn-primary"
                 aria-label="Share on WhatsApp"
               >
                 <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
@@ -200,7 +200,7 @@ const Page = async ({ params }) => {
                 href={telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft flex items-center justify-center hover:shadow-lg transition-all"
+                className="!py-3 !px-3 flex items-center justify-center btn btn-primary"
                 aria-label="Share on Telegram"
               >
                 <FaTelegram className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
@@ -209,7 +209,7 @@ const Page = async ({ params }) => {
                 href={facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft flex items-center justify-center hover:shadow-lg transition-all"
+                className="!py-3 !px-3 flex items-center justify-center btn btn-primary"
                 aria-label="Share on Facebook"
               >
                 <FaFacebook className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
@@ -218,7 +218,7 @@ const Page = async ({ params }) => {
                 href={twitterUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft flex items-center justify-center hover:shadow-lg transition-all"
+                className="!py-3 !px-3 flex items-center justify-center btn btn-primary"
                 aria-label="Share on Twitter"
               >
                 <FaTwitter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />

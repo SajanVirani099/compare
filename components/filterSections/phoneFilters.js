@@ -26,7 +26,7 @@ const PhoneFilters = () => {
         thickness: [5.4, 19.9],
         width: [54.8, 92.9],
         height: [109.7, 183.5],
-        waterResistance: [], // For checkboxes
+        waterResistance: "", // For radios
     });
 
     // Call filter-wise products API whenever price range changes
@@ -39,7 +39,7 @@ const PhoneFilters = () => {
     }, [values, dispatch]);
 
     // Filter brands based on search query
-    const filteredBrands = mobileBrands.filter((brand) =>
+    const filteredBrands = mobileBrands?.filter((brand) =>
         brand.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -66,7 +66,7 @@ const PhoneFilters = () => {
                 SORT BY:
             </h2>
             <select className="w-full p-2.5 rounded-lg bg-[#e6e7ee] border border-[#d1d9e6] text-gray-800 shadow-soft focus:outline-none">
-                {sortByOptions.map((item) => (
+                {sortByOptions?.map((item) => (
                     <option key={item.id}>{item.name}</option>
                 ))}
             </select>
@@ -175,13 +175,14 @@ const PhoneFilters = () => {
 
                 {/* Brands List */}
                 <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg max-h-[300px] overflow-y-auto shadow-soft custom-scrollbar">
-                    {filteredBrands.map((brand) => (
-                        <label
+                    {filteredBrands?.map((brand) => (
+                        <div
                             key={brand}
-                            className="flex items-center px-4 py-2.5 cursor-pointer hover:bg-[#d1d9e6]/30 border-b border-[#d1d9e6] last:border-b-0"
+                            className="form-check px-4 py-2.5 hover:bg-[#d1d9e6]/30 border-b border-[#d1d9e6] last:border-b-0"
                         >
                             <input
                                 type="checkbox"
+                                id={`brand-${brand.replace(/\s+/g, '-')}`}
                                 checked={selectedBrands.includes(brand)}
                                 onChange={(e) => {
                                     if (e.target.checked) {
@@ -197,10 +198,14 @@ const PhoneFilters = () => {
                                         );
                                     }
                                 }}
-                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <span className="ml-3 text-gray-800">{brand}</span>
-                        </label>
+                            <label
+                                className="form-check-label text-gray-800 w-full"
+                                htmlFor={`brand-${brand.replace(/\s+/g, '-')}`}
+                            >
+                                {brand}
+                            </label>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -211,7 +216,7 @@ const PhoneFilters = () => {
                     DESIGN
                 </h2>
                     <div className="bg-[#e6e7ee] border border-[#d1d9e6] rounded-lg overflow-hidden shadow-soft">
-                    {designSpecs.map((spec) => (
+                    {designSpecs?.map((spec) => (
                         <div
                             key={spec.id}
                             className="border-b border-[#d1d9e6] last:border-b-0"
@@ -239,53 +244,68 @@ const PhoneFilters = () => {
                             {expandedSection === spec.label && (
                                 <div className="px-4 pb-4">
                                     {spec.type === "checkbox" ? (
-                                        <div className="space-y-2">
+                                        <div className="space-y-3 pt-1">
                                             {spec.options.map((option) => (
-                                                <label
+                                                <div
                                                     key={option}
-                                                    className="flex items-center space-x-2"
+                                                    className="form-check"
                                                 >
                                                     <input
                                                         type="checkbox"
-                                                        checked={designValues.waterResistance.includes(
-                                                            option
-                                                        )}
+                                                        id={`checkbox-${spec.id}-${option.replace(/\s+/g, '-')}`}
+                                                        checked={Array.isArray(designValues[spec.id]) && designValues[spec.id].includes(option)}
                                                         onChange={(e) => {
-                                                            if (
-                                                                e.target.checked
-                                                            ) {
-                                                                setDesignValues(
-                                                                    {
-                                                                        ...designValues,
-                                                                        waterResistance:
-                                                                            [
-                                                                                ...designValues.waterResistance,
-                                                                                option,
-                                                                            ],
-                                                                    }
-                                                                );
+                                                            const currentValues = Array.isArray(designValues[spec.id]) ? designValues[spec.id] : [];
+                                                            if (e.target.checked) {
+                                                                setDesignValues({
+                                                                    ...designValues,
+                                                                    [spec.id]: [...currentValues, option],
+                                                                });
                                                             } else {
-                                                                setDesignValues(
-                                                                    {
-                                                                        ...designValues,
-                                                                        waterResistance:
-                                                                            designValues.waterResistance.filter(
-                                                                                (
-                                                                                    item
-                                                                                ) =>
-                                                                                    item !==
-                                                                                    option
-                                                                            ),
-                                                                    }
-                                                                );
+                                                                setDesignValues({
+                                                                    ...designValues,
+                                                                    [spec.id]: currentValues.filter((item) => item !== option),
+                                                                });
                                                             }
                                                         }}
-                                                        className="rounded text-blue-600 focus:ring-blue-500"
                                                     />
-                                                    <span className="text-gray-700">
+                                                    <label
+                                                        className="form-check-label text-gray-700 font-medium"
+                                                        htmlFor={`checkbox-${spec.id}-${option.replace(/\s+/g, '-')}`}
+                                                    >
                                                         {option}
-                                                    </span>
-                                                </label>
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : spec.type === "radio" ? (
+                                        <div className="space-y-3 pt-1">
+                                            {spec.options.map((option) => (
+                                                <div
+                                                    key={option}
+                                                    className="form-check"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name={`radio-${spec.id}`}
+                                                        id={`radio-${spec.id}-${option}`}
+                                                        checked={designValues[spec.id] === option}
+                                                        onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setDesignValues({
+                                                                    ...designValues,
+                                                                    [spec.id]: option
+                                                                });
+                                                            }
+                                                        }}
+                                                    />
+                                                    <label
+                                                        className="form-check-label text-gray-700 font-medium"
+                                                        htmlFor={`radio-${spec.id}-${option}`}
+                                                    >
+                                                        {option}
+                                                    </label>
+                                                </div>
                                             ))}
                                         </div>
                                     ) : spec.min !== undefined ? (

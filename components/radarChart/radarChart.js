@@ -56,7 +56,7 @@ const getFeatureIcon = (featureName, size = 28) => {
 const RadarChart = ({ products = [], productNames = [], productColors = ["#434343", "#3F51B5", "#10B981"] }) => {
     // Track window size for responsive font sizing
     const [fontSize, setFontSize] = useState(10);
-    const [padding, setPadding] = useState(10);
+    const [padding, setPadding] = useState(4);
 
     useEffect(() => {
         const updateSize = () => {
@@ -64,16 +64,16 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                 const width = window.innerWidth;
                 if (width < 640) {
                     setFontSize(8);
-                    setPadding(8);
+                    setPadding(3);
                 } else if (width < 768) {
                     setFontSize(9);
-                    setPadding(9);
+                    setPadding(4);
                 } else if (width < 1024) {
                     setFontSize(10);
-                    setPadding(10);
+                    setPadding(4);
                 } else {
                     setFontSize(11);
-                    setPadding(10);
+                    setPadding(5);
                 }
             }
         };
@@ -153,8 +153,10 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
 
     const options = useMemo(() => ({
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 1,
+        maintainAspectRatio: false,
+        layout: {
+            padding: 0,
+        },
         scales: {
             r: {
                 beginAtZero: true,
@@ -243,8 +245,8 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
     return (
         <div className="w-full">
             {/* Radar Chart */}
-            <div className="w-full flex items-center justify-center p-2 sm:p-4">
-                <div className="w-full max-w-[350px] relative">
+            <div className="w-full flex items-center justify-center p-0">
+                <div className="w-full max-w-[480px] h-[480px] relative">
                     <Radar data={chartData} options={options} />
                 </div>
             </div>
@@ -252,7 +254,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
             {/* Features Row Below Radar Chart - Horizontal Scrollable Circular Progress Indicators */}
             {features.length > 0 && (
                 <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden  border-[#d1d9e6] border-2 rounded-lg shadow-inset mb-8">
-                    <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                    <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
                         {features.map((feature, idx) => {
                             const progress = feature.score;
                             const percent = (progress / 10) * 100;
@@ -267,10 +269,10 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                             return (
                                 <div
                                     key={`feature-${idx}`}
-                                    className="flex flex-col items-center flex-shrink-0"
+                                    className="flex flex-col items-center flex-shrink-0 my-1"
                                 >
                                     {/* Circular Progress Indicator - Neumorphic Up Theme */}
-                                    <div className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
+                                    <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
                                         {/* Score Circle Background - Outer Ring (Progress Ring) - Colorful Border */}
                                         <div
                                             className="absolute inset-[2px] rounded-full"
@@ -286,7 +288,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                                                     <img 
                                                         src={feature.iconUrl} 
                                                         alt={feature.name} 
-                                                        className="w-6 h-6 object-contain"
+                                                        className="w-5 h-5 object-contain"
                                                         style={{display: 'block'}}
                                                         onError={(e) => {
                                                             e.target.style.display = 'none';
@@ -304,9 +306,9 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                             );
                         })}
                         </div>
-                        <div className="mt-2 text-center border-t border-[#d1d9e6] py-3">
+                        <div className="text-center border-t border-[#d1d9e6] py-2">
                             <p className="text-sm sm:text-base text-[#616161] font-medium">
-                                {activeProduct?.scoreValue || 0} <br/> point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
+                                {activeProduct?.scoreValue || 0} point{(activeProduct?.scoreValue || 0) !== 1 ? 's' : ''}
                             </p>
                         </div>
                        

@@ -138,7 +138,7 @@ const CategoryDropdown = ({ categories }) => {
                         }}
                         onMouseEnter={handleMouseEnter}
                     />
-                    <div className="max-w-[1400px] mx-auto px-6 lg:px-8 py-8 overflow-y-auto max-h-[calc(100vh-140px)]">
+                    <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-8 overflow-y-auto max-h-[calc(100vh-140px)]">
                         {/* Category Columns Grid */}
                         <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8 mb-6`}>
                             {categoryColumns.map((column, colIndex) => (

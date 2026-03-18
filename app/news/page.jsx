@@ -27,10 +27,24 @@ const NewsPage = async () => {
 
   return (
     <>
-      <Navbar />
-      <div className="pt-5 md:pt-[90px] bg-[#e6e7ee] min-h-screen">
-        <div className="max-w-[1400px] mx-auto px-6">
-          <div className="flex justify-center gap-4 mb-20 mt-10">
+      <div className="pt-5 md:pt-[60px] bg-[#e6e7ee] min-h-screen">
+        <Navbar />
+        <div className="max-w-[1280px] mx-auto px-6">
+          <nav className="mt-4 sm:mt-6">
+            <p className="text-gray-600 text-sm sm:text-base">
+              <Link href="/" className="hover:text-[#F98A1A] transition-colors">
+                HOME
+              </Link>
+              <span className="mx-2">/</span>
+              <Link
+                href="/news"
+                className="hover:text-[#F98A1A] transition-colors"
+              >
+                BLOGS
+              </Link>
+            </p>
+          </nav>
+          <div className="flex justify-center gap-4 mb-20 mt-6">
             {/* Left Ad Box */}
             <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
               Ad Box
@@ -38,13 +52,13 @@ const NewsPage = async () => {
 
             {/* Main Blog Grid */}
             <div className="flex-1 relative">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3 lg:gap-6">
                 {blogColumns.map((column, colIndex) => (
                   <div key={colIndex}>
                     {column.map((item, i) => (
                       <div
                         key={i}
-                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-6"
+                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6"
                       >
                         <Link href={`/blog/${item.uniqueTitle}`}>
                           <img
@@ -53,8 +67,10 @@ const NewsPage = async () => {
                             src={imageUrl + item.thumbnail}
                           />
                         </Link>
-                        <div className="my-4 mb-[25px] text-[16px] font-medium">
-                          <Link href={`/blog/${item.uniqueTitle}`}>{item.title}</Link>
+                        <div className="mt-4 text-[16px] font-medium">
+                          <Link href={`/blog/${item.uniqueTitle}`}>
+                            {item.title}
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -77,6 +93,3 @@ const NewsPage = async () => {
 };
 
 export default NewsPage;
-
-
-

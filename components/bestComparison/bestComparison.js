@@ -52,7 +52,7 @@ const BestComparison = () => {
 
     return (
         <div className="max-w-[1280px] mx-auto mt-6 pb-20">
-            <p className="mb-2 text-md font-bold text-[#616161] ml-10 uppercase">
+            <p className="mb-2 text-base font-bold text-[#616161] ml-10 uppercase">
                 Which are the most popular comparisons?
             </p>
 
