@@ -875,11 +875,11 @@ const ComparePage = ({ params }) => {
   return (
     <div className="min-h-screen bg-[#E6E7EE]">
       <Navbar />
-      <div className="mx-2 lg:mx-auto mt-[95px] sm:mt-[95px] md:mt-[95px]">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 pt-2 sm:pt-4">
+      <div className="mx-2 lg:mx-auto mt-[55px]">
+        <div className="max-w-[1280px] mx-auto px-2 sm:px-6 md:px-0 pt-2 sm:pt-4">
           <div
             ref={headerSectionRef}
-            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-2 sm:py-3 transition-all duration-200 ${
+            className={`rounded-2xl bg-[#E6E7EE] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] py-1 transition-all duration-200 ${
               isHeaderSticky ? "fixed z-[999]" : "sticky z-[999]"
             }`}
             style={
@@ -896,12 +896,12 @@ const ComparePage = ({ params }) => {
                   }
                 : {
                     position: "sticky",
-                    top: "90px",
+                    top: "50px",
                   }
             }
           >
-            <div className="flex items-center justify-between mb-1 sm:mb-2 pb-3 border-b border-[#d1d9e6] px-4 sm:px-6 md:px-6">
-              <p className="text-xs sm:text-sm break-words text-[#616161]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#d1d9e6] px-2 sm:px-6 md:px-6">
+              <p className="text-xs sm:text-sm break-words text-[#616161] mb-0">
                 <Link href="/" className="hover:text-[#434343]">
                   Home
                 </Link>{" "}
@@ -913,7 +913,7 @@ const ComparePage = ({ params }) => {
                 </span>
               </p>
               <button
-                className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all flex items-center justify-center flex-shrink-0"
+                className="mt-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all flex items-center justify-center flex-shrink-0"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -924,13 +924,13 @@ const ComparePage = ({ params }) => {
                 }}
                 aria-label="Share"
               >
-                <IoShareSocialOutline className="w-3 h-3 sm:w-4 sm:h-4 text-[#434343]" />
+                <IoShareSocialOutline className=" text-[#434343]" />
               </button>
             </div>
 
             {/* Product Title or Sticky Horizontal View */}
             {!isHeaderSticky || !showStickyProducts ? (
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-[#434343] mb-2 sm:mb-3 px-4 sm:px-6 md:px-6">
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-[#434343] px-4 sm:px-6 md:px-6 py-1">
                 {productNames.length > 0
                   ? productNames.join(" vs ")
                   : "Product Comparison"}
@@ -1164,14 +1164,14 @@ const ComparePage = ({ params }) => {
             )}
 
             {/* Decorative Line */}
-            <div className="h-px bg-[#d1d9e6] mb-2 sm:mb-3"></div>
+            <div className="h-px bg-[#d1d9e6]"></div>
 
             {/* TABS - Neumorphic Style (Up Theme) */}
-            <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide px-2 sm:px-4">
+            <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide pt-1 px-2 sm:px-4">
               {tabs.map((tab, index) => (
                 <button
                   key={index}
-                  className={`px-3 sm:px-4 md:px-4 py-2.5 sm:py-2 rounded-xl whitespace-nowrap text-xs font-medium transition-all my-2 ${
+                  className={`px-2 sm:px-4 md:px-4 py-2 sm:py-2 rounded-xl whitespace-nowrap text-xs font-medium transition-all my-2 ${
                     selectedTab === index
                       ? "bg-[#E6E7EE] text-[#434343] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] font-semibold"
                       : "bg-[#E6E7EE] text-[#616161] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff]"
@@ -1194,7 +1194,7 @@ const ComparePage = ({ params }) => {
 
         <div
           ref={overviewRef}
-          className={`max-w-[1280px] mx-auto px-4 sm:px-6 md:px-0 ${isHeaderSticky ? "mt-4" : "mt-2"}`}
+          className={`max-w-[1280px] mx-auto px-2 sm:px-6 md:px-0 ${isHeaderSticky ? "mt-4" : "mt-2"}`}
         >
           {limitedProducts?.length === 1 ? (
             /* Single Product View - First Image Wireframe */
@@ -1537,7 +1537,7 @@ const ComparePage = ({ params }) => {
 
         <div className="bg-[#f6f7fb] mt-2 sm:mt-4 py-4 sm:py-6 flex relative">
           <div
-            className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft"
+            className="max-w-[1280px] w-full mx-auto px-2 sm:px-6 md:px-8 lg:px-0 bg-[#E6E7EE] border-[#d1d9e6] rounded-xl shadow-soft"
             ref={pricesRef}
           >
             {/* Product Selection Buttons - Neumorphic Theme (Rounded Square) */}
@@ -1674,7 +1674,7 @@ const ComparePage = ({ params }) => {
                           }`}
                         >
                           <span
-                            className={`inline-block px-2 sm:px-3 py-[8px] sm:py-[10px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${
+                            className={`inline-block px-2 sm:px-3 py-[12px] sm:py-[14px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${
                               isActive
                                 ? "bg-[#434343] text-white border-[#434343]"
                                 : "bg-white text-gray-700 border-gray-200 group-hover:border-[#434343] group-hover:text-[#434343]"

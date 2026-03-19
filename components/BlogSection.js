@@ -552,7 +552,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
             </div>
           </div>
           <div className="flex items-center justify-center my-2 sm:mt-3">
-            <button className="compare-button px-6 py-2 text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
+            <button className="compare-button text-sm sm:text-base"  onClick={() => router.push("/quick-compare")}>
               More Compare
             </button>
           </div>
@@ -750,9 +750,9 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
       )}
       <div className="flex justify-center gap-4 mb-20 mt-10">
         {/* Left Ad Box */}
-        <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
+        {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
           Ad Box
-        </div>
+        </div> */}
 
         {/* Main Blog Section */}
         <div className="flex-1 relative">
@@ -790,7 +790,7 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
                     {column.map((item, i) => (
                       <div
                         key={i}
-                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6"
+                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6 hover:text-[#F98A1A] transition-colors"
                       >
                         <img
                           className="!h-auto max-w-full rounded-xl"
@@ -812,9 +812,9 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
         </div>
 
         {/* Right Ad Box */}
-        <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
+        {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
           Ad Box
-        </div>
+        </div> */}
       </div>
     </>
       )}

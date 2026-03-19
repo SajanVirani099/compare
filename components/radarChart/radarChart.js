@@ -256,6 +256,7 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                 <div className="mt-4 sm:mt-6 w-full max-w-full overflow-hidden  border-[#d1d9e6] border-2 rounded-lg shadow-inset mb-8">
                     <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 overflow-x-auto overflow-y-hidden pb-2 scrollbar-hide max-w-full px-2 py-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
                         {features.map((feature, idx) => {
+                            console.log("🚀 ~ RadarChart ~ feature:", feature)
                             const progress = feature.score;
                             const percent = (progress / 10) * 100;
                             // Color logic: Red (0-3), Yellow (4-6), Green (7-10)
@@ -272,31 +273,34 @@ const RadarChart = ({ products = [], productNames = [], productColors = ["#43434
                                     className="flex flex-col items-center flex-shrink-0 my-1"
                                 >
                                     {/* Circular Progress Indicator - Neumorphic Up Theme */}
-                                    <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
-                                        {/* Score Circle Background - Outer Ring (Progress Ring) - Colorful Border */}
+                                    <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff]">
+                                        {/* Score Circle Border - Conic gradient ring */}
                                         <div
-                                            className="absolute inset-[2px] rounded-full"
+                                            className="absolute inset-0 rounded-full"
                                             style={{
                                                 background: `conic-gradient(${color} ${percent}%, #e5e7eb ${percent}%)`,
                                             }}
                                         />
                                         {/* Inner Circle with Icon Only - Neumorphic Down Theme */}
-                                        <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5" style={{zIndex: 99}}>
+                                        <div className="absolute inset-[4px] rounded-full bg-[#E6E7EE] flex items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] p-1.5" style={{ zIndex: 1 }}>
                                             {/* Icon - Centered and visible */}
                                             <div className="w-full h-full flex items-center justify-center flex-shrink-0">
                                                 {feature?.iconUrl ? (
-                                                    <img 
-                                                        src={feature.iconUrl} 
-                                                        alt={feature.name} 
+                                                    <img
+                                                        src={feature.iconUrl}
+                                                        alt={feature.name}
                                                         className="w-5 h-5 object-contain"
-                                                        style={{display: 'block'}}
+                                                        style={{ display: "block" }}
                                                         onError={(e) => {
-                                                            e.target.style.display = 'none';
+                                                            e.target.style.display = "none";
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-[#434343]" style={{ color: '#434343' }}>
-                                                        {getFeatureIcon(feature?.name || 'Feature', 20)}
+                                                    <div
+                                                        className="w-full h-full flex items-center justify-center text-[#434343]"
+                                                        style={{ color: "#434343" }}
+                                                    >
+                                                        {getFeatureIcon(feature?.name || "Feature", 20)}
                                                     </div>
                                                 )}
                                             </div>

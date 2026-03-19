@@ -119,7 +119,7 @@ const FeatureSection = ({
             >
                 <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg" >
                     {/* Section Header - 0 Level (Flat) with Score */}
-                    <div className="flex  md:flex-row justify-between items-center md:items-end px-3 border-b-[#d1d9e6] border-b-2">
+                    <div className="flex  md:flex-row justify-between items-center px-3 border-b-[#d1d9e6] border-b-2">
                         <div className="flex gap-2 items-center text-center">
                             {icon}
                             <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>
@@ -207,7 +207,7 @@ const FeatureSection = ({
         >
             <div className="max-w-[1280px] mx-auto px-2 sm:px-0 border-[#d1d9e6] border-2 rounded-lg ">
                 {/* Section Header - 0 Level (Flat) with Score */}
-                <div className="flex md:flex-row justify-between items-center md:items-end px-3 pb-2 pt-1 border-b-[#d1d9e6] border-b-2">
+                <div className="flex md:flex-row justify-between items-center px-3 pb-2 pt-1 border-b-[#d1d9e6] border-b-2">
                     <div className="flex gap-2 items-center text-center">
                         {icon}
                         <span className="font-bold text-lg sm:text-xl md:text-2xl text-[#434343]">{title}</span>

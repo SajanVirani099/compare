@@ -222,7 +222,7 @@ const ProductCard = ({ index, phone, category }) => {
   return (
     <div
       key={index}
-      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-4 md:p-5 md:pt-6 w-full h-full flex gap-4 md:gap-6"
+      className="relative bg-[#e6e7ee] border border-[#d1d9e6] rounded-xl shadow-inset p-2 w-full h-full flex gap-4 md:gap-6"
     >
       {/* Add/Remove Button - Top Right Corner of Card */}
       <div className="absolute !top-8 !right-top-8 md:!top-8 md:!right-8 z-10">
@@ -267,7 +267,7 @@ const ProductCard = ({ index, phone, category }) => {
       </div>
 
       {/* Phone Image Container with Overlay Badges - Left Side */}
-      <div className="relative w-[120px] md:w-[150px] lg:w-[180px] h-[120px] md:h-[150px] lg:h-[180px] flex-shrink-0 flex items-center justify-center bg-[#e6e7ee] rounded-xl shadow-inset overflow-hidden p-2 md:p-3">
+      <div className="relative w-[120px] md:w-[150px] lg:w-[180px] h-[120px] md:h-[150px] lg:h-[180px] flex-shrink-0 flex items-center justify-center bg-[#e6e7ee] rounded-xl shadow-inset overflow-hidden p-1">
         {productSpecs.thumbnail ? (
           <ImageWithShimmer
             src={BASE_URL + productSpecs.thumbnail}

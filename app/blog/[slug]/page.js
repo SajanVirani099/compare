@@ -76,7 +76,7 @@ const Page = async ({ params }) => {
     <div className="min-h-screen bg-[#e6e7ee]">
       <Navbar />
       
-      <div className="max-w-[1280px] w-[90%] mx-auto pt-8 sm:pt-12 pb-[100px]">
+      <div className="max-w-[1280px] w-[90%] mx-auto pt-14 sm:pt-12 pb-[100px]">
         {/* Breadcrumb */}
         <nav className="my-4 sm:my-6">
           <p className="text-gray-600 text-sm sm:text-base">
@@ -139,7 +139,7 @@ const Page = async ({ params }) => {
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-3">
               <button className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium text-[#434343] btn btn-primary">
                 <FcGoogle className="w-4 h-4" />
-                <span>Google preferred</span>
+                <span className='hidden lg:block'>Google preferred</span>
               </button>
 
               <a
@@ -149,7 +149,7 @@ const Page = async ({ params }) => {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium btn btn-primary text-[#128C7E]"
               >
                 <FaWhatsapp className="w-4 h-4" />
-                <span>Join WhatsApp channel</span>
+                <span className='hidden lg:block'>Join WhatsApp channel</span>
               </a>
 
               <a
@@ -159,7 +159,7 @@ const Page = async ({ params }) => {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium btn btn-primary text-[#0088cc]"
               >
                 <FaTelegram className="w-4 h-4" />
-                <span>Join Telegram channel</span>
+                <span className='hidden lg:block'>Join Telegram channel</span>
               </a>
             </div>
           </div>

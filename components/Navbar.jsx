@@ -76,7 +76,7 @@ const Navbar = () => {
       style={{ zIndex: 9999 }}
     >
       <div className="navigation">
-        <div className="flex items-center justify-between w-full px-4 py-2">
+        <div className="flex items-center justify-between w-full py-2">
           {/* Left: Logo and Mobile Menu */}
           <div className="flex items-center gap-4">
             <div className="block lg:hidden">

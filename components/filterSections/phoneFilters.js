@@ -138,7 +138,7 @@ const PhoneFilters = () => {
                                     }}
                                 >
                                     <div className="absolute -top-10 bg-[#e6e7ee] px-3 py-1.5 rounded-xl text-xs text-[#20293a] shadow-inset whitespace-nowrap font-medium">
-                                        {values[index].toFixed(2)}
+                                        {values[index].toFixed(0)}
                                     </div>
                                 </div>
                             )}}

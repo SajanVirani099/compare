@@ -46,9 +46,9 @@ const NewsPage = async () => {
           </nav>
           <div className="flex justify-center gap-4 mb-20 mt-6">
             {/* Left Ad Box */}
-            <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
+            {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
               Ad Box
-            </div>
+            </div> */}
 
             {/* Main Blog Grid */}
             <div className="flex-1 relative">
@@ -58,7 +58,7 @@ const NewsPage = async () => {
                     {column.map((item, i) => (
                       <div
                         key={i}
-                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6"
+                        className="cursor-pointer border-1 border-[#d1d9e6] rounded-xl bg-[#e6e7ee] shadow-soft p-4 mb-3 lg:mb-6 hover:text-[#F98A1A] transition-colors"
                       >
                         <Link href={`/blog/${item.uniqueTitle}`}>
                           <img
@@ -81,9 +81,9 @@ const NewsPage = async () => {
             </div>
 
             {/* Right Ad Box */}
-            <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
+            {/* <div className="hidden md:flex w-[150px] h-[600px] border-2 border-dashed border-gray-700 items-center justify-center flex-shrink-0">
               Ad Box
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

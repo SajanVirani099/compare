@@ -34,7 +34,7 @@ const BlogImageCarousel = ({ images = [], title = "" }) => {
           Credit
         </div>
       {/* Main Image Container */}
-      <div className="relative w-full h-[150px] sm:h-[250px] md:h-[350px] rounded-xl overflow-hidden border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft">
+      <div className="relative w-full h-[250px] sm:h-[300px] md:h-[400px] rounded-xl overflow-hidden border border-[#d1d9e6] bg-[#e6e7ee] shadow-soft">
         <Image
           src={imageUrl + images[currentIndex]}
           alt={title || `Image ${currentIndex + 1}`}
