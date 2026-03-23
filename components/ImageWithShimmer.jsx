@@ -37,11 +37,11 @@ const ImageWithShimmer = ({
   const skeletonHeight = getHeightValue();
 
   return (
-    <div className={`relative w-full`}>
+    <div className={`relative w-full h-max`}>
       {isLoading && (
         <div className="absolute inset-0 z-10">
           <Skeleton
-            height="100%"
+            height="350px"
             width="100%"
             className={className}
             style={{ borderRadius: "15px" }}

@@ -18,7 +18,6 @@ const ParntnerShip = () => {
         setData(setting.partnerships);
     }, [setting]);
 
-    console.log("data", setting);
 
     return (
         <>

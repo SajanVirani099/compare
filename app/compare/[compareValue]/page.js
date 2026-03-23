@@ -35,6 +35,7 @@ import {
 import Navbar from "@/components/Navbar";
 import { imageUrl } from "@/components/utils/config";
 import Footer from "@/components/Footer";
+import ComparisonPlaceholder from "@/components/ComparisonPlaceholder/ComparisonPlaceholder";
 
 // Colors for different products
 const productColors = ["#434343", "#3F51B5", "#10B981"];
@@ -1197,69 +1198,192 @@ const ComparePage = ({ params }) => {
           className={`max-w-[1280px] mx-auto px-2 sm:px-6 md:px-0 ${isHeaderSticky ? "mt-4" : "mt-2"}`}
         >
           {limitedProducts?.length === 1 ? (
-            /* Single Product View - First Image Wireframe */
-            (() => {
-              const product = limitedProducts[0];
-              const productName = getProductName(product, 1);
-              const productImage = product?.thumbnail
-                ? `${imageUrl}${product.thumbnail}`
-                : `/compare-item-1.jpg`;
-              const productScore = product?.scoreValue || 0;
-              const storage =
-                product?.storage || product?.internalStorage || null;
-              const ram = product?.ram || product?.memory || null;
-              const configuration =
-                storage && ram
-                  ? `${ram} + ${storage}`
-                  : storage || ram || "1GB + 16GB";
+            /* Single Product with Placeholder Comparison View */
+            <div className="relative">
+              {/* Mobile Slider View */}
+              <div className="relative sm:hidden">
+                {/* Product Card */}
+                <div className="flex flex-col px-4 py-6 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] mb-4">
+                  {/* Product Name and Variant */}
+                  <div className="mb-3">
+                    <p className="font-bold text-lg text-center mb-2 break-words px-2 text-[#434343]">
+                      {(() => {
+                        const product = limitedProducts[0];
+                        return getProductName(product, 1);
+                      })()}
+                    </p>
+                    <p className="text-sm text-center text-[#616161]">
+                      {(() => {
+                        const product = limitedProducts[0];
+                        const storage =
+                          product?.storage || product?.internalStorage || null;
+                        const ram = product?.ram || product?.memory || null;
+                        return storage && ram
+                          ? `${ram} + ${storage}`
+                          : storage || ram || "";
+                      })()}
+                    </p>
+                  </div>
 
-              return (
-                <div className="max-w-[600px] mx-auto">
-                  {/* Variant Selector - Neumorphic Up Theme */}
-                  <div className="mb-4 sm:mb-6">
-                    <div className="px-4 py-3 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] text-sm sm:text-base text-[#434343] font-medium">
-                      {configuration}
+                  {/* Product Image Container - Neumorphic */}
+                  <div className="relative mt-4 w-full flex items-center justify-center min-h-[200px] bg-[#E6E7EE] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-4">
+                    {(() => {
+                      const product = limitedProducts[0];
+                      const productImage = product?.thumbnail
+                        ? `${imageUrl}${product.thumbnail}`
+                        : `/compare-item-1.jpg`;
+                      return productImage ? (
+                        <img
+                          src={productImage}
+                          alt={getProductName(product, 1)}
+                          className="h-[200px] w-full object-contain object-top"
+                        />
+                      ) : (
+                        <CiMobile1 size={120} className="opacity-30" />
+                      );
+                    })()}
+
+                    {/* Score Badge - Top Right */}
+                    <div className="absolute top-2 right-2">
+                      {(() => {
+                        const product = limitedProducts[0];
+                        const color = productColors[0];
+                        const productScore = product?.scoreValue || 75;
+                        return (
+                          <div className="relative w-12 h-12 flex items-center justify-center">
+                            <div
+                              className="absolute inset-0 rounded-full"
+                              style={{
+                                background: `conic-gradient(${color} ${productScore}%, #e5e7eb ${productScore}%)`,
+                              }}
+                            />
+                            <div className="absolute inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+                              <span className="text-xs font-bold text-[#434343]">
+                                {productScore}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
 
-                  {/* Phone Image Container - Neumorphic Up/Down Theme */}
-                  <div className="relative w-full flex items-center justify-center bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-6 sm:p-8 min-h-[300px] sm:min-h-[400px]">
-                    {productImage ? (
-                      <img
-                        src={productImage}
-                        alt={productName}
-                        className="max-h-[300px] sm:max-h-[400px] w-auto object-contain"
-                      />
-                    ) : (
-                      <div className="text-[#616161] text-center">
-                        <CiMobile1
-                          size={120}
-                          className="mx-auto mb-4 opacity-50"
-                        />
-                        <p className="text-sm">No image available</p>
+                  {/* Price Button - Bottom */}
+                  {(() => {
+                    const product = limitedProducts[0];
+                    const productPrice =
+                      product?.price || product?.amazonPrice || null;
+                    return productPrice ? (
+                      <div className="mt-4 flex justify-center">
+                        <button className="px-6 py-2.5 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all text-sm font-semibold text-[#434343]">
+                          ₹ {productPrice.toLocaleString()}
+                        </button>
                       </div>
-                    )}
+                    ) : null;
+                  })()}
+                </div>
 
-                    {/* Expand Popup Indicator - Top Right with "9" */}
-                    <button
-                      className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all flex items-center justify-center group"
-                      onClick={() => {
-                        // Handle expand popup - could open a modal or navigate
-                        console.log("Expand popup clicked");
-                      }}
-                      aria-label="Expand popup"
-                    >
-                      <span className="text-sm sm:text-base font-bold text-[#434343]">
-                        9
-                      </span>
-                      <span className="absolute -right-16 sm:-right-20 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-[#616161] whitespace-nowrap">
-                        Expand popup
-                      </span>
-                    </button>
+                {/* Placeholder Card */}
+                <div className="opacity-40 pointer-events-none">
+                  <ComparisonPlaceholder showVsSeparator={false} />
+                </div>
+              </div>
+
+              {/* Desktop Grid View for Single Product - Centered + Right Placeholder */}
+              <div className="hidden sm:grid relative w-full mx-auto grid-cols-12 items-center bg-[#F5F5F5] rounded-3xl p-4 sm:p-6 md:p-8 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+                {/* product centering & placeholder right */}
+                <div className="col-start-4 col-span-4 flex justify-center">
+                  {(() => {
+                    const product = limitedProducts[0];
+                    const color = productColors[0];
+                    const productName = getProductName(product, 1);
+                    const productImage = product?.thumbnail
+                      ? `${imageUrl}${product.thumbnail}`
+                      : `/compare-item-1.jpg`;
+                    const productPrice =
+                      product?.price || product?.amazonPrice || null;
+                    const productScore = product?.scoreValue || 75;
+                    const storage =
+                      product?.storage || product?.internalStorage || null;
+                    const ram = product?.ram || product?.memory || null;
+                    const configuration =
+                      storage && ram
+                        ? `${ram} + ${storage}`
+                        : storage || ram || "";
+
+                    return (
+                      <div className="relative flex flex-col w-full max-w-sm lg:max-w-md px-3 sm:px-4 md:px-6 py-2 sm:py-4 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]">
+                        {" "}
+                        {/* Product Name and Variant */}
+                        <div className="">
+                          <p className="font-bold text-base sm:text-lg md:text-xl text-center break-words px-2 text-[#434343]">
+                            {productName}
+                          </p>
+                          <p className="text-xs sm:text-sm text-center text-[#616161]">
+                            {configuration}
+                          </p>
+                        </div>
+                        {/* Product Image Container - Neumorphic */}
+                        <div className="relative mt-2 sm:mt-4 w-full flex-1 flex items-center justify-center min-h-[220px] sm:min-h-[250px] md:min-h-[280px] lg:min-h-[320px] bg-[#E6E7EE] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-4">
+                          {productImage ? (
+                            <img
+                              src={productImage}
+                              alt={productName}
+                              className="max-h-[220px] sm:max-h-[250px] md:max-h-[280px] lg:max-h-[320px] w-auto object-contain"
+                            />
+                          ) : (
+                            <CiMobile1 size={120} className="opacity-30" />
+                          )}
+
+                          {/* Score Badge - Top Right */}
+                          <div className="absolute top-2 right-2">
+                            <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
+                              <div
+                                className="absolute inset-0 rounded-full"
+                                style={{
+                                  background: `conic-gradient(${color} ${productScore}%, #e5e7eb ${productScore}%)`,
+                                }}
+                              />
+                              <div className="absolute inset-[2px] rounded-full bg-[#E6E7EE] flex flex-col items-center justify-center shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+                                <span className="text-xs sm:text-sm font-bold text-[#434343] leading-none">
+                                  {productScore}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Price Button - Bottom */}
+                        {productPrice && (
+                          <div className="mt-2 sm:mt-4 flex justify-center">
+                            <button className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all text-xs sm:text-sm font-semibold text-[#434343]">
+                              ₹ {productPrice.toLocaleString()}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* VS badge between center product and right placeholder - quick compare style (vertical lines on desktop) */}
+                <div className="hidden lg:flex col-start-8 col-span-1 justify-center items-center">
+                  <div
+                    className="relative z-10 bg-[#e6e7ee] text-center text-[#434343] rounded-full w-12 h-12 flex items-center justify-center font-bold shadow-inset border border-[#d1d9e6] text-xs md:text-base lg:text-base
+                    before:content-[''] before:absolute before:w-[2px] before:h-[170px] before:bg-gray-300 before:left-1/2 before:-translate-x-1/2 before:-top-[175px]
+                    after:content-[''] after:absolute after:w-[2px] after:h-[170px] after:bg-gray-300 after:left-1/2 after:-translate-x-1/2 after:-bottom-[175px]"
+                  >
+                    VS
                   </div>
                 </div>
-              );
-            })()
+
+                {/* Placeholder - Right Side */}
+                <div className="col-start-9 col-span-4 flex justify-center">
+                  <div className="relative w-full max-w-sm lg:max-w-md">
+                    <ComparisonPlaceholder showVsSeparator={false} />
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : (
             /* Multiple Products View - Third/Fourth Image Wireframe */
             <div className="relative">
@@ -1314,12 +1438,6 @@ const ComparePage = ({ params }) => {
                       storage && ram
                         ? `${ram} + ${storage}`
                         : storage || ram || "";
-
-                    console.log(
-                      "productproduct",
-                      index < (limitedProducts?.length || 0) - 1,
-                    );
-
                     return (
                       <div
                         key={product?._id || index}
@@ -1407,12 +1525,29 @@ const ComparePage = ({ params }) => {
 
               {/* Desktop Grid View */}
               <div
-                className={`hidden sm:grid relative w-full mx-auto ${
+                className="hidden sm:grid relative w-full mx-auto items-center gap-4 sm:gap-6"
+                style={
                   limitedProducts?.length === 2
-                    ? "grid-cols-2 gap-4 sm:gap-6"
-                    : "grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-                }`}
+                    ? { gridTemplateColumns: "1fr auto 1fr auto 1fr" }
+                    : undefined
+                }
               >
+                {limitedProducts?.length === 2 && (
+                  <div
+                    className="hidden lg:flex justify-center items-center"
+                    style={{ gridColumn: "2", gridRow: "1", alignSelf: "center" }}
+                  >
+                    <div
+                      className="relative z-10 bg-[#e6e7ee] text-center text-[#434343] rounded-full w-12 h-12 flex items-center justify-center font-bold shadow-inset border border-[#d1d9e6] text-xs md:text-base lg:text-base
+                        before:content-[''] before:absolute before:w-[2px] before:h-[170px] before:bg-gray-300 before:left-1/2 before:-translate-x-1/2 before:-top-[180px]
+                        after:content-[''] after:absolute after:w-[2px] after:h-[170px] after:bg-gray-300 after:left-1/2 after:-translate-x-1/2 after:-bottom-[180px]"
+                    >
+                      VS
+                    </div>
+                  </div>
+                )}
+
+
                 {limitedProducts?.map((product, index) => {
                   const color = productColors[index] || productColors[0];
                   const productName = getProductName(product, index + 1);
@@ -1432,8 +1567,18 @@ const ComparePage = ({ params }) => {
 
                   return (
                     <React.Fragment key={product?._id || index}>
-                      <div className="relative flex flex-col px-3 sm:px-4 md:px-6 py-2 sm:py-4 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]">
-                        {/* Product Name and Variant */}
+                      <div
+                        className="relative flex flex-col px-3 sm:px-4 md:px-6 py-2 sm:py-4 bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]"
+                        style={
+                          limitedProducts?.length === 2
+                            ? {
+                                gridColumn: index === 0 ? 1 : 3,
+                                gridRow: 1,
+                                alignSelf: "center",
+                              }
+                            : undefined
+                        }
+                      >
                         <div className="">
                           <p className="font-bold text-base sm:text-lg md:text-xl text-center break-words px-2 text-[#434343]">
                             {productName}
@@ -1443,7 +1588,6 @@ const ComparePage = ({ params }) => {
                           </p>
                         </div>
 
-                        {/* Product Image Container - Neumorphic */}
                         <div className="relative mt-2 sm:mt-4 w-full flex-1 flex items-center justify-center min-h-[200px] sm:min-h-[250px] md:min-h-[300px] bg-[#E6E7EE] rounded-xl shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] p-4">
                           {productImage ? (
                             <img
@@ -1455,7 +1599,6 @@ const ComparePage = ({ params }) => {
                             <CiMobile1 size={120} className="opacity-30" />
                           )}
 
-                          {/* Score Badge - Top Right */}
                           <div className="absolute top-2 right-2">
                             <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
                               <div
@@ -1473,7 +1616,6 @@ const ComparePage = ({ params }) => {
                           </div>
                         </div>
 
-                        {/* Price Button - Bottom */}
                         {productPrice && (
                           <div className="mt-2 sm:mt-4 flex justify-center">
                             <button className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-xl bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] hover:shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] transition-all text-xs sm:text-sm font-semibold text-[#434343]">
@@ -1481,24 +1623,31 @@ const ComparePage = ({ params }) => {
                             </button>
                           </div>
                         )}
-
-                        {/* Desktop VS Badge between products */}
-                        {(index === 0 ||
-                          (index === 1 && limitedProducts?.length === 3)) && (
-                          <div
-                            className={`hidden ${index === 1 ? "lg:flex" : "sm:flex"} absolute top-1/2 left-[calc(100%+0.75rem)] transform -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none`}
-                          >
-                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E6E7EE] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] flex items-center justify-center">
-                              <span className="font-bold text-[#434343] text-sm sm:text-base">
-                                VS
-                              </span>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </React.Fragment>
                   );
                 })}
+
+                {limitedProducts?.length === 2 && (
+                  <div
+                    className="hidden lg:flex justify-center items-center"
+                    style={{ gridColumn: "4", gridRow: "1", alignSelf: "center" }}
+                  >
+                    <div
+                      className="relative z-10 bg-[#e6e7ee] text-center text-[#434343] rounded-full w-12 h-12 flex items-center justify-center font-bold shadow-inset border border-[#d1d9e6] text-xs md:text-base lg:text-base
+                        before:content-[''] before:absolute before:w-[2px] before:h-[170px] before:bg-gray-300 before:left-1/2 before:-translate-x-1/2 before:-top-[180px]
+                        after:content-[''] after:absolute after:w-[2px] after:h-[170px] after:bg-gray-300 after:left-1/2 after:-translate-x-1/2 after:-bottom-[180px]"
+                    >
+                      VS
+                    </div>
+                  </div>
+                )}
+
+                {limitedProducts?.length === 2 && (
+                  <div style={{ gridColumn: 5, gridRow: 1 }} className="relative">
+                    <ComparisonPlaceholder showVsSeparator={false} />
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1674,11 +1823,12 @@ const ComparePage = ({ params }) => {
                           }`}
                         >
                           <span
-                            className={`inline-block px-2 sm:px-3 py-[12px] sm:py-[14px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${
-                              isActive
-                                ? "bg-[#434343] text-white border-[#434343]"
-                                : "bg-white text-gray-700 border-gray-200 group-hover:border-[#434343] group-hover:text-[#434343]"
-                            }`}
+                            className={`inline-block px-2 sm:px-3 py-[12
+                              px] sm:py-[14px] rounded-r-lg text-xs sm:text-sm font-medium border-y border-r transition-all duration-200 ${
+                                isActive
+                                  ? "bg-[#434343] text-white border-[#434343]"
+                                  : "bg-white text-gray-700 border-gray-200 group-hover:border-[#434343] group-hover:text-[#434343]"
+                              }`}
                           >
                             {icon.tooltip}
                           </span>
@@ -1770,54 +1920,54 @@ const ComparePage = ({ params }) => {
                         <div className="min-h-[508px] h-full mb-6 flex flex-col bg-[#E6E7EE] rounded-2xl shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] p-2 md:p-3 lg:p-4">
                           <div className="flex flex-col flex-1">
                             <div className="flex-1 h-full">
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-                              {keySpecsList.length > 0 ? (
-                                keySpecsList.map((spec, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="p-3 sm:p-3.5 md:p-4 rounded-xl bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
-                                  >
-                                    <div className="flex items-center gap-2.5 sm:gap-3">
-                                      {/* Icon - Top (Neumorphic Up Theme) */}
-                                      {spec.icon ? (
-                                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center p-1.5 sm:p-2 flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
-                                          <img
-                                            src={spec.icon}
-                                            alt={spec.label}
-                                            className="w-full h-full object-contain"
-                                            onError={(e) => {
-                                              e.target.style.display = "none";
-                                            }}
-                                          />
+                              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+                                {keySpecsList.length > 0 ? (
+                                  keySpecsList.map((spec, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="p-3 sm:p-3.5 md:p-4 rounded-xl bg-[#E6E7EE] shadow-[inset_3px_3px_6px_#d1d9e6,inset_-3px_-3px_6px_#ffffff] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
+                                    >
+                                      <div className="flex items-center gap-2.5 sm:gap-3">
+                                        {/* Icon - Top (Neumorphic Up Theme) */}
+                                        {spec.icon ? (
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center p-1.5 sm:p-2 flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                            <img
+                                              src={spec.icon}
+                                              alt={spec.label}
+                                              className="w-full h-full object-contain"
+                                              onError={(e) => {
+                                                e.target.style.display = "none";
+                                              }}
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
+                                            <span className="text-sm sm:text-base font-bold text-[#616161]">
+                                              {spec.label.charAt(0)}
+                                            </span>
+                                          </div>
+                                        )}
+                                        <div>
+                                          {/* Label - Below Icon */}
+                                          <p className="text-xs sm:text-sm md:text-base font-medium text-[#616161] leading-tight">
+                                            {spec.label}
+                                          </p>
+                                          {/* Value - Below Label */}
+                                          <p className="text-xs sm:text-sm md:text-base font-bold text-[#434343] break-words line-clamp-2 leading-tight">
+                                            {spec.value}
+                                          </p>
                                         </div>
-                                      ) : (
-                                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg bg-[#E6E7EE] shadow-[3px_3px_6px_#d1d9e6,-3px_-3px_6px_#ffffff] flex items-center justify-center flex-shrink-0 hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-all duration-200">
-                                          <span className="text-sm sm:text-base font-bold text-[#616161]">
-                                            {spec.label.charAt(0)}
-                                          </span>
-                                        </div>
-                                      )}
-                                      <div>
-                                        {/* Label - Below Icon */}
-                                        <p className="text-xs sm:text-sm md:text-base font-medium text-[#616161] leading-tight">
-                                          {spec.label}
-                                        </p>
-                                        {/* Value - Below Label */}
-                                        <p className="text-xs sm:text-sm md:text-base font-bold text-[#434343] break-words line-clamp-2 leading-tight">
-                                          {spec.value}
-                                        </p>
                                       </div>
                                     </div>
+                                  ))
+                                ) : (
+                                  <div className="col-span-2 text-center py-8 text-[#616161]">
+                                    <p className="text-sm">
+                                      No specifications available
+                                    </p>
                                   </div>
-                                ))
-                              ) : (
-                                <div className="col-span-2 text-center py-8 text-[#616161]">
-                                  <p className="text-sm">
-                                    No specifications available
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
                             </div>
 
                             {/* Bottom Info Section - Zero Level Headers - 3 Columns with Dividers */}

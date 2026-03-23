@@ -213,35 +213,12 @@ const QuickCompare = () => {
     }
   }, [category, dispatch, prefilled]);
 
-  // When products load, place one random product in comparisonList if empty
+  // When products load, do not auto-add random products to comparison list
   useEffect(() => {
     if (!selectedSubCategory) return;
     if (!subCategoryProductss || subCategoryProductss.length === 0) return;
-    if (comparisonList.length > 0) return;
-
-    const randomProduct =
-      subCategoryProductss[
-        Math.floor(Math.random() * subCategoryProductss.length)
-      ];
-    if (randomProduct && randomProduct._id) {
-      const updated = [randomProduct._id];
-      setComparisonList(updated);
-      setComparisonProducts([randomProduct]);
-
-      try {
-        localStorage.setItem("comparisonList", JSON.stringify(updated));
-        localStorage.setItem(
-          "comparisonProducts",
-          JSON.stringify([randomProduct])
-        );
-      } catch (error) {
-        console.error("Error saving to localStorage:", error);
-      }
-
-      // notify floating bar if present
-      window.dispatchEvent(new Event("comparisonListUpdated"));
-    }
-  }, [selectedSubCategory, subCategoryProductss, comparisonList.length]);
+    // No default auto-fill behavior for comparison list so users can choose explicitly
+  }, [selectedSubCategory, subCategoryProductss]);
 
   // Update comparison products when subCategoryProductss or comparisonList changes
   useEffect(() => {
@@ -342,6 +319,18 @@ const QuickCompare = () => {
       console.error("Error saving to localStorage:", error);
     }
 
+    window.dispatchEvent(new Event("comparisonListUpdated"));
+  };
+
+  const handleClearComparison = () => {
+    setComparisonList([]);
+    setComparisonProducts([]);
+    try {
+      localStorage.removeItem("comparisonList");
+      localStorage.removeItem("comparisonProducts");
+    } catch (error) {
+      console.error("Error clearing comparison list:", error);
+    }
     window.dispatchEvent(new Event("comparisonListUpdated"));
   };
 
@@ -764,12 +753,13 @@ const QuickCompare = () => {
 
                     <button
                       onClick={() => {
+                        handleClearComparison();
                         setIsDropdownOpen(false);
                         // Scroll to top of products section
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
                       className="btn btn-primary !text-2xl !px-5 !rounded-md"
-                      title="Close and scroll to top"
+                      title="Close and clear comparison list"
                     >
                       ×
                     </button>

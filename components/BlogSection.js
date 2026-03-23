@@ -400,18 +400,13 @@ const BlogSection = ({ onlyBlogGrid = false }) => {
                   <div className="absolute top-3 left-3 sm:top-3 sm:left-3 md:top-3 md:left-3 z-10">
                     <CircularScore value={selectedProducts[0]?.scoreValue} />
                   </div>
-                  {isFirstProductLoaded && (
-                    <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded z-10">
-                      Random
-                    </div>
-                  )}
                 </div>
               ) : isLoadingRandomProduct ? (
                 <div className="text-center text-sm text-gray-500 px-4 py-20">
                   Loading random product...
                 </div>
               ) : (
-                <div className="text-[35px] py-20">+</div>
+                <div className="text-[35px] text-center flex items-center justify-center h-[450px]"><span>+</span></div>
               )}
             </div>
             
